@@ -2,1124 +2,836 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chittoor District — Command Dashboard</title>
-<meta name="description" content="Internal situational dashboard for Chittoor District Police — sheeters, warrants, crime trends, and enforcement statistics.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Chittoor District — SP Command Dashboard</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230A0E17' stroke='%23C9A24A' stroke-width='4'/%3E%3Ctext x='50' y='60' font-family='Arial' font-weight='bold' font-size='30' fill='%23C9A24A' text-anchor='middle'%3ECTR%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230A0E17' stroke='%23C9A24A' stroke-width='4'/%3E%3Ctext x='50' y='62' font-family='Arial' font-weight='bold' font-size='28' fill='%23C9A24A' text-anchor='middle'%3ECTR%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg-deep:#0A0E17;
-    --bg-panel:#111726;
-    --bg-panel-alt:#161D30;
-    --bg-raised:#1B2338;
-    --hairline:#242E48;
-    --text-primary:#EAEFFB;
-    --text-muted:#8C97B8;
-    --text-dim:#5E6885;
-    --gold:#C9A24A;
-    --gold-dim:#8A7333;
-    --blue:#5B8CFF;
-    --red:#E1595A;
-    --green:#4FAE83;
-    --amber:#D9A441;
+    --bg:#0A0E17;--panel:#111726;--panel2:#161D30;--raised:#1B2338;
+    --line:#242E48;--line2:#2E3A58;
+    --tx:#EAEFFB;--tx2:#8C97B8;--tx3:#5E6885;
+    --gold:#C9A24A;--goldD:#8A7333;
+    --blue:#5B8CFF;--red:#E1595A;--green:#4FAE83;--amber:#D9A441;--purple:#8B7BD8;
+    --tap:44px;
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:
-      radial-gradient(1200px 600px at 100% -10%, rgba(91,140,255,0.06), transparent),
-      radial-gradient(900px 500px at -10% 0%, rgba(201,162,74,0.05), transparent),
-      var(--bg-deep);
-    color:var(--text-primary);
-    font-family:'IBM Plex Sans', sans-serif;
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
-  }
-  ::selection{background:rgba(201,162,74,0.3);}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{background:radial-gradient(1200px 600px at 100% -10%,rgba(91,140,255,.06),transparent),
+    radial-gradient(900px 500px at -10% 0%,rgba(201,162,74,.05),transparent),var(--bg);
+    color:var(--tx);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+  ::selection{background:rgba(201,162,74,.3)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
-  /* ---- Top bar ---- */
-  .topbar{
-    position:sticky; top:0; z-index:50;
-    background:rgba(10,14,23,0.92);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--hairline);
-    padding:14px 20px;
-    display:flex; align-items:center; gap:14px;
-  }
-  .seal{
-    width:38px;height:38px;border-radius:50%;
-    border:1.5px solid var(--gold);
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;
-    color:var(--gold); letter-spacing:0.5px;
-    background:linear-gradient(180deg, rgba(201,162,74,0.12), transparent);
-    flex-shrink:0;
-  }
-  .topbar-title{line-height:1.15;}
-  .topbar-title .eyebrow{
-    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:1.5px;
-    color:var(--gold); text-transform:uppercase;
-  }
-  .topbar-title h1{
-    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:19px;
-    letter-spacing:0.3px; color:var(--text-primary);
-  }
-  .topbar-meta{
-    margin-left:auto; text-align:right; font-family:'IBM Plex Mono',monospace;
-    font-size:10.5px; color:var(--text-dim); line-height:1.5; display:none;
-  }
-  @media(min-width:680px){ .topbar-meta{display:block;} }
+  .mast{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:13px;
+    padding:11px 16px;padding-top:calc(11px + env(safe-area-inset-top));
+    background:rgba(10,14,23,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .seal{width:36px;height:36px;border-radius:50%;flex-shrink:0;border:1.5px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;
+    font-weight:700;font-size:12px;color:var(--gold);letter-spacing:.5px;
+    background:linear-gradient(180deg,rgba(201,162,74,.14),transparent)}
+  .mast h1{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:17px;line-height:1.1}
+  .mast .sub{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:1.4px;
+    color:var(--gold);text-transform:uppercase;margin-bottom:1px}
+  .mast .clock{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:10px;
+    color:var(--tx3);text-align:right;line-height:1.45;display:none}
+  @media(min-width:700px){.mast .clock{display:block}}
 
-  /* ---- Tab nav ---- */
-  .tabnav{
-    position:sticky; top:66px; z-index:49;
-    display:flex; gap:2px; overflow-x:auto;
-    background:var(--bg-panel);
-    border-bottom:1px solid var(--hairline);
-    padding:0 12px;
-    scrollbar-width:none;
-  }
-  .tabnav::-webkit-scrollbar{display:none;}
-  .tab{
-    white-space:nowrap; padding:13px 16px; font-size:13px; font-weight:500;
-    color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent;
-    font-family:'IBM Plex Sans',sans-serif; transition:color .15s, border-color .15s;
-    user-select:none;
-  }
-  .tab .n{font-family:'IBM Plex Mono',monospace; color:var(--text-dim); margin-right:7px; font-size:11px;}
-  .tab.active{color:var(--gold); border-bottom-color:var(--gold);}
-  .tab.active .n{color:var(--gold);}
-  .tab:hover{color:var(--text-primary);}
+  nav{position:sticky;top:59px;z-index:59;display:flex;overflow-x:auto;background:var(--panel);
+    border-bottom:1px solid var(--line);scrollbar-width:none;padding:0 8px}
+  nav::-webkit-scrollbar{display:none}
+  .nv{white-space:nowrap;padding:0 15px;height:var(--tap);display:flex;align-items:center;
+    font-size:13.5px;font-weight:500;color:var(--tx2);cursor:pointer;border-bottom:2px solid transparent;
+    transition:color .15s,border-color .15s}
+  .nv:hover{color:var(--tx)}
+  .nv.on{color:var(--gold);border-bottom-color:var(--gold)}
 
-  main{max-width:1180px; margin:0 auto; padding:22px 16px 80px;}
-  .view{display:none; animation:fade .25s ease;}
-  .view.active{display:block;}
-  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+  main{max-width:1240px;margin:0 auto;padding:18px 14px 90px}
+  @media(min-width:820px){main{padding:24px 22px 90px}}
+  .view{display:none;animation:fade .22s ease}
+  .view.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-  .section-head{margin:34px 0 14px;}
-  .section-head:first-child{margin-top:0;}
-  .section-head .eyebrow{
-    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:1.5px;
-    color:var(--gold-dim); text-transform:uppercase; display:block; margin-bottom:4px;
-  }
-  .section-head h2{font-family:'Rajdhani',sans-serif; font-weight:600; font-size:20px; color:var(--text-primary);}
-  .section-head p{font-size:12.5px; color:var(--text-muted); margin-top:4px; max-width:60ch;}
+  .hd{margin:30px 0 13px}.hd:first-child{margin-top:0}
+  .hd .eb{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:1.5px;
+    color:var(--goldD);text-transform:uppercase;display:block;margin-bottom:4px}
+  .hd h2{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:19px}
+  .hd p{font-size:12.5px;color:var(--tx2);margin-top:4px;max-width:64ch;line-height:1.5}
 
-  /* ---- KPI cards ---- */
-  .kpi-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
-  @media(min-width:620px){ .kpi-grid{grid-template-columns:repeat(3,1fr);} }
-  @media(min-width:900px){ .kpi-grid{grid-template-columns:repeat(6,1fr);} }
-  .kpi{
-    background:var(--bg-panel); border:1px solid var(--hairline); border-radius:10px;
-    padding:14px 14px 12px; position:relative; overflow:hidden;
-  }
-  .kpi::before{
-    content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent,var(--blue));
-  }
-  .kpi .label{font-size:10.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px;}
-  .kpi .value{font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; margin-top:6px; color:var(--text-primary);}
-  .kpi .sub{font-size:10.5px; color:var(--text-dim); margin-top:3px;}
+  .ds{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--tx3);
+    border:1px solid var(--line);border-radius:4px;padding:2px 6px;margin-left:8px;
+    vertical-align:middle;white-space:nowrap}
+  .ds.warn{color:var(--amber);border-color:rgba(217,164,65,.35);background:rgba(217,164,65,.07)}
+  .ds.live{color:var(--green);border-color:rgba(79,174,131,.35);background:rgba(79,174,131,.07)}
 
-  /* ---- Panels / cards ---- */
-  .panel{
-    background:var(--bg-panel); border:1px solid var(--hairline); border-radius:12px;
-    padding:18px; margin-bottom:16px;
-  }
-  .panel-title{
-    font-family:'Rajdhani',sans-serif; font-weight:600; font-size:15px; color:var(--text-primary);
-    margin-bottom:2px;
-  }
-  .panel-sub{font-size:11.5px; color:var(--text-dim); margin-bottom:14px;}
-  .grid-2{display:grid; grid-template-columns:1fr; gap:16px;}
-  @media(min-width:860px){ .grid-2{grid-template-columns:1.3fr 1fr;} }
-  .chart-wrap{position:relative; height:260px;}
-  .chart-wrap.tall{height:320px;}
+  .pn{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+  .pt{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:15px;margin-bottom:2px}
+  .ps{font-size:11.5px;color:var(--tx3);margin-bottom:13px;line-height:1.5}
+  .g2{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:880px){.g2{grid-template-columns:1.25fr 1fr}}
+  .g2e{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:880px){.g2e{grid-template-columns:1fr 1fr}}
+  .cw{position:relative;height:250px}.cw.t{height:320px}.cw.xt{height:420px}
 
-  /* ---- Ledger / signature list element ---- */
-  .ledger{border-top:1px solid var(--hairline);}
-  .ledger-row{
-    display:grid; grid-template-columns:56px 1fr auto; align-items:center; gap:10px;
-    padding:9px 2px; border-bottom:1px solid var(--hairline);
-    font-size:12.5px;
-  }
-  .ledger-row .code{
-    font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--gold);
-    background:rgba(201,162,74,0.08); border:1px solid rgba(201,162,74,0.25);
-    border-radius:4px; padding:2px 5px; text-align:center;
-  }
-  .ledger-row .name{color:var(--text-primary);}
-  .ledger-row .bar-track{
-    height:5px; background:var(--bg-raised); border-radius:3px; margin-top:4px; overflow:hidden;
-  }
-  .ledger-row .bar-fill{height:100%; background:var(--blue); border-radius:3px;}
-  .ledger-row .val{font-family:'IBM Plex Mono',monospace; color:var(--text-muted); font-size:12px; text-align:right;}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+  @media(min-width:600px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(min-width:940px){.kpis{grid-template-columns:repeat(6,1fr)}}
+  .k{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 12px 11px;
+    position:relative;overflow:hidden}
+  .k::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac,var(--blue))}
+  .k .l{font-size:10px;color:var(--tx2);text-transform:uppercase;letter-spacing:.55px;line-height:1.3}
+  .k .v{font-family:'IBM Plex Mono',monospace;font-size:23px;font-weight:600;margin-top:5px}
+  .k .s{font-size:10px;color:var(--tx3);margin-top:3px;line-height:1.4}
 
-  /* ---- Tables ---- */
-  .table-scroll{overflow-x:auto; border-radius:8px; border:1px solid var(--hairline);}
-  table{width:100%; border-collapse:collapse; font-size:12px; min-width:640px;}
-  thead th{
-    background:var(--bg-panel-alt); color:var(--text-muted); text-transform:uppercase;
-    font-size:10px; letter-spacing:0.5px; font-weight:600; text-align:left;
-    padding:9px 10px; border-bottom:1px solid var(--hairline); white-space:nowrap;
-    cursor:pointer; user-select:none;
-  }
-  thead th:hover{color:var(--gold);}
-  thead th.num, td.num{text-align:right;}
-  tbody td{padding:8px 10px; border-bottom:1px solid var(--hairline); color:var(--text-primary); white-space:nowrap;}
-  tbody td.mono{font-family:'IBM Plex Mono',monospace; color:var(--text-muted);}
-  tbody tr:hover{background:rgba(91,140,255,0.05);}
-  tbody tr:last-child td{border-bottom:none;}
-  .search-box{
-    width:100%; background:var(--bg-raised); border:1px solid var(--hairline); border-radius:7px;
-    padding:9px 12px; color:var(--text-primary); font-size:13px; margin-bottom:10px;
-    font-family:'IBM Plex Sans',sans-serif;
-  }
-  .search-box:focus{outline:none; border-color:var(--gold-dim);}
-  .search-box::placeholder{color:var(--text-dim);}
+  .exc{background:linear-gradient(180deg,rgba(225,89,90,.07),transparent 60%),var(--panel);
+    border:1px solid rgba(225,89,90,.3);border-radius:12px;padding:16px;margin-bottom:16px}
+  .exc h3{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:15px;color:var(--red);
+    display:flex;align-items:center;gap:8px;margin-bottom:3px}
+  .exc h3::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
+  .exc .sub{font-size:11.5px;color:var(--tx3);margin-bottom:12px}
+  .ex{display:flex;gap:11px;padding:10px 0;border-top:1px solid var(--line)}
+  .ex .n{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:600;color:var(--red);
+    min-width:56px;line-height:1.15}
+  .ex .n small{display:block;font-size:8.5px;color:var(--tx3);font-weight:400;letter-spacing:.3px}
+  .ex .t{font-size:12.5px;line-height:1.5}
+  .ex .t b{color:var(--tx);font-weight:600}
+  .ex .t span{color:var(--tx2)}
 
-  .pill{
-    display:inline-block; font-size:10px; font-family:'IBM Plex Mono',monospace;
-    padding:2px 7px; border-radius:20px; border:1px solid;
-  }
-  .pill.warn{color:var(--red); border-color:rgba(225,89,90,0.4); background:rgba(225,89,90,0.08);}
-  .pill.ok{color:var(--green); border-color:rgba(79,174,131,0.4); background:rgba(79,174,131,0.08);}
-  .pill.neutral{color:var(--text-muted); border-color:var(--hairline); background:var(--bg-raised);}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:9px;-webkit-overflow-scrolling:touch}
+  table{width:100%;border-collapse:collapse;font-size:12px;min-width:560px}
+  thead th{background:var(--panel2);color:var(--tx2);text-transform:uppercase;font-size:9.5px;
+    letter-spacing:.5px;font-weight:600;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);
+    white-space:nowrap;position:sticky;top:0}
+  th.n,td.n{text-align:right}
+  tbody td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  tbody td.m{font-family:'IBM Plex Mono',monospace;color:var(--tx2)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.hl{background:rgba(225,89,90,.07)}
+  tbody tr.tot{background:rgba(201,162,74,.06);font-weight:600}
+  tbody tr.sub{background:var(--panel2);font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--tx3)}
 
-  /* ---- PD Act cards ---- */
-  .case-card{
-    background:var(--bg-panel-alt); border:1px solid var(--hairline); border-radius:10px;
-    padding:14px 16px; margin-bottom:10px;
-  }
-  .case-card .top-row{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;}
-  .case-card .accused{font-family:'Rajdhani',sans-serif; font-weight:600; font-size:15.5px; color:var(--text-primary);}
-  .case-card .meta{font-size:11px; color:var(--text-dim); margin-top:2px;}
-  .case-card .ref{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--gold-dim); text-align:right;}
-  .case-card .cases-list{margin-top:9px; font-size:11.5px; color:var(--text-muted); line-height:1.6;}
+  .pill{display:inline-block;font-size:9.5px;font-family:'IBM Plex Mono',monospace;padding:2px 7px;
+    border-radius:20px;border:1px solid}
+  .pill.bad{color:var(--red);border-color:rgba(225,89,90,.4);background:rgba(225,89,90,.09)}
+  .pill.ok{color:var(--green);border-color:rgba(79,174,131,.4);background:rgba(79,174,131,.09)}
+  .pill.mid{color:var(--amber);border-color:rgba(217,164,65,.4);background:rgba(217,164,65,.09)}
+  .pill.nu{color:var(--tx2);border-color:var(--line2);background:var(--raised)}
 
-  footer{
-    text-align:center; padding:30px 16px 40px; font-size:10.5px; color:var(--text-dim);
-    font-family:'IBM Plex Mono',monospace; letter-spacing:0.3px;
-  }
+  .pick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+  select{background:var(--raised);border:1px solid var(--line2);border-radius:8px;color:var(--tx);
+    font-family:'IBM Plex Sans',sans-serif;font-size:14px;padding:0 12px;height:var(--tap);
+    min-width:210px;flex:1 1 220px;max-width:360px}
+  select:focus{outline:none;border-color:var(--goldD)}
+  .stepper{display:flex;gap:6px}
+  .stepper button{width:var(--tap);height:var(--tap);border-radius:8px;background:var(--raised);
+    border:1px solid var(--line2);color:var(--tx2);font-size:17px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center}
+  .stepper button:hover{border-color:var(--goldD);color:var(--gold)}
+
+  .rec{border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin-bottom:14px}
+  .rec-h{background:linear-gradient(180deg,rgba(201,162,74,.1),transparent),var(--panel2);
+    padding:15px 16px;border-bottom:1px solid var(--line2)}
+  .rec-h .nm{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;line-height:1.15}
+  .rec-h .mt{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--tx2);margin-top:3px}
+  .rec-b{padding:4px 16px 14px}
+  .rw{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:10px 0;
+    border-bottom:1px solid var(--line)}
+  .rw:last-child{border-bottom:none}
+  .rw .lb{font-size:12.5px;color:var(--tx2);line-height:1.4}
+  .rw .lb small{display:block;font-size:10px;color:var(--tx3);margin-top:1px}
+  .rw .vl{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;text-align:right;
+    white-space:nowrap;flex-shrink:0}
+  .grp{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:1.3px;color:var(--goldD);
+    text-transform:uppercase;padding:14px 0 2px}
+
+  .bar{height:6px;background:var(--raised);border-radius:3px;overflow:hidden;margin-top:5px;display:flex}
+  .bar i{height:100%;display:block}
+
+  .note{font-size:11.5px;color:var(--tx3);line-height:1.6;border-left:2px solid var(--line2);
+    padding-left:11px;margin-top:12px}
+  .note b{color:var(--tx2)}
+  .note.warn{border-left-color:var(--amber)}
+
+  footer{text-align:center;padding:26px 16px 44px;font-size:9.5px;color:var(--tx3);
+    font-family:'IBM Plex Mono',monospace;letter-spacing:.4px;line-height:1.8}
 </style>
 </head>
 <body>
 
-<div class="topbar">
+<header class="mast">
   <div class="seal">CTR</div>
-  <div class="topbar-title">
-    <span class="eyebrow">Office of the Superintendent of Police</span>
-    <h1>Chittoor District — Command Dashboard</h1>
+  <div>
+    <span class="sub">Superintendent of Police</span>
+    <h1>Chittoor District Dashboard</h1>
   </div>
-  <div class="topbar-meta">DATA AS ON 12·08·2026<br>DCRB CHITTOOR</div>
-</div>
+  <div class="clock">PRIVATE / INTERNAL<br>SOURCE: DCRB RETURNS</div>
+</header>
 
-<div class="tabnav" id="tabnav">
-  <div class="tab active" data-view="overview"><span class="n">01</span>Overview</div>
-  <div class="tab" data-view="sheeters"><span class="n">02</span>Rowdy &amp; Suspect Sheeters</div>
-  <div class="tab" data-view="warrants"><span class="n">03</span>Warrants (NBW)</div>
-  <div class="tab" data-view="pdact"><span class="n">04</span>PD Act</div>
-  <div class="tab" data-view="crime"><span class="n">05</span>Crime Trends</div>
-  <div class="tab" data-view="stations"><span class="n">06</span>All Stations</div>
-  <div class="tab" data-view="cctns"><span class="n">07</span>CCTNS Reconciliation</div>
-  <div class="tab" data-view="murders"><span class="n">08</span>Murders</div>
-  <div class="tab" data-view="accidents"><span class="n">09</span>Road Accidents</div>
-  <div class="tab" data-view="missing"><span class="n">10</span>Missing Persons</div>
-  <div class="tab" data-view="enforcement"><span class="n">11</span>Enforcement &amp; Petty Cases</div>
-  <div class="tab" data-view="property"><span class="n">12</span>Property Crime</div>
-</div>
+<nav id="nav">
+  <div class="nv on" data-v="sit">Situation</div>
+  <div class="nv" data-v="sta">Stations</div>
+  <div class="nv" data-v="pen">Pending</div>
+  <div class="nv" data-v="cri">Crime detail</div>
+  <div class="nv" data-v="pre">Preventive</div>
+</nav>
 
 <main>
 
-  <!-- ============ OVERVIEW ============ -->
-  <section class="view active" id="view-overview">
-    <div class="section-head">
-      <span class="eyebrow">District snapshot</span>
-      <h2>Overview</h2>
-      <p>Consolidated position across sheeters, warrants and cognizable crime for Chittoor district, as on 12 August 2026.</p>
-    </div>
+<!-- ==================== SITUATION ==================== -->
+<section class="view on" id="v-sit">
+  <div class="exc">
+    <h3>Needs attention</h3>
+    <div class="sub">Outliers in the current returns. Each is a specific question for a named station.</div>
+    <div class="ex"><div class="n">47<small>OF 82</small></div>
+      <div class="t"><b>47 of 82 grave UI cases are stuck for reasons within station control.</b>
+      <span>19 for want of clues, 8 awaiting arrest, the rest on witnesses, forensics and opinions. Only 35 sit with the court registry.</span></div></div>
+    <div class="ex"><div class="n">14<small>KUPPAM U</small></div>
+      <div class="t"><b>Kuppam Urban carries 14 grave UI cases — the district's heaviest, four dating to 2020–21.</b>
+      <span>V.Kota follows with 9. Together they hold 28% of district grave pendency.</span></div></div>
+    <div class="ex"><div class="n">56%<small>VACANT</small></div>
+      <div class="t"><b>Rompicherla PS is running at 12 of 27 sanctioned.</b>
+      <span>Vedurukuppam and Vijayapuram both at 50%. Puthalapattu, by contrast, is at full strength.</span></div></div>
+    <div class="ex"><div class="n">205<small>+109 NI</small></div>
+      <div class="t"><b>205 criminal warrants and 109 NI Act warrants pending district-wide.</b>
+      <span>Only 29 criminal and 1 NI Act executed this month. Palamaner alone accounts for 21 of the 29.</span></div></div>
+    <div class="ex"><div class="n">83%<small>GRAVE UI</small></div>
+      <div class="t"><b>51 of 61 grave crimes registered in 2026 are still under investigation.</b>
+      <span>Against 24 of 109 for 2025 and 10 of 112 for 2024 — the current year's grave caseload has barely moved to charge.</span></div></div>
+  </div>
 
-    <div class="kpi-grid">
-      <div class="kpi" style="--accent:#5B8CFF"><div class="label">Rowdy Sheeters</div><div class="value">621</div><div class="sub">1,153 cases · +2 opened (1–12 Aug)</div></div>
-      <div class="kpi" style="--accent:#C9A24A"><div class="label">Suspect Sheeters</div><div class="value">1,265</div><div class="sub">2,551 cases</div></div>
-      <div class="kpi" style="--accent:#E1595A"><div class="label">NBWs Pending</div><div class="value">209</div><div class="sub">of 227 total · 18 executed since 1 Aug</div></div>
-      <div class="kpi" style="--accent:#4FAE83"><div class="label">Cognizable Crime</div><div class="value">1,497</div><div class="sub">IPC/BNS, 2026 upto Jul (2025: 1,835)</div></div>
-      <div class="kpi" style="--accent:#D9A441"><div class="label">PD Act Cases</div><div class="value">5</div><div class="sub">3 in 2025 · 2 in 2026</div></div>
-      <div class="kpi" style="--accent:#5B8CFF"><div class="label">Property Recovery</div><div class="value">38%</div><div class="sub">₹1.20 Cr of ₹3.18 Cr lost (2026)</div></div>
-    </div>
+  <div class="hd"><span class="eb">District position</span><h2>Headline figures</h2></div>
+  <div class="kpis" id="kpis"></div>
 
-    <div class="grid-2" style="margin-top:20px;">
-      <div class="panel">
-        <div class="panel-title">Monthly Cognizable Crime — 2026</div>
-        <div class="panel-sub">Total IPC/BNS crime head incidents by month · August is partial (1–12 Aug)</div>
-        <div class="chart-wrap"><canvas id="chartMonthly"></canvas></div>
-      </div>
-      <div class="panel">
-        <div class="panel-title">Sheeters — Case Status</div>
-        <div class="panel-sub">Rowdy + Suspect sheeter cases by stage, district-wide</div>
-        <div class="chart-wrap"><canvas id="chartStatus"></canvas></div>
-      </div>
+  <div class="g2" style="margin-top:16px">
+    <div class="pn">
+      <div class="pt">Total cognizable crime <span class="ds">Jan–Jul, like-for-like</span></div>
+      <div class="ps">Matched seven-month window so the years are comparable. 2026 is down 18.9% on 2025.</div>
+      <div class="cw"><canvas id="cYoY"></canvas></div>
     </div>
+    <div class="pn">
+      <div class="pt">Case status, 2026 <span class="ds">to 31·07·2026</span></div>
+      <div class="ps">Where this year's 1,459 true IPC/BNS cases currently stand.</div>
+      <div class="cw"><canvas id="cStatus"></canvas></div>
+    </div>
+  </div>
 
-    <div class="panel">
-      <div class="panel-title">Year-on-Year Crime Comparison</div>
-      <div class="panel-sub">2024 vs 2025 vs 2026, cumulative up to July of each year</div>
-      <div class="chart-wrap tall"><canvas id="chartYoY"></canvas></div>
-    </div>
-  </section>
+  <div class="pn">
+    <div class="pt">Movement by crime head <span class="ds">Jan–Jul, 2025 → 2026</span></div>
+    <div class="ps">Sorted by size of change. Rises in red — those are the heads to ask about.</div>
+    <div class="tw"><table id="tMove"><thead><tr>
+      <th>Crime head</th><th class="n">2025</th><th class="n">2026</th><th class="n">Change</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
 
-  <!-- ============ SHEETERS ============ -->
-  <section class="view" id="view-sheeters">
-    <div class="section-head">
-      <span class="eyebrow">Habitual offenders</span>
-      <h2>Rowdy &amp; Suspect Sheeters</h2>
-      <p>Station-wise sheeter counts and case disposition, as on 12.08.2026.</p>
-    </div>
+  <div class="note warn">
+    <b>On dates:</b> panels carry their own as-on date because source returns close on different days.
+    Warrants are as on 19·08·2026; UI/PT from the CCTNS weekly to 16·08·2026; grave-case detail to
+    30·06·2026; strength to 20·08·2026; station-wise registration only to 07·04·2026.
+    Do not compare figures across different as-on dates.
+  </div>
+</section>
 
-    <div class="panel">
-      <div class="panel-title">Top 10 Stations by Sheeter Count</div>
-      <div class="panel-sub">Rowdy vs Suspect sheeters registered</div>
-      <div class="chart-wrap tall"><canvas id="chartTopStations"></canvas></div>
-    </div>
+<!-- ==================== STATIONS ==================== -->
+<section class="view" id="v-sta">
+  <div class="hd"><span class="eb">One station at a time</span><h2>Station record</h2>
+    <p>Everything held on a single station, on one screen — built for the conversation before an SHO review.</p></div>
 
-    <div class="section-head">
-      <span class="eyebrow">Recent register</span>
-      <h2 style="font-size:16px;">Sheeters Involved in New Cases — from 01.01.2026</h2>
-      <p>Individual sheeters named in fresh cases since 1 Jan 2026, as on 12.08.2026 (11 entries).</p>
+  <div class="pick">
+    <select id="selSta" aria-label="Choose station"></select>
+    <div class="stepper">
+      <button id="prevSta" aria-label="Previous station">‹</button>
+      <button id="nextSta" aria-label="Next station">›</button>
     </div>
-    <div class="table-scroll">
-      <table id="tblCases">
-        <thead><tr>
-          <th>Station</th><th>Name</th><th>Sheet</th><th>Cr. No. / Section</th><th>Date</th><th>Status</th><th>Stage</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
+  </div>
 
-  <!-- ============ WARRANTS ============ -->
-  <section class="view" id="view-warrants">
-    <div class="section-head">
-      <span class="eyebrow">Non-bailable warrants</span>
-      <h2>Pending NBWs</h2>
-      <p>209 warrants pending district-wide as on 12.08.2026, out of 227 total (14 received, 18 executed since 01.08.2026).</p>
-    </div>
+  <div id="recWrap"></div>
 
-    <div class="grid-2">
-      <div class="panel">
-        <div class="panel-title">Pending NBWs — Area-wise</div>
-        <div class="panel-sub">Within district / within state / out of state</div>
-        <div class="chart-wrap"><canvas id="chartNbwArea"></canvas></div>
-      </div>
-      <div class="panel">
-        <div class="panel-title">Pending NBWs — by Offence Head</div>
-        <div class="panel-sub">318 total pending warrants classified by crime head</div>
-        <div class="chart-wrap"><canvas id="chartNbwHead"></canvas></div>
-      </div>
-    </div>
+  <div class="pn">
+    <div class="pt">Where this station sits in the district</div>
+    <div class="ps">Total UI caseload per officer present. Selected station highlighted.</div>
+    <div class="cw xt"><canvas id="cRank"></canvas></div>
+  </div>
+</section>
 
-    <div class="panel">
-      <div class="panel-title">Stations with Highest Pending NBWs</div>
-      <div class="ledger" id="nbwLedger"></div>
-    </div>
-  </section>
+<!-- ==================== PENDING ==================== -->
+<section class="view" id="v-pen">
+  <div class="hd"><span class="eb">Everything still open</span><h2>Pending</h2>
+    <p>Investigations, warrants and detention proposals — previously spread across five separate returns.</p></div>
 
-  <!-- ============ PD ACT ============ -->
-  <section class="view" id="view-pdact">
-    <div class="section-head">
-      <span class="eyebrow">Preventive detention</span>
-      <h2>PD Act Proposals</h2>
-      <p>Cases proposed under the Preventive Detention Act, district collector references, 2025–2026.</p>
-    </div>
-    <div id="pdActList"></div>
-  </section>
+  <div class="pn">
+    <div class="pt">Grave UI — why each case is stuck <span class="ds">30·06·2026</span></div>
+    <div class="ps">82 grave cases under investigation. Only "charged, not yet taken on file" sits with the court; every other reason is the station's to answer for.</div>
+    <div class="cw"><canvas id="cGraveWhy"></canvas></div>
+    <div class="tw" style="margin-top:14px"><table id="tGraveSD"><thead><tr>
+      <th>Sub-division</th><th class="n">Grave UI</th><th class="n">Station-side</th><th class="n">With court</th><th class="n">Station share</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
 
-  <!-- ============ CRIME TRENDS ============ -->
-  <section class="view" id="view-crime">
-    <div class="section-head">
-      <span class="eyebrow">Crime heads</span>
-      <h2>Crime Trends</h2>
-      <p>Comparative reported cases by crime head — 2024, 2025 and 2026 (up to July of each year).</p>
-    </div>
-    <div class="table-scroll">
-      <table id="tblCrime">
-        <thead><tr>
-          <th>Crime Head</th><th class="num">2024</th><th class="num">2025</th><th class="num">2026</th><th class="num">YoY Δ</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="panel" style="margin-top:16px;">
-      <div class="panel-title">Property Crime — Value Lost vs Recovered</div>
-      <div class="panel-sub">In ₹ Lakh, by year up to July</div>
-      <div class="chart-wrap"><canvas id="chartProperty"></canvas></div>
-    </div>
-  </section>
+  <div class="pn">
+    <div class="pt">Grave UI by station <span class="ds">30·06·2026</span></div>
+    <div class="ps">Oldest pending year shown — a 2020 case still open is a different problem from a 2026 one.</div>
+    <div class="tw"><table id="tGravePS"><thead><tr>
+      <th>Station</th><th class="n">Grave UI</th><th>Years represented</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
 
-  <!-- ============ STATIONS ============ -->
-  <section class="view" id="view-stations">
-    <div class="section-head">
-      <span class="eyebrow">Full register</span>
-      <h2>All Stations</h2>
-      <p>Combined sheeter and warrant figures for every police station in the district.</p>
-    </div>
-    <input class="search-box" id="stationSearch" placeholder="Search station name…">
-    <div class="table-scroll">
-      <table id="tblStations">
-        <thead><tr>
-          <th>Police Station</th>
-          <th class="num">Rowdy</th><th class="num">Suspect</th>
-          <th class="num">NBW Pending</th><th class="num">Out of State</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
+  <div class="pn">
+    <div class="pt">Total UI caseload by station <span class="ds live">CCTNS · to 16·08·2026</span></div>
+    <div class="ps">CCTNS figure is the source of record. The station's own register is shown alongside — where they differ, CCTNS governs.</div>
+    <div class="tw"><table id="tUI"><thead><tr>
+      <th>Station</th><th class="n">Grave</th><th class="n">Non-grave</th><th class="n">PS register</th><th class="n">CCTNS</th><th class="n">Gap</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="note">District: <b>2,504 UI per CCTNS</b> against 2,513 per PS registers. Grave cases are
+      96 of that total — small in number, disproportionate in weight.</div>
+  </div>
 
-  <!-- ============ CCTNS ============ -->
-  <section class="view" id="view-cctns">
-    <div class="section-head">
-      <span class="eyebrow">Data reconciliation</span>
-      <h2>CCTNS vs Station Records</h2>
-      <p>Under-investigation (UI) and pending-trial (PT) case counts, station registers vs CCTNS, as on 12.08.2026.</p>
-    </div>
+  <div class="pn">
+    <div class="pt">Pending trial <span class="ds">to 16·08·2026</span></div>
+    <div class="ps">12,259 cases district-wide. Movement depends on court listing — tracked for awareness, not a station performance measure.</div>
+    <div class="tw"><table id="tPT"><thead><tr>
+      <th>Station</th><th class="n">PT pending</th><th class="n">Share of district</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
 
-    <div class="kpi-grid">
-      <div class="kpi" style="--accent:#5B8CFF"><div class="label">UI Cases (CCTNS)</div><div class="value">2,531</div><div class="sub">PS record: 2,500 · 61 mismatched entries</div></div>
-      <div class="kpi" style="--accent:#C9A24A"><div class="label">PT Cases (CCTNS)</div><div class="value">12,495</div><div class="sub">PS record: 12,476 · 61 mismatched entries</div></div>
-      <div class="kpi" style="--accent:#E1595A"><div class="label">Largest UI Gap</div><div class="value">11</div><div class="sub">Bangarupalem UPS &amp; V.Kota U PS</div></div>
-      <div class="kpi" style="--accent:#4FAE83"><div class="label">2026 New (UI+PT)</div><div class="value">1,780</div><div class="sub">1,211 UI + 569 PT filed in 2026</div></div>
-    </div>
+  <div class="pn">
+    <div class="pt">Warrants pending <span class="ds">19·08·2026</span></div>
+    <div class="ps">Criminal (BNS) and NI Act cheque-bounce warrants are separate pools with different execution mechanics — shown separately, never merged.</div>
+    <div class="tw"><table id="tNbw"><thead><tr>
+      <th>Station</th><th class="n">Criminal</th><th class="n">NI Act</th><th class="n">Total</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
 
-    <div class="grid-2" style="margin-top:20px;">
-      <div class="panel">
-        <div class="panel-title">UI / PT by Crime Head</div>
-        <div class="panel-sub">CCTNS-classified case load across all heads</div>
-        <div class="chart-wrap tall"><canvas id="chartCctnsHead"></canvas></div>
-      </div>
-      <div class="panel">
-        <div class="panel-title">Case Inflow by Year</div>
-        <div class="panel-sub">UI and PT cases as recorded in CCTNS, by year filed (2018 onward)</div>
-        <div class="chart-wrap tall"><canvas id="chartCctnsYear"></canvas></div>
-      </div>
+  <div class="g2e">
+    <div class="pn">
+      <div class="pt">Missing persons — untraced <span class="ds">12·08·2026</span></div>
+      <div class="ps">127 UI cases, 106 untraced. Case narratives held in the source return only.</div>
+      <div class="tw"><table id="tMiss"><thead><tr>
+        <th>Sub-division</th><th class="n">UI</th><th class="n">Untraced</th>
+      </tr></thead><tbody></tbody></table></div>
     </div>
+    <div class="pn">
+      <div class="pt">PD Act proposals <span class="ds">2025–26</span></div>
+      <div class="ps">Preventive detention proposals and current status.</div>
+      <div class="tw"><table id="tPD"><thead><tr>
+        <th>Yr</th><th>Station</th><th class="n">Cases</th><th>Status</th>
+      </tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+</section>
 
-    <div class="panel">
-      <div class="panel-title">Station vs CCTNS Mismatches</div>
-      <div class="panel-sub">Stations where local register and CCTNS counts differ, largest gap first</div>
-      <div class="table-scroll">
-        <table id="tblCctns">
-          <thead><tr>
-            <th>Station</th><th class="num">PS&nbsp;UI</th><th class="num">CCTNS&nbsp;UI</th><th class="num">UI&nbsp;Gap</th>
-            <th class="num">PS&nbsp;PT</th><th class="num">CCTNS&nbsp;PT</th><th class="num">PT&nbsp;Gap</th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
+<!-- ==================== CRIME DETAIL ==================== -->
+<section class="view" id="v-cri">
+  <div class="hd"><span class="eb">By offence type</span><h2>Crime detail</h2></div>
 
-  <!-- ============ MURDERS ============ -->
-  <section class="view" id="view-murders">
-    <div class="section-head">
-      <span class="eyebrow">Grave crime</span>
-      <h2>Murder Cases — 2024 to 2026</h2>
-      <p>Month-wise and station-wise murder statistics, as on 12.08.2026.</p>
-    </div>
-    <div class="kpi-grid">
-      <div class="kpi" style="--accent:#5B8CFF"><div class="label">2024 Total</div><div class="value">22</div><div class="sub">1 acquittal · 21 PT</div></div>
-      <div class="kpi" style="--accent:#C9A24A"><div class="label">2025 Total</div><div class="value">22</div><div class="sub">1 transferred · 20 PT</div></div>
-      <div class="kpi" style="--accent:#E1595A"><div class="label">2026 (upto 12 Aug)</div><div class="value">21</div><div class="sub">19 UI · 2 PT · 6 charged</div></div>
-      <div class="kpi" style="--accent:#4FAE83"><div class="label">3-Year Total</div><div class="value">65</div><div class="sub">20 UI · 43 PT · 7 charged</div></div>
-    </div>
-    <div class="grid-2" style="margin-top:20px;">
-      <div class="panel">
-        <div class="panel-title">Month-wise Murders</div>
-        <div class="panel-sub">2024 vs 2025 vs 2026</div>
-        <div class="chart-wrap tall"><canvas id="chartMurderMonth"></canvas></div>
-      </div>
-      <div class="panel">
-        <div class="panel-title">Top Stations by Murder Count (2026)</div>
-        <div class="panel-sub">As on 12.08.2026</div>
-        <div class="chart-wrap tall"><canvas id="chartMurderPS"></canvas></div>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">Cases Under Investigation</div>
-      <div class="panel-sub">Murder cases currently UI, with reason for pendency</div>
-      <div class="table-scroll">
-        <table id="tblMurderUI"><thead><tr><th>Station</th><th>Cr.No./Year</th><th>Section</th><th>Date of Report</th><th>Reason for UI</th></tr></thead><tbody></tbody></table>
-      </div>
-    </div>
-  </section>
+  <div class="pn">
+    <div class="pt">All heads — reported, charged, disposed <span class="ds">to 31·07·2026</span></div>
+    <div class="ps">Detection is (true − undetected) ÷ true. UI% is the share of true cases still under investigation.</div>
+    <div class="tw"><table id="tAll"><thead><tr>
+      <th>Crime head</th><th class="n">Rep</th><th class="n">True</th><th class="n">Charged</th>
+      <th class="n">Conv</th><th class="n">Acq</th><th class="n">PT</th><th class="n">UI</th><th class="n">UI%</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
 
-  <!-- ============ ROAD ACCIDENTS ============ -->
-  <section class="view" id="view-accidents">
-    <div class="section-head">
-      <span class="eyebrow">Traffic safety</span>
-      <h2>Road Accidents</h2>
-      <p>Month-wise accident, fatality and injury statistics, 2024–2026.</p>
-    </div>
-    <div class="kpi-grid">
-      <div class="kpi" style="--accent:#5B8CFF"><div class="label">2024 Total</div><div class="value">672</div><div class="sub">330 fatal · 365 deaths</div></div>
-      <div class="kpi" style="--accent:#C9A24A"><div class="label">2025 Total</div><div class="value">708</div><div class="sub">336 fatal · 364 deaths</div></div>
-      <div class="kpi" style="--accent:#E1595A"><div class="label">2026 (upto 4 Aug)</div><div class="value">371</div><div class="sub">202 fatal · 224 deaths · 169 non-fatal</div></div>
-      <div class="kpi" style="--accent:#4FAE83"><div class="label">2026 Injured</div><div class="value">399</div><div class="sub">upto 4 Aug 2026</div></div>
-    </div>
-    <div class="panel" style="margin-top:20px;">
-      <div class="panel-title">Monthly Accidents — 2024 / 2025 / 2026</div>
-      <div class="panel-sub">Total reported accidents per month</div>
-      <div class="chart-wrap tall"><canvas id="chartAccMonth"></canvas></div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">Fatal vs Non-Fatal, 2026 (station-wise, Jan–Aug)</div>
-      <div class="chart-wrap tall" style="height:420px;"><canvas id="chartAccPS"></canvas></div>
-    </div>
-  </section>
+  <div class="pn">
+    <div class="pt">Grave crime — three-year position <span class="ds">to 31·07·2026</span></div>
+    <div class="ps">Grave heads only. The UI column is the concern: 2026's grave caseload has barely moved to charge.</div>
+    <div class="tw"><table id="tGraveCmp"><thead><tr>
+      <th>Head</th><th class="n">2024 rep</th><th class="n">2024 UI</th><th class="n">2025 rep</th>
+      <th class="n">2025 UI</th><th class="n">2026 rep</th><th class="n">2026 UI</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
 
-  <!-- ============ MISSING PERSONS ============ -->
-  <section class="view" id="view-missing">
-    <div class="section-head">
-      <span class="eyebrow">Person tracing</span>
-      <h2>Missing Persons</h2>
-      <p>Head-wise and sub-division-wise missing case statistics, as on 12.08.2026. Individual case narratives are excluded from this view.</p>
+  <div class="g2e">
+    <div class="pn">
+      <div class="pt">Crime against women <span class="ds">Jan–Jul</span></div>
+      <div class="ps">Total down 27% — 401 to 291. Dowry death and POCSO are the two heads that rose.</div>
+      <div class="cw t"><canvas id="cWomen"></canvas></div>
     </div>
-    <div class="kpi-grid">
-      <div class="kpi" style="--accent:#5B8CFF"><div class="label">2026 Reported</div><div class="value">390</div><div class="sub">355 traced · 35 untraced</div></div>
-      <div class="kpi" style="--accent:#C9A24A"><div class="label">UI Cases</div><div class="value">127</div><div class="sub">as on 12.08.2026</div></div>
-      <div class="kpi" style="--accent:#E1595A"><div class="label">Untraced (UI)</div><div class="value">106</div><div class="sub">of 127 UI cases</div></div>
-      <div class="kpi" style="--accent:#4FAE83"><div class="label">Traced (UI)</div><div class="value">21</div><div class="sub">referred as AD</div></div>
+    <div class="pn">
+      <div class="pt">Children &amp; SC/ST <span class="ds">Jan–Jun</span></div>
+      <div class="ps">Both down year on year. Small absolute numbers — read the count, not the percentage.</div>
+      <div class="cw t"><canvas id="cChildSc"></canvas></div>
     </div>
-    <div class="grid-2" style="margin-top:20px;">
-      <div class="panel">
-        <div class="panel-title">Reported vs Traced — 2024/2025/2026</div>
-        <div class="panel-sub">All categories combined</div>
-        <div class="chart-wrap"><canvas id="chartMissingYear"></canvas></div>
-      </div>
-      <div class="panel">
-        <div class="panel-title">Untraced UI Cases by Category</div>
-        <div class="panel-sub">Man / Woman / Boy / Girl, as on 12.08.2026</div>
-        <div class="chart-wrap"><canvas id="chartMissingCat"></canvas></div>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">Sub-Division-wise UI Cases</div>
-      <div class="ledger" id="missingLedger"></div>
-    </div>
-  </section>
+  </div>
 
-  <!-- ============ ENFORCEMENT & PETTY ============ -->
-  <section class="view" id="view-enforcement">
-    <div class="section-head">
-      <span class="eyebrow">SLL &amp; regulatory</span>
-      <h2>Enforcement &amp; Petty Cases</h2>
-      <p>Special &amp; Local Laws enforcement (NDPS, Excise, Arms etc.) and MV Act / petty case DSRs.</p>
+  <div class="g2e">
+    <div class="pn">
+      <div class="pt">Murders by month <span class="ds">to 12·08·2026</span></div>
+      <div class="ps">2024: 22 · 2025: 22 · 2026 to date: 21 — running slightly ahead of both prior years.</div>
+      <div class="cw"><canvas id="cMur"></canvas></div>
     </div>
-    <div class="kpi-grid">
-      <div class="kpi" style="--accent:#5B8CFF"><div class="label">Aug 2026 SLL Cases</div><div class="value">13</div><div class="sub">₹2,00,119 worth · vs 73 in Aug 2025</div></div>
-      <div class="kpi" style="--accent:#C9A24A"><div class="label">July 2026 SLL Cases</div><div class="value">45</div><div class="sub">₹14,92,207 worth</div></div>
-      <div class="kpi" style="--accent:#E1595A"><div class="label">June 2026 MV Act Cases</div><div class="value">5,856</div><div class="sub">₹20,33,190 collected</div></div>
-      <div class="kpi" style="--accent:#4FAE83"><div class="label">June 2026 Other Petty</div><div class="value">936</div><div class="sub">drink/driving, nuisance, obstruction etc.</div></div>
+    <div class="pn">
+      <div class="pt">Road accidents by month <span class="ds warn">to 04·08·2026</span></div>
+      <div class="ps">Fatal share has risen: 49% in 2024, 47% in 2025, 54% so far in 2026.</div>
+      <div class="cw"><canvas id="cAcc"></canvas></div>
     </div>
-    <div class="panel" style="margin-top:20px;">
-      <div class="panel-title">SLL Enforcement Value — June / July / August 2026</div>
-      <div class="panel-sub">Total worth (₹) of NDPS, Excise, Arms &amp; other-act seizures by month</div>
-      <div class="chart-wrap"><canvas id="chartSLL"></canvas></div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">June 2026 Petty Cases by Sub-Division</div>
-      <div class="panel-sub">MV Act cases and collections</div>
-      <div class="chart-wrap"><canvas id="chartPetty"></canvas></div>
-    </div>
-  </section>
+  </div>
 
-  <!-- ============ PROPERTY CRIME ============ -->
-  <section class="view" id="view-property">
-    <div class="section-head">
-      <span class="eyebrow">Detection &amp; recovery</span>
-      <h2>Property Crime</h2>
-      <p>Station-wise property case detection and recovery performance, 2024–2026 (as on 11.08.2026).</p>
+  <div class="pn">
+    <div class="pt">Property crime by station <span class="ds">to 12·08·2026</span></div>
+    <div class="ps">Stations with fewer than 4 cases are shown but not rated — the base is too small to read as a rate.</div>
+    <div class="tw"><table id="tProp"><thead><tr>
+      <th>Station</th><th class="n">Reported</th><th class="n">Detected</th><th class="n">Lost</th>
+      <th class="n">Recovered</th><th class="n">Recovery</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="note">District recovery has fallen sharply: <b>48% in 2024, 77% in 2025, 38% in 2026</b>.
+      2025 was lifted by a small number of very large recoveries.</div>
+  </div>
+</section>
+
+<!-- ==================== PREVENTIVE ==================== -->
+<section class="view" id="v-pre">
+  <div class="hd"><span class="eb">Proactive work &amp; resourcing</span><h2>Preventive &amp; strength</h2></div>
+
+  <div class="pn">
+    <div class="pt">Station strength — sanctioned vs present <span class="ds">20·08·2026</span></div>
+    <div class="ps">Sorted by vacancy. This is the context every other number on this dashboard should be read against.</div>
+    <div class="cw xt"><canvas id="cStrength"></canvas></div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">Strength detail by rank <span class="ds">20·08·2026</span></div>
+    <div class="ps">Investigating ranks (SI, ASI, HC) matter more for case pendency than PC numbers.</div>
+    <div class="tw"><table id="tStrength"><thead><tr>
+      <th>Station</th><th class="n">Sanc</th><th class="n">Present</th><th class="n">Vac %</th>
+      <th class="n">SI</th><th class="n">ASI</th><th class="n">HC</th><th class="n">PC</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="note">District armed reserve: <b>340 present of 486 sanctioned</b> (146 vacant), plus 8 attached
+      from Annamayya and Nandyal.</div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">Sheeters by station <span class="ds">12·08·2026</span></div>
+    <div class="ps">Rowdy and suspect sheeters on the books.</div>
+    <div class="tw"><table id="tSheet"><thead><tr>
+      <th>Station</th><th class="n">Rowdy</th><th class="n">Suspect</th><th class="n">Rowdy cases</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="note">Sheeter counts are <b>not</b> a performance measure on their own — a high count can mean
+      active preventive policing or a high-crime jurisdiction, and the two are indistinguishable from this figure alone.
+      The conviction and acquittal columns previously shown here described sheeter-linked case history,
+      not station pendency, and have been moved out of the pendency measures entirely.</div>
+  </div>
+
+  <div class="g2e">
+    <div class="pn">
+      <div class="pt">Enforcement — MV Act <span class="ds warn">Sub-division only, Jun 2026</span></div>
+      <div class="ps">Station-wise petty-case figures could not be read reliably from the source return — its merged column layout does not extract cleanly and station rows did not reconcile against printed sub-division totals. Shown at sub-division level, which does reconcile.</div>
+      <div class="tw"><table id="tEnf"><thead><tr>
+        <th>Sub-division</th><th class="n">Cases</th><th class="n">Amount ₹</th>
+      </tr></thead><tbody></tbody></table></div>
     </div>
-    <div class="panel">
-      <div class="panel-title">Detection % vs Recovery % — Top Stations (2026)</div>
-      <div class="panel-sub">Sorted by cases reported, 2026 (as on 11.08.2026)</div>
-      <div class="chart-wrap tall" style="height:380px;"><canvas id="chartPropertyPS"></canvas></div>
+    <div class="pn">
+      <div class="pt">Weekly bindovers <span class="ds">06·08 – 12·08·2026</span></div>
+      <div class="ps">Sub-division abstract. Individual records contain personal identifiers and stay in the source return.</div>
+      <div class="tw"><table id="tBind"><thead><tr>
+        <th>Sub-division</th><th class="n">Cases</th><th class="n">Proc.</th><th class="n">Persons</th>
+      </tr></thead><tbody></tbody></table></div>
     </div>
-    <div class="panel">
-      <div class="panel-title">Station Register</div>
-      <div class="table-scroll">
-        <table id="tblProperty"><thead><tr>
-          <th>Station</th><th class="num">Reported</th><th class="num">UI</th>
-          <th class="num">Property Lost (₹)</th><th class="num">Recovered (₹)</th><th class="num">Detection %</th><th class="num">Recovery %</th>
-        </tr></thead><tbody></tbody></table>
-      </div>
-    </div>
-  </section>
+  </div>
+
+  <div class="note">
+    <b>Not yet in this dashboard:</b> cyber crime and financial fraud — a station-wise return is being
+    prepared. Arrest figures are also absent; cases registered without arrest data is half the picture
+    for any crime head.
+  </div>
+</section>
 
 </main>
 
-<footer>SP CHITTOOR · INTERNAL SITUATIONAL DASHBOARD · SOURCE: DCRB CHITTOOR RETURNS · GENERATED FROM DEPARTMENTAL RECORDS</footer>
+<footer>
+  CHITTOOR DISTRICT · PRIVATE WORKING DASHBOARD<br>
+  BUILT FROM DCRB RETURNS · EACH PANEL CARRIES ITS OWN AS-ON DATE
+</footer>
 
 <script>
-Chart.defaults.font.family = "'IBM Plex Sans', sans-serif";
-Chart.defaults.color = '#8C97B8';
-Chart.defaults.borderColor = '#242E48';
+Chart.defaults.font.family="'IBM Plex Sans',sans-serif";
+Chart.defaults.color='#8C97B8';Chart.defaults.borderColor='#242E48';
+const C={blue:'#5B8CFF',gold:'#C9A24A',red:'#E1595A',green:'#4FAE83',amber:'#D9A441',
+         purple:'#8B7BD8',dim:'#3A466E',line:'#1A2238'};
+const fm=n=>n==null?'—':n.toLocaleString('en-IN');
+const rup=n=>n==null?'—':(n>=100000?'₹'+(n/100000).toFixed(1)+'L':'₹'+n.toLocaleString('en-IN'));
+const pct=(a,b)=>b?Math.round(a/b*100):null;
 
-const COLORS = { blue:'#5B8CFF', gold:'#C9A24A', red:'#E1595A', green:'#4FAE83', amber:'#D9A441', muted:'#5E6885' };
+/* ============================================================
+   STATION MASTER
+   reg    : IPC/BNS registered 1 Jan – 7 Apr 2026
+   str    : [sancSI,sancASI,sancHC,sancPC,presSI,presASI,presHC,presPC, sancCI,presCI]
+   ui     : [grave, nonGrave, psTotal, cctnsTotal]      to 16-08-2026
+   pt     : pending trial                                to 16-08-2026
+   nbw    : [criminal, niAct]                            as on 19-08-2026
+   graveUI: count as on 30-06-2026
+   gYears : years those grave cases date from
+   rowdy  : [count, cases]  susp:[count, cases]          12-08-2026
+   prop   : [reported, undetected, lost, recovered]      to 12-08-2026
+   ============================================================ */
+const S={
+ "Chittoor I Town PS":{sd:"Chittoor",reg:26,str:[2,6,12,49,3,4,13,37,1,1],ui:[5,119,140,142],pt:436,nbw:[12,24],graveUI:5,gYears:"2023–26",rowdy:[18,36],susp:[51,114],prop:[17,11,2370599,1453599]},
+ "Chittoor II Town PS":{sd:"Chittoor",reg:19,str:[2,4,8,42,0,4,9,31,1,0],ui:[3,72,86,91],pt:448,nbw:[5,7],graveUI:3,gYears:"2023–26",rowdy:[36,70],susp:[120,355],prop:[12,7,1731400,995000]},
+ "G.D.Nellore UPS":{sd:"Chittoor",reg:33,str:[0,3,6,18,0,2,8,19,1,1],ui:[0,90,102,102],pt:539,nbw:[3,0],graveUI:1,gYears:"2026",rowdy:[12,28],susp:[45,90],prop:[9,7,678000,40000]},
+ "Puthalapattu UPS":{sd:"Chittoor",reg:23,str:[0,3,6,19,0,3,6,19,1,1],ui:[4,78,94,94],pt:428,nbw:[2,1],graveUI:2,gYears:"2023, 2026",rowdy:[9,12],susp:[47,54],prop:[11,8,1601000,202000]},
+ "Chittoor Taluk PS":{sd:"Chittoor",reg:20,str:[2,4,7,29,1,3,7,28,0,0],ui:[5,61,75,76],pt:264,nbw:[14,0],graveUI:6,gYears:"2024–26",rowdy:[14,30],susp:[38,59],prop:[4,3,699170,459170]},
+ "N.R.Pet PS":{sd:"Chittoor",reg:9,str:[1,2,5,18,1,1,5,15,0,0],ui:[3,25,33,33],pt:148,nbw:[2,0],graveUI:2,gYears:"2025–26",rowdy:[7,16],susp:[11,37],prop:[1,0,6000,6000]},
+ "Penumur PS":{sd:"Chittoor",reg:14,str:[1,2,5,19,1,2,5,12,0,0],ui:[2,25,28,28],pt:420,nbw:[4,0],graveUI:1,gYears:"2026",rowdy:[15,51],susp:[36,106],prop:[6,3,236500,30500]},
+ "Yadamari PS":{sd:"Chittoor",reg:12,str:[1,2,6,19,1,1,7,17,0,0],ui:[2,59,64,64],pt:378,nbw:[3,0],graveUI:2,gYears:"2025",rowdy:[26,59],susp:[39,52],prop:[4,1,164000,32000]},
+ "Gudipala PS":{sd:"Chittoor",reg:16,str:[1,3,6,18,1,3,6,17,0,0],ui:[3,59,71,69],pt:526,nbw:[3,0],graveUI:4,gYears:"2023–26",rowdy:[17,53],susp:[51,147],prop:[4,1,255000,195000]},
+ "Thavanampalle PS":{sd:"Chittoor",reg:15,str:[1,2,5,18,1,2,5,8,0,0],ui:[2,34,42,43],pt:320,nbw:[2,2],graveUI:3,gYears:"2025–26",rowdy:[33,54],susp:[28,36],prop:null},
+ "Kanipakam PS":{sd:"Chittoor",reg:14,str:[1,3,6,29,1,2,7,24,0,0],ui:[0,20,24,28],pt:160,nbw:[3,0],graveUI:0,gYears:"—",rowdy:[4,12],susp:[11,16],prop:[4,1,295000,55000]},
+ "Kallur PS":{sd:"Chittoor",reg:18,str:[1,3,5,19,1,3,6,12,0,0],ui:[2,36,44,49],pt:310,nbw:[1,2],graveUI:1,gYears:"2024",rowdy:[5,9],susp:[15,28],prop:[10,6,4482700,154000]},
+ "Irala PS":{sd:"Chittoor",reg:13,str:[1,2,5,18,1,1,6,11,0,0],ui:[0,50,56,56],pt:246,nbw:[0,0],graveUI:0,gYears:"—",rowdy:[9,9],susp:[39,40],prop:[1,0,650000,650000]},
+ "Rompicherla PS":{sd:"Chittoor",reg:13,str:[1,2,6,18,1,0,4,7,0,0],ui:[0,37,43,43],pt:210,nbw:[5,1],graveUI:0,gYears:"—",rowdy:[32,36],susp:[43,84],prop:[6,4,210000,63000]},
+ "Palamaner UPS":{sd:"Palamaner",reg:48,str:[2,4,8,42,2,3,8,33,1,1],ui:[1,84,91,94],pt:768,nbw:[14,8],graveUI:1,gYears:"2025",rowdy:[34,91],susp:[82,239],prop:[14,6,2113000,905000]},
+ "Bangarupalem UPS":{sd:"Palamaner",reg:33,str:[1,3,6,20,1,2,6,12,1,1],ui:[7,66,81,80],pt:674,nbw:[6,1],graveUI:6,gYears:"2021–26",rowdy:[38,53],susp:[74,104],prop:[13,2,1933500,1786000]},
+ "Gangavaram UPS":{sd:"Palamaner",reg:35,str:[0,3,6,18,1,4,4,16,1,1],ui:[5,56,71,71],pt:679,nbw:[3,16],graveUI:5,gYears:"2024–26",rowdy:[22,34],susp:[66,95],prop:[9,5,3976000,2746000]},
+ "Baireddypalli PS":{sd:"Palamaner",reg:14,str:[1,2,5,18,1,2,6,12,0,0],ui:[1,47,58,61],pt:422,nbw:[10,2],graveUI:0,gYears:"—",rowdy:[20,27],susp:[22,45],prop:[3,2,502500,14000]},
+ "Panjani PS":{sd:"Palamaner",reg:23,str:[1,2,6,17,1,2,5,16,0,0],ui:[5,31,41,42],pt:364,nbw:[15,0],graveUI:4,gYears:"2024–26",rowdy:[19,23],susp:[37,94],prop:[7,2,387000,204000]},
+ "V.Kota UPS":{sd:"Palamaner",reg:41,str:[1,3,6,20,1,1,5,20,1,1],ui:[11,144,171,178],pt:652,nbw:[12,14],graveUI:9,gYears:"2024–26",rowdy:[18,54],susp:[33,43],prop:[11,7,1709500,600500]},
+ "Kuppam Urban PS":{sd:"Kuppam",reg:41,str:[2,4,7,29,2,1,6,23,1,1],ui:[15,195,233,226],pt:729,nbw:[16,11],graveUI:14,gYears:"2020–26",rowdy:[67,124],susp:[72,88],prop:[4,3,663200,0]},
+ "Rama Kuppam PS":{sd:"Kuppam",reg:6,str:[1,2,6,18,1,1,3,13,0,0],ui:[2,34,45,45],pt:448,nbw:[1,0],graveUI:1,gYears:"2023",rowdy:[41,77],susp:[35,64],prop:[2,2,94000,0]},
+ "Gudupalli PS":{sd:"Kuppam",reg:15,str:[1,2,5,18,1,0,4,17,0,0],ui:[4,15,21,22],pt:316,nbw:[1,1],graveUI:2,gYears:"2023, 2026",rowdy:[16,19],susp:[18,26],prop:[2,2,3990000,0]},
+ "Rallabudugur PS":{sd:"Kuppam",reg:14,str:[1,2,5,19,1,2,4,14,0,0],ui:[2,39,47,45],pt:495,nbw:[11,0],graveUI:0,gYears:"—",rowdy:[27,59],susp:[21,45],prop:[5,4,777000,410000]},
+ "Nagari UPS":{sd:"Nagari",reg:16,str:[2,4,7,27,2,1,7,17,1,1],ui:[1,82,100,99],pt:455,nbw:[11,7],graveUI:1,gYears:"2025",rowdy:[30,48],susp:[122,242],prop:[11,7,917297,250000]},
+ "Vijayapuram PS":{sd:"Nagari",reg:9,str:[1,2,5,18,1,0,3,9,0,0],ui:[1,107,112,101],pt:148,nbw:[10,0],graveUI:0,gYears:"—",rowdy:[14,15],susp:[9,12],prop:[4,3,374000,220000]},
+ "Nindra PS":{sd:"Nagari",reg:10,str:[1,2,5,18,1,2,3,10,0,0],ui:[1,55,65,64],pt:121,nbw:[2,3],graveUI:1,gYears:"2024",rowdy:[10,19],susp:[4,4],prop:[4,4,170000,0]},
+ "K.Nagar PS":{sd:"Nagari",reg:18,str:[1,3,6,18,1,0,3,11,0,0],ui:[1,77,84,82],pt:231,nbw:[6,1],graveUI:1,gYears:"2025",rowdy:[7,7],susp:[21,35],prop:null},
+ "Vedurukuppam PS":{sd:"Nagari",reg:25,str:[1,2,5,18,1,0,2,10,0,0],ui:[6,161,179,173],pt:226,nbw:[3,0],graveUI:5,gYears:"2025–26",rowdy:[11,13],susp:[26,35],prop:null},
+ "S.R.Puram PS":{sd:"Nagari",reg:23,str:[1,2,5,19,1,3,5,12,0,0],ui:[2,128,136,128],pt:168,nbw:[13,8],graveUI:1,gYears:"2025",rowdy:[10,15],susp:[23,26],prop:null},
+ "Palasamudram PS":{sd:"Nagari",reg:8,str:[1,2,5,17,1,1,5,10,0,0],ui:[1,23,25,24],pt:272,nbw:[3,0],graveUI:1,gYears:"2025",rowdy:[0,0],susp:[26,136],prop:null}
+};
+const NAMES=Object.keys(S);
+const sancTot=s=>s.str[0]+s.str[1]+s.str[2]+s.str[3]+s.str[8];
+const presTot=s=>s.str[4]+s.str[5]+s.str[6]+s.str[7]+s.str[9];
 
-/* ---------- DATA ---------- */
-const rowdyData = [
-["Chittoor I Town PS",18,36,1,7,0,6,0,7,15,0,0],
-["Chittoor II Town PS",36,70,1,6,1,21,1,9,6,0,24],
-["Chittoor Taluk PS",14,30,0,10,0,17,0,0,3,0,0],
-["N.R.Pet PS",7,16,0,2,0,11,3,0,0,0,0],
-["Penumur PS",15,51,0,8,0,41,0,2,0,0,0],
-["G.D.Nellore UPS",12,28,0,0,0,28,0,0,0,0,0],
-["Yadamari PS",26,59,4,15,0,32,0,0,0,0,8],
-["Gudipala PS",17,53,2,26,0,22,0,3,0,0,0],
-["Thavanampalli PS",33,54,0,20,0,24,0,7,3,0,0],
-["Kanipakam PS",4,12,0,2,0,6,0,0,4,0,0],
-["Irala PS",9,9,0,6,0,1,0,0,2,0,0],
-["Kallur PS",5,9,0,4,0,1,3,0,1,0,0],
-["Rompicherla PS",32,36,0,20,0,12,0,1,3,0,0],
-["Puthalapattu UPS",9,12,0,4,0,6,0,0,1,0,1],
-["Palamaner UPS",34,91,2,37,0,37,2,0,6,0,7],
-["Bangarupalem UPS",38,53,0,6,0,26,6,0,5,0,10],
-["V.Kota UPS",18,54,17,22,0,14,0,1,0,0,0],
-["Gangavaram UPS",22,34,1,10,0,13,0,2,2,0,6],
-["Baireddypalli PS",20,27,0,5,0,11,0,2,9,0,0],
-["Panjani PS",19,23,1,13,0,9,0,0,0,0,0],
-["Kuppam Urban PS",67,124,2,49,0,73,0,0,0,0,0],
-["Rama Kuppam PS",41,77,5,29,0,43,0,0,0,0,0],
-["Gudupalli PS",16,19,0,18,0,0,0,0,1,0,0],
-["Rallabudugur PS",27,59,2,38,0,7,0,0,0,0,11],
-["K.Nagar PS",7,7,0,1,0,6,0,0,0,0,0],
-["Vedurukuppam PS",11,13,0,0,0,8,0,0,2,0,3],
-["S.R.Puram PS",10,15,0,5,0,8,0,0,2,0,0],
-["Palasamudram PS",0,0,0,0,0,0,0,0,0,0,0],
-["Nagari UPS",30,48,0,14,0,20,2,11,1,0,0],
-["Vijayapuram PS",14,15,1,13,0,0,0,0,1,0,0],
-["Nindra PS",10,19,0,4,0,12,2,0,1,0,0]
-]; // ps, count, cases, UI, PT, abated, acquital, bindover, compromise, conviction, MF, otherPS
+/* district series */
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug*"];
+const MUR={"2024":[1,2,4,1,1,0,3,3],"2025":[2,1,0,3,1,5,2,3],"2026":[2,2,4,5,0,2,4,2]};
+const ACC={"2024":[47,50,61,61,56,58,51,61],"2025":[50,52,56,67,51,66,60,60],"2026":[55,39,41,44,57,68,61,6]};
 
-const suspectData = [
-["Chittoor I Town PS",51,114,0,23,0,1,0,0,2,0,88],
-["Chittoor II Town PS",120,355,7,37,0,32,0,0,8,0,271],
-["Chittoor Taluk PS",38,59,0,12,0,45,0,0,2,0,0],
-["N.R.Pet PS",11,37,0,6,0,14,0,0,0,0,17],
-["Penumur PS",36,106,0,35,0,71,0,0,0,0,0],
-["G.D.Nellore UPS",45,90,2,9,0,79,0,0,0,0,0],
-["Yadamari PS",39,52,0,19,0,30,0,0,0,0,3],
-["Gudipala PS",51,147,10,111,0,22,0,4,0,0,0],
-["Thavanampalli PS",28,36,0,7,0,23,0,0,6,0,0],
-["Kanipakam PS",11,16,0,4,0,7,0,0,4,0,0],
-["Irala PS",39,40,0,16,0,19,0,0,5,0,0],
-["Kallur PS",15,28,0,7,0,2,0,0,19,0,0],
-["Rompicherla PS",43,84,0,39,0,28,0,6,11,0,0],
-["Puthalapattu UPS",47,54,12,0,0,17,0,0,3,0,22],
-["Palamaner UPS",82,239,0,24,0,117,9,25,26,1,37],
-["Bangarupalem UPS",74,104,0,11,0,62,0,0,13,0,18],
-["V.Kota UPS",33,43,5,11,0,27,0,0,0,0,0],
-["Gangavaram UPS",66,95,0,24,0,68,0,0,0,0,3],
-["Baireddypalli PS",22,45,0,10,0,18,0,0,2,0,15],
-["Panjani PS",37,94,3,10,0,74,0,0,0,0,7],
-["Kuppam Urban PS",72,88,0,11,0,77,0,0,0,0,0],
-["Rama Kuppam PS",35,64,0,28,0,36,0,0,0,0,0],
-["Gudupalli PS",18,26,0,3,0,23,0,0,0,0,0],
-["Rallabudugur PS",21,45,0,6,0,28,0,0,0,0,11],
-["K.Nagar PS",21,35,0,4,0,31,0,0,0,0,0],
-["Vedurukuppam PS",26,35,0,4,0,30,0,0,1,0,0],
-["S.R.Puram PS",23,26,0,2,0,17,0,0,7,0,0],
-["Palasamudram PS",26,136,0,77,0,51,0,7,1,0,0],
-["Nagari UPS",122,242,4,91,0,93,0,0,54,0,0],
-["Vijayapuram PS",9,12,0,0,0,0,0,0,12,0,0],
-["Nindra PS",4,4,0,3,0,1,0,0,0,0,0]
-];
+/* Jan–Jul matched comparison (meeting return) */
+const JJ=[["Murder for gain",1,1],["Dacoity",1,0],["Robbery",3,1],["HB by day",15,16],
+["HB by night",50,61],["Theft",183,117],["Murder",14,19],["Culpable homicide",4,5],
+["Rioting",4,2],["Kidnapping",13,9],["Rape",25,24],["Grievous hurt",52,36],
+["Simple hurt",357,274],["Cheating",77,62],["Criminal breach of trust",14,19],
+["Counterfeiting",2,0],["Attempt to murder",41,22],["Fatal accidents",188,203],
+["Non-fatal accidents",221,167],["Other IPC",577,456]];
+const JJ_TOT=[1842,1494];
 
-const nbwData = [
-["Chittoor I Town",12,0,12,0,12,0,3,9],
-["Chittoor II Town",10,0,10,0,10,2,1,7],
-["G.D.Nellore UPS",3,0,3,0,3,1,1,1],
-["Chittoor Tq P.S",14,1,15,1,14,5,1,8],
-["N.R.Pet PS",2,0,2,0,2,1,0,1],
-["Penumur PS",4,0,4,0,4,2,2,0],
-["Yadamari PS",3,0,3,0,3,1,0,2],
-["Gudipala PS",3,0,3,0,3,0,1,2],
-["Thavanampalli PS",2,0,2,0,2,1,1,0],
-["Kanipakam",3,0,3,0,3,1,0,2],
-["Puthalapattu UPS",2,0,2,0,2,0,1,1],
-["Kallur PS",1,0,1,0,1,0,0,1],
-["Rompicherla PS",5,0,5,0,5,2,2,1],
-["Irala PS",0,0,0,0,0,0,0,0],
-["CCS Chittoor",2,0,2,0,2,0,1,1],
-["Chittoor WPS",3,0,3,0,3,0,1,2],
-["Traffic PS Chittoor",3,0,3,0,3,1,1,1],
-["Palamaner Urban",13,0,13,0,13,5,5,3],
-["Gangavaram UPS",3,2,5,2,3,1,1,1],
-["Baireddipalle PS",8,0,8,0,8,0,2,6],
-["Panjani PS",22,11,33,15,18,6,6,6],
-["Bangarupalem U/G PS",6,0,6,0,6,0,2,4],
-["V.Kota PS",11,0,11,0,11,3,4,4],
-["Kuppam urban PS",17,0,17,0,17,4,6,7],
-["Ramakuppam PS",1,0,1,0,1,1,0,0],
-["Gudupalli PS",1,0,1,0,1,0,1,0],
-["Rallabudugur PS",11,0,11,0,11,5,1,5],
-["K.Nagar PS",6,0,6,0,6,0,2,4],
-["Vedurukuppam PS",3,0,3,0,3,1,1,1],
-["S.R.Puram PS",13,0,13,0,13,1,0,12],
-["Palasamudram PS",3,0,3,0,3,2,1,0],
-["Nagari Urban PS",11,0,11,0,11,3,3,5],
-["Vijayapuram P.S",10,0,10,0,10,2,4,4],
-["Nindra PS",2,0,2,0,2,1,0,1]
-]; // ps, pendingStart, received, totalPending, executed, pendingNow, withinDist, withinState, outState
+/* full-detail comparative statement, 2026 to 31-07 : [head, REP, TRU, CHA, CON, ACQ, PT, UN, UI] */
+const ALL26=[["Murder for gain",1,1,0,0,0,0,0,1],["Dacoity",0,0,0,0,0,0,0,0],
+["Robbery",0,0,0,0,0,0,0,0],["H.Bs by day",17,17,0,0,0,0,0,17],
+["H.Bs by night",60,60,6,0,1,5,0,54],["Ordinary thefts",114,113,29,2,2,24,0,84],
+["Murders",19,19,2,0,0,2,0,17],["Culpable homicide",5,4,0,0,0,0,0,4],
+["Riotings",2,2,1,0,0,1,0,1],["Kidnappings",10,10,2,0,1,1,0,8],
+["Rape",18,18,2,0,0,2,0,16],["Grievous hurts",40,40,22,0,0,20,0,18],
+["Simple hurts",272,267,155,0,0,120,0,112],["Cheatings",60,57,12,0,0,11,0,45],
+["C.B. of trust",18,18,2,0,0,2,0,16],["307 IPC",21,21,7,0,0,7,0,14],
+["304(A) IPC",200,200,74,0,2,72,22,104],["337,338 IPC",167,165,75,2,0,66,0,90],
+["Other IPC",473,447,209,20,9,170,0,238]];
+const ALL26_TOT=[1497,1459,598,24,15,503,22,839];
+const SLL26=[269,269,147,65,5,66,1,121];
 
-const nbwHeadTotals = {"Bodily offence":5,"Crime vs Women":4,"Property offence":28,"Cheating":11,"Accidents":5,"Other IPC":97,"NDPS":15,"SLL":44,"NI Act":109};
+/* grave comparative : [head, 2024rep,2024ui, 2025rep,2025ui, 2026rep,2026ui] */
+const GRAVE=[["Murder for gain",0,0,2,0,1,1],["Dacoity",4,0,3,1,0,0],["Robbery",7,0,1,1,0,0],
+["HBs by day",6,1,4,0,2,2],["HBs by night",10,5,12,2,4,3],["Thefts ordinary",7,2,4,2,4,1],
+["Murder",22,0,21,1,19,17],["Rape",31,1,41,15,18,16],["Dowry death",4,0,3,0,1,1],
+["Culpable homicide",10,0,6,1,4,4],["Road accidents",5,0,5,0,5,3],
+["Counterfeit currency",0,0,1,1,0,0],["Crl. breach of trust",1,1,0,0,1,1],["Other IPC",5,0,6,0,2,2]];
+const GRAVE_TOT=[112,10,109,24,61,51];
 
-const monthlyLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug (1-12)"];
-const monthlyTotals = [197,197,190,214,212,227,257,74];
+/* grave UI reasons, district (30-06-2026) */
+const WHY=[["Charged, not taken on file",35,"court"],["No clues",19,"stn"],["Arrest of accused",8,"stn"],
+["Being charged / referred",4,"stn"],["Others",4,"stn"],["FSL",3,"stn"],["RFSL",3,"stn"],
+["More witnesses",2,"stn"],["DNA",2,"stn"],["183 BNSS statement",1,"stn"],["APP opinion",1,"stn"]];
+const GRAVE_SD=[["Chittoor",30,13],["Palamaner",25,9],["Kuppam",17,8],["Nagari",10,5]];
 
-const comparative = [
-["Murder for gain",0,1,1],["Dacoity",3,2,0],["Robbery",2,2,0],["H.Bs by Day",19,15,17],
-["H.Bs by Night",52,49,60],["Ordinary Thefts",152,178,114],["Murders",11,14,19],
-["Culpable Homicide",5,4,5],["Riotings",12,1,2],["Kidnappings",10,12,10],["Rape",19,18,18],
-["Grievous Hurts",40,22,40],["Simple Hurts",329,373,272],["Cheatings",71,72,60],
-["C.B. of Trust",13,14,18],["Attempt to Murder (307)",31,42,21],["Fatal Accidents",180,181,200],
-["Non-Fatal Accidents",203,220,167],["Other IPC",689,614,473],["SLL",954,379,269]
-];
-const totalCogCrime = [1841,1835,1497];
-const propertyLakh = { lost:[314.49,634.72,317.82], recovered:[101.51,465.92,120.12] };
+/* crime against women, Jan–Jul */
+const WOMEN=[["Cruelty by husband/relatives",113,107],["Insult to modesty",162,100],
+["Assault on women",82,45],["Rape",25,24],["Attempt to rape",6,4],["POCSO",3,5],
+["Immoral Traffic Act",6,3],["Kidnapping & abduction",2,1],["Dowry death",0,1],
+["Miscarriage",0,1],["Dowry Prohibition Act",2,0]];
+const WOMEN_TOT=[401,291];
+const CHILD_SC=[["POCSO (children)",16,13],["SC/ST Act",39,21]];
 
-const pdActCases = [
-{year:"2025", ps:"Palamaner UPS", subdiv:"Palamaner", accused:"Mavilla Kalyan", relation:"S/o M.Gopi", village:"Javili Street, Palamaner town & mandal", status:"Released", caseCount:7, ref:"REV-CSEC0PDL(PRC)/3/2025-MAGL4, dt. 19.06.2025"},
-{year:"2025", ps:"Kuppam Urban PS", subdiv:"Kuppam", accused:"M.Murthy @ Sriramurthy @ Remo", relation:"S/o late Munaswamy", village:"Vendugampalle, Kuppam Mandal", status:"Released", caseCount:12, ref:"REV-CSECOPDL(PRC)/2/2025-MAGL4, dt. 19.06.2025"},
-{year:"2025", ps:"Panjani PS", subdiv:"Palamaner", accused:"K.Chandra Babu", relation:"S/o K.Nagaraja, 33 yrs", village:"Thayaramma Colony, Rayalpeta, Pedda Panjani", status:"Proposed", caseCount:3, ref:"REV-CSEC0MIS(MIS)/309/2025-MAGL-4, dt. 31.10.2025"},
-{year:"2026", ps:"V.Kota Urban PS", subdiv:"Palamaner", accused:"S.Mahaboob Basha @ Thameem @ Syed Nadeem @ Kaalu", relation:"S/o S.Kaleha @ Akbar Basha, 35 yrs", village:"V.Kota Town & Mandal (Rowdy Sheet No. 25)", status:"Proposed", caseCount:9, ref:"REV-CSECOPDL(PRC)/2/2026-MAGL4, dt. 07.08.2026"},
-{year:"2026", ps:"V.Kota Urban PS", subdiv:"Palamaner", accused:"Shaik Subhan @ Moin", relation:"S/o Samiulla, 23 yrs", village:"Eswar Nagar, V.Kota Town", status:"Proposed", caseCount:6, ref:"REV-CSECOPDL(PRC)/1/2026-MAGL4, dt. 07.08.2026"}
-];
+const MISS=[["Chittoor",56,44],["Palamaner",22,21],["Kuppam",24,20],["Nagari",25,21]];
+const PD=[["2025","Palamaner UPS",7,"Released"],["2025","Kuppam Urban PS",12,"Released"],
+["2025","Panjani PS",3,"Proposed"],["2026","V.Kota Urban PS",9,"Proposed"],
+["2026","V.Kota Urban PS",6,"Proposed"]];
+const ENF=[["Chittoor",1615,335440],["Palamaner",1502,856720],["Kuppam",1383,429455],
+["Nagari",761,230485],["Traffic PS",595,181090]];
+const BIND=[["Chittoor",1,5,14],["Palamaner",0,3,8],["Kuppam",1,2,6],["Nagari",0,2,4]];
 
-const caseEntries = [
-["Chittoor II Town PS","Murad, S/o S.Ansar","Rowdy Sheet 458","Cr.9/2026 u/s 118(1),351(2),126(2) BNS","17-01-2026","Arrested","Compromised"],
-["Chittoor Taluk PS","K.Vinayakam, S/o late K.Gangaiah","Suspect Sheet 54","Cr.02/2026 u/s 7 r/w 8(b) APPA","07-01-2026","Arrested","PT (CC 307/26)"],
-["Chittoor Taluk PS","A.Venkatesh, S/o Chengaiah","Suspect Sheet 55","Cr.52/2026 u/s 34 AP Excise Act","07-06-2026","Arrested","UI"],
-["G.D.Nellore UPS","M.Selvam, S/o Muragesan","Suspect Sheet 22","Cr.68/2026 u/s 308(5),318(4),115(1) BNS","16-05-2026","Arrested","UI"],
-["Yadamari PS","C.Yuvaraj, S/o C.Chandran","Rowdy Sheet 163","Cr.38/2026 u/s 115(2),118(1),79 BNS","15-06-2026","Arrested","UI"],
-["V.Kota UPS","S.Mahaboob Basha @ Thamim @ Kaalu","Rowdy Sheet 25","Cr.70/2026 u/s 103(1),118(1) BNS","28-04-2026","On PT warrant","UI"],
-["Gudupalli PS","V.Siva Kumar @ V.Sivappa","Suspect Sheet 34","Cr.34/2026 u/s 65(1) r/w 62 BNS, POCSO","09-05-2026","Arrested","UI"],
-["Nagari UPS","Madhan Kumar @ Madhan","Rowdy Sheet 30","Cr.18/2026 u/s 9(i) AP Gaming Act","26-02-2026","Arrested","Convicted"],
-["Nagari UPS","P.Kalai Vanan","Suspect Sheet 562","Cr.18/2026 u/s 9(i) AP Gaming Act","26-02-2026","Arrested","Convicted"],
-["Nagari UPS","Mahesh Kumar @ Mahesh","Rowdy Sheet 50","Cr.47/2026 u/s 118(1),351(2) BNS","02-06-2026","Arrested","UI"],
-["Nindra PS","T.Ambedkar @ Najith","Rowdy Sheet 2","Cr.14/2026 u/s 329(3),126(2),115(2),351(2) BNS","01-04-2026","Arrested","UI"]
-];
+/* ---------- nav ---------- */
+document.querySelectorAll('.nv').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.nv').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');document.getElementById('v-'+t.dataset.v).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
 
-/* ---------- helpers ---------- */
-const fmt = n => n.toLocaleString('en-IN');
+/* ---------- KPIs ---------- */
+const T=f=>NAMES.reduce((a,n)=>a+f(S[n]),0);
+const kp=[
+ ["Cognizable crime","1,494","Jan–Jul 2026 · 2025: 1,842","#4FAE83"],
+ ["UI cases (CCTNS)","2,504","96 grave · to 16·08","#D9A441"],
+ ["Grave UI","82","47 station-side · 35 with court","#E1595A"],
+ ["Warrants pending","205","+109 NI Act · 19·08","#E1595A"],
+ ["Strength present",fm(T(presTot)),"of "+fm(T(sancTot))+" sanctioned","#5B8CFF"],
+ ["Property recovery","38%","₹1.20 Cr of ₹3.18 Cr","#8B7BD8"]];
+document.getElementById('kpis').innerHTML=kp.map(k=>
+ `<div class="k" style="--ac:${k[3]}"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
 
-/* ---------- Tabs ---------- */
-document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    document.getElementById('view-'+t.dataset.view).classList.add('active');
-    window.scrollTo({top:0, behavior:'smooth'});
-  });
-});
+/* ---------- situation charts ---------- */
+new Chart(cYoY,{type:'bar',data:{labels:['2025','2026'],datasets:[{data:JJ_TOT,
+ backgroundColor:[C.blue,C.gold],borderRadius:6,barPercentage:.55}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+ scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
 
-/* ---------- Overview charts ---------- */
-new Chart(document.getElementById('chartMonthly'), {
-  type:'line',
-  data:{ labels:monthlyLabels, datasets:[{
-    label:'Total crimes', data:monthlyTotals, borderColor:COLORS.gold, backgroundColor:'rgba(201,162,74,0.12)',
-    tension:.35, fill:true, pointRadius:4, pointBackgroundColor:COLORS.gold, pointBorderColor:'#0A0E17', pointBorderWidth:2
-  }]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{ x:{grid:{color:'#1A2238'}}, y:{grid:{color:'#1A2238'}, beginAtZero:true} }
-  }
-});
+new Chart(cStatus,{type:'doughnut',data:{labels:['Under investigation','Pending trial','Convicted','Acquitted','Undetected'],
+ datasets:[{data:[839,503,24,15,22],backgroundColor:[C.amber,C.blue,C.green,C.red,C.dim],
+ borderColor:'#111726',borderWidth:3}]},
+ options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+ plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5},padding:11}}}}});
 
-const rowdyTotals = {UI:39,PT:394,Acquital:515,Bindover:19,Compromise:45,Conviction:68};
-const suspectTotals = {UI:43,PT:644,Acquital:1143,Bindover:9,Compromise:42,Conviction:176};
-new Chart(document.getElementById('chartStatus'), {
-  type:'bar',
-  data:{ labels:Object.keys(rowdyTotals), datasets:[
-    {label:'Rowdy', data:Object.values(rowdyTotals), backgroundColor:COLORS.blue, borderRadius:4},
-    {label:'Suspect', data:Object.values(suspectTotals), backgroundColor:COLORS.gold, borderRadius:4}
-  ]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11, font:{size:11}}}},
-    scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1A2238'}} }
-  }
-});
+{const rows=JJ.map(r=>({h:r[0],a:r[1],b:r[2],d:r[2]-r[1]})).sort((x,y)=>Math.abs(y.d)-Math.abs(x.d));
+ document.querySelector('#tMove tbody').innerHTML=rows.map(r=>{
+  const p=r.a?((r.d/r.a)*100).toFixed(0)+'%':'—';
+  const c=r.d>0?'bad':(r.d<0?'ok':'nu');
+  return `<tr><td>${r.h}</td><td class="n m">${fm(r.a)}</td><td class="n m">${fm(r.b)}</td>
+   <td class="n"><span class="pill ${c}">${r.d>0?'+':''}${r.d} (${p})</span></td></tr>`}).join('')+
+  `<tr class="tot"><td>Total</td><td class="n m">${fm(JJ_TOT[0])}</td><td class="n m">${fm(JJ_TOT[1])}</td>
+   <td class="n"><span class="pill ok">−348 (−19%)</span></td></tr>`;}
 
-new Chart(document.getElementById('chartYoY'), {
-  type:'bar',
-  data:{ labels:comparative.map(r=>r[0]), datasets:[
-    {label:'2024', data:comparative.map(r=>r[1]), backgroundColor:'#3A466E', borderRadius:3},
-    {label:'2025', data:comparative.map(r=>r[2]), backgroundColor:COLORS.blue, borderRadius:3},
-    {label:'2026', data:comparative.map(r=>r[3]), backgroundColor:COLORS.gold, borderRadius:3}
-  ]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:60, font:{size:10}}}, y:{grid:{color:'#1A2238'}} }
-  }
-});
+/* ---------- STATION RECORD ---------- */
+const sel=document.getElementById('selSta');
+sel.innerHTML=NAMES.map(n=>`<option value="${n}">${n} — ${S[n].sd}</option>`).join('');
+let idx=NAMES.indexOf('Kuppam Urban PS');
 
-/* ---------- Sheeters view ---------- */
-const stationsByTotal = rowdyData.map((r,i)=>({ps:r[0], rowdy:r[1], suspect:suspectData[i][1]}))
-  .sort((a,b)=> (b.rowdy+b.suspect) - (a.rowdy+a.suspect)).slice(0,10);
-new Chart(document.getElementById('chartTopStations'), {
-  type:'bar',
-  data:{ labels:stationsByTotal.map(s=>s.ps.replace(' PS','').replace(' UPS','')), datasets:[
-    {label:'Rowdy', data:stationsByTotal.map(s=>s.rowdy), backgroundColor:COLORS.blue, borderRadius:4},
-    {label:'Suspect', data:stationsByTotal.map(s=>s.suspect), backgroundColor:COLORS.gold, borderRadius:4}
-  ]},
-  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{color:'#1A2238'}}, y:{grid:{display:false}} }
-  }
-});
+function pill(v,good,ok){if(v==null)return '<span class="pill nu">n/a</span>';
+ return `<span class="pill ${v>=good?'ok':v>=ok?'mid':'bad'}">${v}%</span>`}
+function pillLow(v,good,ok){if(v==null)return '<span class="pill nu">n/a</span>';
+ return `<span class="pill ${v<=good?'ok':v<=ok?'mid':'bad'}">${v}%</span>`}
 
-const casesBody = document.querySelector('#tblCases tbody');
-caseEntries.forEach(r=>{
-  const statusPill = r[5]==='Arrested' ? 'ok' : 'neutral';
-  const stagePill = r[6]==='Convicted' ? 'ok' : (r[6]==='UI' ? 'warn' : 'neutral');
-  casesBody.insertAdjacentHTML('beforeend', `<tr>
-    <td>${r[0]}</td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td>
-    <td class="mono">${r[4]}</td><td><span class="pill ${statusPill}">${r[5]}</span></td>
-    <td><span class="pill ${stagePill}">${r[6]}</span></td></tr>`);
-});
+function drawRec(){
+ const n=NAMES[idx],d=S[n];
+ const sanc=sancTot(d),pres=presTot(d),vac=sanc-pres,vacPct=pct(vac,sanc);
+ const [gUI,ngUI,psUI,cUI]=d.ui;
+ const [nbC,nbN]=d.nbw;
+ const inv=d.str[4]+d.str[5]+d.str[6];           // SI+ASI+HC present
+ const perInv=inv?(cUI/inv).toFixed(1):'—';
+ let propRows='';
+ if(d.prop){const[rep,und,lost,rec]=d.prop;
+  const det=pct(rep-und,rep),recv=lost?pct(rec,lost):0;
+  propRows=`<div class="grp">Property crime · to 12·08·2026</div>
+  <div class="rw"><div class="lb">Cases reported</div><div class="vl">${rep}</div></div>
+  <div class="rw"><div class="lb">Detected<small>reported less undetected</small></div>
+   <div class="vl">${rep-und} &nbsp;${rep>=4?pill(det,60,40):'<span class="pill nu">low base</span>'}</div></div>
+  <div class="rw"><div class="lb">Property lost / recovered</div>
+   <div class="vl">${rup(lost)} → ${rup(rec)} &nbsp;${rep>=4?pill(recv,50,25):''}</div></div>`;
+ } else propRows=`<div class="grp">Property crime</div>
+  <div class="rw"><div class="lb">No property cases in the 2026 return</div><div class="vl">—</div></div>`;
 
-/* ---------- Warrants view ---------- */
-const nbwAreaTotals = nbwData.reduce((a,r)=>({within:a.within+r[6], state:a.state+r[7], out:a.out+r[8]}), {within:0,state:0,out:0});
-new Chart(document.getElementById('chartNbwArea'), {
-  type:'doughnut',
-  data:{ labels:['Within District','Within State','Out of State'], datasets:[{
-    data:[nbwAreaTotals.within, nbwAreaTotals.state, nbwAreaTotals.out],
-    backgroundColor:[COLORS.blue, COLORS.gold, COLORS.red], borderColor:'#111726', borderWidth:3
-  }]},
-  options:{responsive:true, maintainAspectRatio:false, cutout:'62%',
-    plugins:{legend:{position:'bottom', labels:{boxWidth:11, font:{size:11}, color:'#8C97B8'}}}
-  }
-});
+ document.getElementById('recWrap').innerHTML=`
+ <div class="rec">
+  <div class="rec-h"><div class="nm">${n}</div>
+   <div class="mt">${d.sd.toUpperCase()} SUB-DIVISION</div></div>
+  <div class="rec-b">
 
-new Chart(document.getElementById('chartNbwHead'), {
-  type:'bar',
-  data:{ labels:Object.keys(nbwHeadTotals), datasets:[{
-    data:Object.values(nbwHeadTotals), backgroundColor:COLORS.gold, borderRadius:4
-  }]},
-  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{ x:{grid:{color:'#1A2238'}}, y:{grid:{display:false}, ticks:{font:{size:10.5}}} }
-  }
-});
+   <div class="grp">Strength · 20·08·2026</div>
+   <div class="rw"><div class="lb">Present of sanctioned<small>SI ${d.str[4]}/${d.str[0]} · ASI ${d.str[5]}/${d.str[1]} · HC ${d.str[6]}/${d.str[2]} · PC ${d.str[7]}/${d.str[3]}</small></div>
+    <div class="vl">${pres} / ${sanc} &nbsp;${pillLow(vacPct,10,25)}</div></div>
+   <div class="rw"><div class="lb">Investigating officers present<small>SI + ASI + HC</small></div>
+    <div class="vl">${inv}</div></div>
 
-const nbwLedger = document.getElementById('nbwLedger');
-const topNbw = [...nbwData].sort((a,b)=>b[5]-a[5]).slice(0,10);
-const maxNbw = topNbw[0][5];
-topNbw.forEach((r,i)=>{
-  nbwLedger.insertAdjacentHTML('beforeend', `<div class="ledger-row">
-    <div class="code">${String(i+1).padStart(2,'0')}</div>
-    <div><div class="name">${r[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${(r[5]/maxNbw*100).toFixed(0)}%"></div></div></div>
-    <div class="val">${r[5]}</div></div>`);
-});
+   <div class="grp">Investigation · CCTNS to 16·08·2026</div>
+   <div class="rw"><div class="lb">Total UI caseload<small>PS register shows ${psUI}${cUI!==psUI?' — CCTNS governs':''}</small></div>
+    <div class="vl">${cUI}</div></div>
+   <div class="rw"><div class="lb">UI per investigating officer<small>district median ≈ 8.9</small></div>
+    <div class="vl">${perInv}</div></div>
+   <div class="rw"><div class="lb">Grave UI<small>${d.graveUI?'cases from '+d.gYears:'none pending'} · as on 30·06</small></div>
+    <div class="vl">${d.graveUI||'—'}</div></div>
+   <div class="rw"><div class="lb">Pending trial<small>held by courts — not a station measure</small></div>
+    <div class="vl" style="color:var(--tx2)">${fm(d.pt)}</div></div>
 
-/* ---------- PD Act view ---------- */
-const pdActList = document.getElementById('pdActList');
-pdActCases.forEach(c=>{
-  pdActList.insertAdjacentHTML('beforeend', `<div class="case-card">
-    <div class="top-row">
-      <div><div class="accused">${c.accused}</div><div class="meta">${c.relation} · ${c.village}</div></div>
-      <div class="ref">${c.ps}<br>${c.subdiv} Sub-Division · ${c.year}</div>
-    </div>
-    <div class="cases-list">${c.caseCount} case(s) cited · Status: <strong style="color:${c.status==='Released'?'#D9A441':'#4FAE83'}">${c.status}</strong><br>${c.ref}</div>
-  </div>`);
-});
+   <div class="grp">Warrants · 19·08·2026</div>
+   <div class="rw"><div class="lb">Criminal (BNS)</div><div class="vl">${nbC||'—'}</div></div>
+   <div class="rw"><div class="lb">NI Act<small>cheque-bounce — separate pool</small></div>
+    <div class="vl" style="color:var(--tx2)">${nbN||'—'}</div></div>
 
-/* ---------- Crime trends view ---------- */
-const crimeBody = document.querySelector('#tblCrime tbody');
-comparative.forEach(r=>{
-  const delta = r[3]-r[2];
-  const pct = r[2]===0 ? '—' : ((delta/r[2])*100).toFixed(0)+'%';
-  const cls = delta>0 ? 'warn' : (delta<0 ? 'ok' : 'neutral');
-  crimeBody.insertAdjacentHTML('beforeend', `<tr>
-    <td>${r[0]}</td><td class="num mono">${fmt(r[1])}</td><td class="num mono">${fmt(r[2])}</td><td class="num mono">${fmt(r[3])}</td>
-    <td class="num"><span class="pill ${cls}">${delta>0?'+':''}${delta} (${pct})</span></td></tr>`);
-});
-crimeBody.insertAdjacentHTML('beforeend', `<tr style="background:rgba(201,162,74,0.05);">
-  <td><strong>Total Cognizable Crime (IPC)</strong></td>
-  <td class="num mono"><strong>${fmt(totalCogCrime[0])}</strong></td>
-  <td class="num mono"><strong>${fmt(totalCogCrime[1])}</strong></td>
-  <td class="num mono"><strong>${fmt(totalCogCrime[2])}</strong></td><td class="num">—</td></tr>`);
+   <div class="grp">Preventive · 12·08·2026</div>
+   <div class="rw"><div class="lb">Rowdy sheeters<small>${d.rowdy[1]} cases on books</small></div><div class="vl">${d.rowdy[0]}</div></div>
+   <div class="rw"><div class="lb">Suspect sheeters<small>${d.susp[1]} cases on books</small></div><div class="vl">${d.susp[0]}</div></div>
 
-new Chart(document.getElementById('chartProperty'), {
-  type:'bar',
-  data:{ labels:['2024','2025','2026 (upto Jul)'], datasets:[
-    {label:'Lost', data:propertyLakh.lost, backgroundColor:COLORS.red, borderRadius:4},
-    {label:'Recovered', data:propertyLakh.recovered, backgroundColor:COLORS.green, borderRadius:4}
-  ]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1A2238'}, title:{display:true,text:'₹ Lakh',color:'#5E6885',font:{size:10}}} }
-  }
-});
+   <div class="grp">Crime registered · 1 Jan – 7 Apr 2026</div>
+   <div class="rw"><div class="lb">IPC / BNS cases<small>rank ${NAMES.slice().sort((a,b)=>S[b].reg-S[a].reg).indexOf(n)+1} of ${NAMES.length} by volume</small></div>
+    <div class="vl">${d.reg}</div></div>
 
-/* ---------- All stations view ---------- */
-const nbwByPs = {};
-nbwData.forEach(r=>{ nbwByPs[r[0].replace(/\s*(PS|P\.S|UPS|U\/PS)\.?$/i,'').trim().toLowerCase()] = r; });
-function findNbw(psName){
-  const key = psName.replace(/\s*(PS|P\.S|UPS|U\/PS)\.?$/i,'').trim().toLowerCase();
-  return nbwByPs[key] || null;
+   ${propRows}
+  </div></div>`;
+ sel.value=n;drawRank();
 }
-const stationRows = rowdyData.map((r,i)=>{
-  const nbw = findNbw(r[0]);
-  return { ps:r[0], rowdy:r[1], suspect:suspectData[i][1], pending: nbw? nbw[5] : 0, out: nbw? nbw[8] : 0 };
-});
-function renderStations(filter=''){
-  const tbody = document.querySelector('#tblStations tbody');
-  tbody.innerHTML = '';
-  stationRows.filter(s=>s.ps.toLowerCase().includes(filter.toLowerCase())).forEach(s=>{
-    tbody.insertAdjacentHTML('beforeend', `<tr>
-      <td>${s.ps}</td><td class="num mono">${s.rowdy}</td><td class="num mono">${s.suspect}</td>
-      <td class="num mono">${s.pending}</td><td class="num mono">${s.out}</td></tr>`);
-  });
+
+let rankChart=null;
+function drawRank(){
+ const n=NAMES[idx];
+ const data=NAMES.map(k=>{const d=S[k];const inv=d.str[4]+d.str[5]+d.str[6];
+   return{k,v:inv?+(d.ui[3]/inv).toFixed(1):0}}).sort((a,b)=>b.v-a.v);
+ if(rankChart)rankChart.destroy();
+ rankChart=new Chart(cRank,{type:'bar',
+  data:{labels:data.map(d=>d.k.replace(/ (PS|UPS)$/,'')),
+   datasets:[{data:data.map(d=>d.v),backgroundColor:data.map(d=>d.k===n?C.gold:'#2E3A58'),borderRadius:3}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+   plugins:{legend:{display:false},title:{display:true,text:'UI cases per investigating officer present (SI+ASI+HC)',
+    color:'#5E6885',font:{size:11,weight:'400'}}},
+   scales:{x:{grid:{color:C.line}},y:{grid:{display:false},ticks:{font:{size:9.5}}}}}});
 }
-renderStations();
-document.getElementById('stationSearch').addEventListener('input', e=>renderStations(e.target.value));
+sel.addEventListener('change',e=>{idx=NAMES.indexOf(e.target.value);drawRec()});
+document.getElementById('prevSta').onclick=()=>{idx=(idx-1+NAMES.length)%NAMES.length;drawRec()};
+document.getElementById('nextSta').onclick=()=>{idx=(idx+1)%NAMES.length;drawRec()};
+drawRec();
 
-/* ---------- Sortable table headers (stations + crime) ---------- */
-function makeSortable(tableId, dataGetter, renderFn){
-  const table = document.getElementById(tableId);
-  let dir = 1;
-  table.querySelectorAll('thead th').forEach((th, idx)=>{
-    th.addEventListener('click', ()=>{
-      const rows = dataGetter();
-      rows.sort((a,b)=>{
-        const va = a[idx], vb = b[idx];
-        if(typeof va === 'number') return (va-vb)*dir;
-        return String(va).localeCompare(String(vb))*dir;
-      });
-      dir *= -1;
-      renderFn(rows);
-    });
-  });
-}
-makeSortable('tblStations',
-  ()=>stationRows.map(s=>[s.ps,s.rowdy,s.suspect,s.pending,s.out]),
-  (rows)=>{ const tbody=document.querySelector('#tblStations tbody'); tbody.innerHTML='';
-    rows.forEach(r=>tbody.insertAdjacentHTML('beforeend', `<tr><td>${r[0]}</td><td class="num mono">${r[1]}</td><td class="num mono">${r[2]}</td><td class="num mono">${r[3]}</td><td class="num mono">${r[4]}</td></tr>`)); }
-);
+/* ---------- PENDING ---------- */
+new Chart(cGraveWhy,{type:'bar',
+ data:{labels:WHY.map(w=>w[0]),datasets:[{data:WHY.map(w=>w[1]),
+  backgroundColor:WHY.map(w=>w[2]==='court'?C.dim:C.red),borderRadius:4}]},
+ options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{afterLabel:c=>WHY[c.dataIndex][2]==='court'?'With court registry':'Station-side'}}},
+  scales:{x:{grid:{color:C.line}},y:{grid:{display:false},ticks:{font:{size:10.5}}}}}});
 
-/* ================= CCTNS RECONCILIATION ================= */
-const cctnsUiPt = [
-["Bangarupalem UPS",92,81,661,665],["V.Kota U PS",166,177,658,650],["Kallur PS",44,50,310,321],
-["Vijayapuram",103,109,148,149],["Irala",58,63,246,244],["Chittoor II Town P.S",89,93,447,446],
-["Kanipakam",24,27,160,157],["Panjani PS",39,42,364,368],["Chittoor I Town P.S",141,143,436,437],
-["Palamaner U PS",98,96,767,769],["Rallabudugur",47,45,495,495],["Nindra",61,63,119,127],
-["Thavanampalle",42,43,320,320],["Baireddipalle PS",58,59,430,424],["Gudupalle",20,21,316,316],
-["Vedurukuppam PS",177,178,225,225],["G.D.Nellore PS",102,102,538,538],["Puthalapattu",94,94,425,425],
-["Chittoor Taluk PS",75,75,264,267],["N.R.Pet PS",32,32,148,149],["Penumuru",25,25,421,421],
-["Yadamari ps",69,69,373,373],["Gudipala",69,69,526,526],["Rompicherla PS",42,42,210,212],
-["CCS Chittoor",16,16,32,32],["Mahila PS Chittoor",15,15,168,168],["Traffic PS Chittoor",19,19,58,60],
-["Gangavaram UPS",70,70,679,679],["Kuppam UPS",230,230,730,729],["Ramakuppam",44,44,447,448],
-["K.Nagar PS",82,82,231,231],["S.R.Puram PS",133,133,169,169],["Palasamudram PS",23,23,272,272],
-["Nagari PS",101,101,683,683]
-]; // ps, psUI, cctnsUI, psPT, cctnsPT
+document.querySelector('#tGraveSD tbody').innerHTML=GRAVE_SD.map(g=>{
+ const stn=g[1]-g[2];
+ return `<tr><td>${g[0]}</td><td class="n m">${g[1]}</td><td class="n m">${stn}</td>
+  <td class="n m">${g[2]}</td><td class="n"><span class="pill ${pct(stn,g[1])>=60?'bad':'mid'}">${pct(stn,g[1])}%</span></td></tr>`}).join('')+
+ `<tr class="tot"><td>District</td><td class="n m">82</td><td class="n m">47</td><td class="n m">35</td>
+  <td class="n"><span class="pill bad">57%</span></td></tr>`;
 
-const cctnsHead = [
-["Murder For Gain",1,13],["Dacoity",0,23],["Robbery",2,28],["HB By Day",42,79],["HB By Night",130,238],
-["Theft",249,888],["Murder",26,153],["Culpable Homicide",5,39],["Rioting",13,82],["Kidnapping",15,62],
-["Rape",40,108],["Hurt - Grievous",27,235],["Hurt - Simple",237,1508],["Cheating",236,534],
-["C.B. of Trust",52,112],["Counterfeiting",2,3],["Attempt to Murder",48,360],["Fatal Accidents",160,1149],
-["Non-Fatal Accidents",132,737],["Other IPC",469,3498],["Others",645,2646]
-];
-const cctnsYearsUI = {"2018":4,"2019":11,"2020":34,"2021":56,"2022":78,"2023":122,"2024":331,"2025":674,"2026":1211};
-const cctnsYearsPT = {"2018":263,"2019":527,"2020":1005,"2021":1385,"2022":1884,"2023":1860,"2024":2371,"2025":1989,"2026":569};
+{const rows=NAMES.filter(n=>S[n].graveUI>0).map(n=>({n,g:S[n].graveUI,y:S[n].gYears}))
+  .sort((a,b)=>b.g-a.g);
+ document.querySelector('#tGravePS tbody').innerHTML=rows.map(r=>
+  `<tr class="${r.g>=6?'hl':''}"><td>${r.n}</td><td class="n m">${r.g}</td><td class="m">${r.y}</td></tr>`).join('');}
 
-new Chart(document.getElementById('chartCctnsHead'), {
-  type:'bar',
-  data:{ labels:cctnsHead.map(r=>r[0]), datasets:[
-    {label:'UI', data:cctnsHead.map(r=>r[1]), backgroundColor:COLORS.blue, borderRadius:3},
-    {label:'PT', data:cctnsHead.map(r=>r[2]), backgroundColor:COLORS.gold, borderRadius:3}
-  ]},
-  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{color:'#1A2238'}}, y:{grid:{display:false}, ticks:{font:{size:10}}} } }
-});
-new Chart(document.getElementById('chartCctnsYear'), {
-  type:'line',
-  data:{ labels:Object.keys(cctnsYearsUI), datasets:[
-    {label:'UI', data:Object.values(cctnsYearsUI), borderColor:COLORS.blue, backgroundColor:'rgba(91,140,255,0.1)', tension:.3, fill:true},
-    {label:'PT', data:Object.values(cctnsYearsPT), borderColor:COLORS.gold, backgroundColor:'rgba(201,162,74,0.1)', tension:.3, fill:true}
-  ]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{color:'#1A2238'}}, y:{grid:{color:'#1A2238'}} } }
-});
-const cctnsBody = document.querySelector('#tblCctns tbody');
-[...cctnsUiPt].sort((a,b)=> Math.abs(b[2]-b[1]) - Math.abs(a[2]-a[1])).forEach(r=>{
-  const uiGap = r[2]-r[1], ptGap = r[4]-r[3];
-  cctnsBody.insertAdjacentHTML('beforeend', `<tr><td>${r[0]}</td><td class="num mono">${r[1]}</td><td class="num mono">${r[2]}</td>
-    <td class="num"><span class="pill ${uiGap!==0?'warn':'ok'}">${uiGap>0?'+':''}${uiGap}</span></td>
-    <td class="num mono">${r[3]}</td><td class="num mono">${r[4]}</td>
-    <td class="num"><span class="pill ${ptGap!==0?'warn':'ok'}">${ptGap>0?'+':''}${ptGap}</span></td></tr>`);
-});
+{const rows=NAMES.map(n=>({n,...{g:S[n].ui[0],ng:S[n].ui[1],ps:S[n].ui[2],c:S[n].ui[3]}}))
+  .sort((a,b)=>b.c-a.c);
+ document.querySelector('#tUI tbody').innerHTML=rows.map(r=>{
+  const gap=r.c-r.ps;
+  return `<tr class="${r.c>=150?'hl':''}"><td>${r.n}</td>
+   <td class="n m">${r.g||'—'}</td><td class="n m">${r.ng}</td><td class="n m">${r.ps}</td>
+   <td class="n m" style="color:var(--tx)">${r.c}</td>
+   <td class="n">${gap===0?'<span class="pill ok">—</span>':`<span class="pill ${Math.abs(gap)>=5?'bad':'mid'}">${gap>0?'+':''}${gap}</span>`}</td></tr>`}).join('');}
 
-/* ================= MURDERS ================= */
-const murderMonths = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const murder2024 = [1,2,4,1,1,0,3,3,0,1,3,3];
-const murder2025 = [2,1,0,3,1,5,2,3,2,2,1,0];
-const murder2026 = [2,2,4,5,0,2,4,2,null,null,null,null];
-new Chart(document.getElementById('chartMurderMonth'), {
-  type:'bar',
-  data:{ labels:murderMonths, datasets:[
-    {label:'2024', data:murder2024, backgroundColor:'#3A466E', borderRadius:3},
-    {label:'2025', data:murder2025, backgroundColor:COLORS.blue, borderRadius:3},
-    {label:'2026', data:murder2026, backgroundColor:COLORS.gold, borderRadius:3}
-  ]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1A2238'}, beginAtZero:true} } }
-});
-const murderPS2026 = [["Kuppam UPS",4],["Chittoor 2 Town PS",1],["Chittoor Taluk PS",1],["N.R.Pet PS",2],
-  ["Thavanampalle PS",1],["Panjani PS",2],["Bangarupalem UPS",1],["Gangavaram PS",1],["V.Kota UPS",1],
-  ["Ramakuppam PS",1],["Gudupalli PS",1],["Rallabuduguru PS",3],["Vedurukuppam PS",1],["Vijayapuram PS",1]]
-  .sort((a,b)=>b[1]-a[1]);
-new Chart(document.getElementById('chartMurderPS'), {
-  type:'bar',
-  data:{ labels:murderPS2026.map(r=>r[0]), datasets:[{data:murderPS2026.map(r=>r[1]), backgroundColor:COLORS.red, borderRadius:4}]},
-  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-    scales:{ x:{grid:{color:'#1A2238'}, ticks:{stepSize:1}}, y:{grid:{display:false}, ticks:{font:{size:10.5}}} } }
-});
-const murderUI = [
-["Kuppam UPS","389/2020","302, 201 r/w 34 IPC","03.10.2020","Charged 27-06-2023, PRC number awaited"],
-["Kuppam UPS","75/2021","302, 201 IPC","15.04.2021","UI for want of clues"],
-["Bangarupalem","291/2021","302 IPC","05.10.2021","Proposals referred; CD file returned to IO"],
-["Gudupalle","10/2023","302, 201 IPC","22.01.2023","UI for want of clues"],
-["Ramakuppam","115/2023","447,302,506 r/w 34 IPC","20.07.2023","Charged 18-09-2023, PRC number awaited"],
-["Chittoor 1 Town","86/2025","103(1) BNS","08.07.2025","UI for want of legal opinion from APP"],
-["Chittoor 2 Town","1/2026","103(1),238 BNS","02.01.2026","Charged 30-03-2026, not yet taken on file"],
-["Bangarupalem","24/2026","103(1) r/w 3(5) BNS, SC/ST Act","04.02.2026","UI for arrest of accused A3"],
-["Gudupalle","7/2026","103(1) BNS","09.02.2026","UI for want of clues"],
-["Chittoor Taluk PS","26/2026","103(1) BNS, Arms Act 27(3)","04.03.2026","UI for want of Ballistic Expert's Report"],
-["Vedurukuppam PS","26/2026","103(1),238 BNS","16.03.2026","UI to establish accused & victim identity"],
-["Kuppam UPS","50/2026","118(1)→103(1) r/w 3(5) BNS","26.03.2026","Charge sheet filed 6-5-2026, PRC awaited"],
-["Panjani PS","36/2026","103(1),238,61(2) BNS","01.04.2026","Charge sheet filed 26-6-2026, PRC awaited"]
-];
-const murderUIBody = document.querySelector('#tblMurderUI tbody');
-murderUI.forEach(r=>murderUIBody.insertAdjacentHTML('beforeend', `<tr><td>${r[0]}</td><td class="mono">${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td><td>${r[4]}</td></tr>`));
+{const rows=NAMES.map(n=>({n,p:S[n].pt})).sort((a,b)=>b.p-a.p);
+ document.querySelector('#tPT tbody').innerHTML=rows.map(r=>
+  `<tr><td>${r.n}</td><td class="n m">${fm(r.p)}</td><td class="n m">${(r.p/12259*100).toFixed(1)}%</td></tr>`).join('');}
 
-/* ================= ROAD ACCIDENTS ================= */
-const accMonths = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"];
-const acc2024 = [47,50,61,61,56,58,51,61];
-const acc2025 = [50,52,56,67,51,66,60,60];
-const acc2026 = [55,39,41,44,57,68,61,6];
-new Chart(document.getElementById('chartAccMonth'), {
-  type:'line',
-  data:{ labels:accMonths, datasets:[
-    {label:'2024', data:acc2024, borderColor:'#5E6885', backgroundColor:'transparent', tension:.3},
-    {label:'2025', data:acc2025, borderColor:COLORS.blue, backgroundColor:'transparent', tension:.3},
-    {label:'2026', data:acc2026, borderColor:COLORS.gold, backgroundColor:'rgba(201,162,74,0.1)', tension:.3, fill:true}
-  ]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{color:'#1A2238'}}, y:{grid:{color:'#1A2238'}} } }
-});
-const accPS2026 = [
-["Chittoor Traffic PS",31],["G.D. Nellore UPS",13],["Puthalapattu UPS",30],["Chittoor Taluka PS",11],
-["N.R. Peta PS",3],["Penumuru PS",6],["Yadamari PS",15],["Gudipala PS",8],["Thavanampalli PS",15],
-["Kanipakam PS",10],["Irala PS",9],["Kallur PS",11],["Rompicharla PS",8],["Palamaner UPS",14],
-["Gangavaram UPS",24],["Bangarupalyam UPS",27],["V. Kota UPS",14],["Baireddipalli PS",11],["Panjani PS",6],
-["Kuppam UPS",25],["Ramakuppam PS",1],["Gudupalli PS",5],["Rallabuduguru PS",13],["Nagari UPS",10],
-["Vijayapuram PS",6],["Nindra PS",8],["K. Nagar PS",12],["Vedurukuppam PS",3],["S.R. Puram PS",13],["Palasamudram PS",1]
-].sort((a,b)=>b[1]-a[1]);
-new Chart(document.getElementById('chartAccPS'), {
-  type:'bar',
-  data:{ labels:accPS2026.map(r=>r[0]), datasets:[{data:accPS2026.map(r=>r[1]), backgroundColor:COLORS.amber, borderRadius:3}]},
-  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-    scales:{ x:{grid:{color:'#1A2238'}}, y:{grid:{display:false}, ticks:{font:{size:9.5}}} } }
-});
+{const rows=NAMES.map(n=>({n,c:S[n].nbw[0],i:S[n].nbw[1]})).filter(r=>r.c+r.i>0)
+  .sort((a,b)=>(b.c+b.i)-(a.c+a.i));
+ document.querySelector('#tNbw tbody').innerHTML=rows.map(r=>
+  `<tr class="${r.c+r.i>=20?'hl':''}"><td>${r.n}</td><td class="n m">${r.c||'—'}</td>
+   <td class="n m">${r.i||'—'}</td><td class="n m" style="color:var(--tx)">${r.c+r.i}</td></tr>`).join('')+
+  `<tr class="tot"><td>District (incl. CCS, Mahila, Traffic)</td><td class="n m">205</td>
+   <td class="n m">109</td><td class="n m">314</td></tr>`;}
 
-/* ================= MISSING PERSONS ================= */
-const missingYearData = { "2024":[615,596,19], "2025":[529,516,13], "2026":[390,355,35] };
-new Chart(document.getElementById('chartMissingYear'), {
-  type:'bar',
-  data:{ labels:Object.keys(missingYearData), datasets:[
-    {label:'Reported', data:Object.values(missingYearData).map(v=>v[0]), backgroundColor:COLORS.blue, borderRadius:4},
-    {label:'Traced', data:Object.values(missingYearData).map(v=>v[1]), backgroundColor:COLORS.green, borderRadius:4},
-    {label:'Untraced', data:Object.values(missingYearData).map(v=>v[2]), backgroundColor:COLORS.red, borderRadius:4}
-  ]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1A2238'}} } }
-});
-new Chart(document.getElementById('chartMissingCat'), {
-  type:'doughnut',
-  data:{ labels:['Man','Woman','Boy','Girl'], datasets:[{ data:[63,33,3,7], backgroundColor:[COLORS.blue,COLORS.gold,COLORS.green,COLORS.red], borderColor:'#111726', borderWidth:3 }]},
-  options:{responsive:true, maintainAspectRatio:false, cutout:'62%',
-    plugins:{legend:{position:'bottom', labels:{boxWidth:11,font:{size:11}, color:'#8C97B8'}}} }
-});
-const missingSub = [["Chittoor",56,12,44],["Palamaner",22,1,21],["Kuppam",24,4,20],["Nagari",25,4,21]];
-const missingLedger = document.getElementById('missingLedger');
-const maxMissing = Math.max(...missingSub.map(r=>r[1]));
-missingSub.forEach((r,i)=>{
-  missingLedger.insertAdjacentHTML('beforeend', `<div class="ledger-row">
-    <div class="code">${String(i+1).padStart(2,'0')}</div>
-    <div><div class="name">${r[0]} Sub-Division</div><div class="bar-track"><div class="bar-fill" style="width:${(r[1]/maxMissing*100).toFixed(0)}%; background:${COLORS.red}"></div></div></div>
-    <div class="val">${r[1]} UI (${r[3]} untraced)</div></div>`);
-});
+document.querySelector('#tMiss tbody').innerHTML=MISS.map(m=>
+ `<tr><td>${m[0]}</td><td class="n m">${m[1]}</td><td class="n m">${m[2]}</td></tr>`).join('')+
+ `<tr class="tot"><td>District</td><td class="n m">127</td><td class="n m">106</td></tr>`;
 
-/* ================= ENFORCEMENT & PETTY ================= */
-new Chart(document.getElementById('chartSLL'), {
-  type:'bar',
-  data:{ labels:['June 2026','July 2026','August 2026 (upto 13th)'], datasets:[
-    {label:'No. of Cases', data:[null,45,13], backgroundColor:COLORS.blue, borderRadius:4, yAxisID:'y'},
-    {label:'Worth (₹ Lakh)', data:[null,14.92,2.00], backgroundColor:COLORS.gold, borderRadius:4, yAxisID:'y1'}
-  ]},
-  options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1A2238'}, position:'left'}, y1:{grid:{display:false}, position:'right'} } }
-});
-const pettySubdiv = [["Chittoor",1615,335440],["Palamaner",1502,856720],["Kuppam",1383,429455],["Nagari",761,230485],["Traffic PS",595,181090]];
-new Chart(document.getElementById('chartPetty'), {
-  type:'bar',
-  data:{ labels:pettySubdiv.map(r=>r[0]), datasets:[{label:'MV Act Cases', data:pettySubdiv.map(r=>r[1]), backgroundColor:COLORS.amber, borderRadius:4}]},
-  options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-    scales:{ x:{grid:{display:false}}, y:{grid:{color:'#1A2238'}} } }
-});
+document.querySelector('#tPD tbody').innerHTML=PD.map(p=>
+ `<tr><td class="m">${p[0]}</td><td>${p[1]}</td><td class="n m">${p[2]}</td>
+  <td><span class="pill ${p[3]==='Released'?'mid':'nu'}">${p[3]}</span></td></tr>`).join('');
 
-/* ================= PROPERTY CRIME ================= */
-const propertyPS2026 = [
-["Chittoor I Town PS",17,11,2370599,1453599,35.29,61.32],["Chittoor II Town PS",12,7,1731400,995000,41.67,57.47],
-["G.D.Nellore UPS",9,7,678000,40000,12.50,5.90],["Puthalapattu US",11,8,1601000,202000,27.27,12.62],
-["Chittoor Taluk PS",4,3,699170,459170,25.00,65.67],["N.R.Pet PS",1,0,6000,6000,100.00,100.00],
-["Penumuru PS",6,3,236500,30500,50.00,12.90],["Yadamari PS",4,1,164000,32000,75.00,19.51],
-["Gudipala PS",4,1,255000,195000,75.00,76.47],["Kanipakam PS",4,1,295000,55000,75.00,18.64],
-["Kalluru PS",10,6,4482700,154000,40.00,3.44],["Irala PS",1,0,650000,650000,100.00,100.00],
-["Rompicheral PS",6,4,210000,63000,33.33,30.00],["Palamaner U PS",14,6,2113000,905000,57.14,42.83],
-["Gangavaram U PS",9,5,3976000,2746000,44.44,69.06],["Baireddipalli PS",3,2,502500,14000,33.33,2.79],
-["Panjani PS",7,2,387000,204000,71.43,52.71],["Bangarupalem U PS",13,2,1933500,1786000,84.62,92.37],
-["V.Kota U P.S",11,7,1709500,600500,36.36,35.13],["Kuppam U PS",4,3,663200,0,25.00,0.00],
-["Ramakuppam PS",2,2,94000,0,0.00,0.00],["Rallabuduguru PS",5,4,777000,410000,20.00,52.77],
-["Gudupalle PS",2,2,3990000,0,0.00,0.00],["Nagari U PS",11,7,917297,250000,36.36,27.25],
-["Nindra PS",4,4,170000,0,0.00,0.00],["Vijayapuram PS",4,3,374000,220000,25.00,58.82]
-].sort((a,b)=>b[1]-a[1]).slice(0,15);
-new Chart(document.getElementById('chartPropertyPS'), {
-  type:'bar',
-  data:{ labels:propertyPS2026.map(r=>r[0]), datasets:[
-    {label:'Detection %', data:propertyPS2026.map(r=>r[5]), backgroundColor:COLORS.blue, borderRadius:3},
-    {label:'Recovery %', data:propertyPS2026.map(r=>r[6]), backgroundColor:COLORS.green, borderRadius:3}
-  ]},
-  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
-    scales:{ x:{grid:{color:'#1A2238'}, max:100}, y:{grid:{display:false}, ticks:{font:{size:10}}} } }
-});
-const propertyBody = document.querySelector('#tblProperty tbody');
-propertyPS2026.forEach(r=>propertyBody.insertAdjacentHTML('beforeend', `<tr><td>${r[0]}</td><td class="num mono">${r[1]}</td><td class="num mono">${r[2]}</td>
-  <td class="num mono">${fmt(r[3])}</td><td class="num mono">${fmt(r[4])}</td><td class="num mono">${r[5].toFixed(0)}%</td><td class="num mono">${r[6].toFixed(0)}%</td></tr>`));
+/* ---------- CRIME DETAIL ---------- */
+{const tb=document.querySelector('#tAll tbody');
+ tb.innerHTML=ALL26.map(r=>{const[h,rep,tru,cha,con,acq,pt,un,ui]=r;
+  const uip=pct(ui,tru);
+  return `<tr><td>${h}</td><td class="n m">${fm(rep)}</td><td class="n m">${fm(tru)}</td>
+   <td class="n m">${fm(cha)}</td><td class="n m">${con||'—'}</td><td class="n m">${acq||'—'}</td>
+   <td class="n m">${fm(pt)}</td><td class="n m">${fm(ui)}</td>
+   <td class="n">${uip==null?'—':`<span class="pill ${uip>=70?'bad':uip>=40?'mid':'ok'}">${uip}%</span>`}</td></tr>`}).join('')+
+  `<tr class="tot"><td>Total IPC / BNS</td><td class="n m">${fm(ALL26_TOT[0])}</td><td class="n m">${fm(ALL26_TOT[1])}</td>
+   <td class="n m">${fm(ALL26_TOT[2])}</td><td class="n m">${ALL26_TOT[3]}</td><td class="n m">${ALL26_TOT[4]}</td>
+   <td class="n m">${fm(ALL26_TOT[5])}</td><td class="n m">${fm(ALL26_TOT[7])}</td>
+   <td class="n"><span class="pill bad">58%</span></td></tr>
+  <tr class="tot"><td>SLL (FIR)</td><td class="n m">${fm(SLL26[0])}</td><td class="n m">${fm(SLL26[1])}</td>
+   <td class="n m">${fm(SLL26[2])}</td><td class="n m">${SLL26[3]}</td><td class="n m">${SLL26[4]}</td>
+   <td class="n m">${fm(SLL26[5])}</td><td class="n m">${fm(SLL26[7])}</td>
+   <td class="n"><span class="pill mid">45%</span></td></tr>`;}
+
+{document.querySelector('#tGraveCmp tbody').innerHTML=GRAVE.map(g=>
+  `<tr><td>${g[0]}</td><td class="n m">${g[1]}</td><td class="n m">${g[2]}</td>
+   <td class="n m">${g[3]}</td><td class="n m">${g[4]}</td><td class="n m">${g[5]}</td>
+   <td class="n m" style="color:${g[6]>=g[5]*0.7&&g[5]>0?'var(--red)':'var(--tx2)'}">${g[6]}</td></tr>`).join('')+
+  `<tr class="tot"><td>Total grave</td><td class="n m">${GRAVE_TOT[0]}</td><td class="n m">${GRAVE_TOT[1]}</td>
+   <td class="n m">${GRAVE_TOT[2]}</td><td class="n m">${GRAVE_TOT[3]}</td><td class="n m">${GRAVE_TOT[4]}</td>
+   <td class="n"><span class="pill bad">${GRAVE_TOT[5]} · 84%</span></td></tr>`;}
+
+new Chart(cWomen,{type:'bar',data:{labels:WOMEN.map(w=>w[0]),datasets:[
+ {label:'2025',data:WOMEN.map(w=>w[1]),backgroundColor:C.dim,borderRadius:3},
+ {label:'2026',data:WOMEN.map(w=>w[2]),backgroundColor:C.purple,borderRadius:3}]},
+ options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
+  scales:{x:{grid:{color:C.line}},y:{grid:{display:false},ticks:{font:{size:9.5}}}}}});
+
+new Chart(cChildSc,{type:'bar',data:{labels:CHILD_SC.map(c=>c[0]),datasets:[
+ {label:'2025',data:CHILD_SC.map(c=>c[1]),backgroundColor:C.dim,borderRadius:4},
+ {label:'2026',data:CHILD_SC.map(c=>c[2]),backgroundColor:C.amber,borderRadius:4}]},
+ options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
+  scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
+
+new Chart(cMur,{type:'bar',data:{labels:MON,datasets:[
+ {label:'2024',data:MUR['2024'],backgroundColor:C.dim,borderRadius:3},
+ {label:'2025',data:MUR['2025'],backgroundColor:C.blue,borderRadius:3},
+ {label:'2026',data:MUR['2026'],backgroundColor:C.gold,borderRadius:3}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
+ scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
+
+new Chart(cAcc,{type:'line',data:{labels:MON,datasets:[
+ {label:'2024',data:ACC['2024'],borderColor:C.dim,tension:.3,pointRadius:3},
+ {label:'2025',data:ACC['2025'],borderColor:C.blue,tension:.3,pointRadius:3},
+ {label:'2026',data:ACC['2026'],borderColor:C.gold,tension:.3,pointRadius:3}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
+ scales:{x:{grid:{display:false}},y:{grid:{color:C.line}}}}});
+
+{const rows=NAMES.filter(n=>S[n].prop).map(n=>{const[r,u,l,c]=S[n].prop;
+  return{n,r,d:r-u,l,c,rec:l?Math.round(c/l*100):0}}).sort((a,b)=>b.l-a.l);
+ document.querySelector('#tProp tbody').innerHTML=rows.map(x=>
+  `<tr class="${x.r>=4&&x.rec<10?'hl':''}"><td>${x.n}</td><td class="n m">${x.r}</td>
+   <td class="n m">${x.d}</td><td class="n m">${rup(x.l)}</td><td class="n m">${rup(x.c)}</td>
+   <td class="n">${x.r<4?'<span class="pill nu">low base</span>':`<span class="pill ${x.rec>=50?'ok':x.rec>=25?'mid':'bad'}">${x.rec}%</span>`}</td></tr>`).join('');}
+
+/* ---------- PREVENTIVE ---------- */
+{const data=NAMES.map(n=>{const d=S[n];const s=sancTot(d),p=presTot(d);
+  return{n,s,p,v:pct(s-p,s)}}).sort((a,b)=>b.v-a.v);
+ new Chart(cStrength,{type:'bar',
+  data:{labels:data.map(d=>d.n.replace(/ (PS|UPS)$/,'')),datasets:[
+   {label:'Present',data:data.map(d=>d.p),backgroundColor:C.green,stack:'s',borderRadius:2},
+   {label:'Vacant',data:data.map(d=>d.s-d.p),backgroundColor:C.red,stack:'s',borderRadius:2}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+   plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
+   scales:{x:{stacked:true,grid:{color:C.line}},y:{stacked:true,grid:{display:false},ticks:{font:{size:9.5}}}}}});
+
+ document.querySelector('#tStrength tbody').innerHTML=data.map(d=>{
+  const t=S[d.n];
+  return `<tr class="${d.v>=40?'hl':''}"><td>${d.n}</td><td class="n m">${d.s}</td><td class="n m">${d.p}</td>
+   <td class="n"><span class="pill ${d.v>=40?'bad':d.v>=20?'mid':'ok'}">${d.v}%</span></td>
+   <td class="n m">${t.str[4]}/${t.str[0]}</td><td class="n m">${t.str[5]}/${t.str[1]}</td>
+   <td class="n m">${t.str[6]}/${t.str[2]}</td><td class="n m">${t.str[7]}/${t.str[3]}</td></tr>`}).join('');}
+
+{const rows=NAMES.map(n=>({n,r:S[n].rowdy[0],rc:S[n].rowdy[1],s:S[n].susp[0]}))
+  .sort((a,b)=>(b.r+b.s)-(a.r+a.s));
+ document.querySelector('#tSheet tbody').innerHTML=rows.map(x=>
+  `<tr><td>${x.n}</td><td class="n m">${x.r}</td><td class="n m">${x.s}</td><td class="n m">${x.rc}</td></tr>`).join('');}
+
+document.querySelector('#tEnf tbody').innerHTML=ENF.map(e=>
+ `<tr><td>${e[0]}</td><td class="n m">${fm(e[1])}</td><td class="n m">${fm(e[2])}</td></tr>`).join('')+
+ `<tr class="tot"><td>Total</td><td class="n m">${fm(ENF.reduce((a,e)=>a+e[1],0))}</td>
+  <td class="n m">${fm(ENF.reduce((a,e)=>a+e[2],0))}</td></tr>`;
+
+document.querySelector('#tBind tbody').innerHTML=BIND.map(b=>
+ `<tr><td>${b[0]}</td><td class="n m">${b[1]}</td><td class="n m">${b[2]}</td><td class="n m">${b[3]}</td></tr>`).join('')+
+ `<tr class="tot"><td>District</td><td class="n m">2</td><td class="n m">12</td><td class="n m">32</td></tr>`;
 </script>
 </body>
 </html>
