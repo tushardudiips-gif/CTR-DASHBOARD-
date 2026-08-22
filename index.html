@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230A0E17' stroke='%23C9A24A' stroke-width='4'/%3E%3Ctext x='50' y='62' font-family='Arial' font-weight='bold' font-size='28' fill='%23C9A24A' text-anchor='middle'%3ECTR%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
   :root{
     --bg:#0A0E17;--panel:#111726;--panel2:#161D30;--raised:#1B2338;
@@ -156,6 +156,25 @@
   .note b{color:var(--tx2)}
   .note.warn{border-left-color:var(--amber)}
 
+  .tgl{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+  .tgl button{font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;font-weight:500;
+    padding:0 14px;height:38px;border-radius:8px;border:1px solid var(--line2);
+    background:var(--raised);color:var(--tx2);cursor:pointer;white-space:nowrap}
+  .tgl button:hover{color:var(--tx);border-color:var(--goldD)}
+  .tgl button.on{background:var(--gold);color:#0A0E17;border-color:var(--gold);font-weight:600}
+  .tgl.sm button{height:34px;font-size:11.5px;padding:0 11px}
+  details.stn{margin:10px 0 4px}
+  details.stn summary{font-size:12px;color:var(--tx2);cursor:pointer;padding:7px 0;list-style:none}
+  details.stn summary::-webkit-details-marker{display:none}
+  details.stn summary::before{content:'▸ ';color:var(--goldD)}
+  details.stn[open] summary::before{content:'▾ '}
+  .stnlist{margin-top:6px;padding:12px;background:var(--panel2);border-radius:8px;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:4px 12px}
+  .stnlist label{display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;padding:3px 0}
+  .stnlist input{accent-color:var(--gold);width:15px;height:15px;flex-shrink:0}
+  .lgd{display:flex;flex-wrap:wrap;gap:9px;margin:11px 0 4px;font-size:11px;color:var(--tx2)}
+  .lgd span{display:flex;align-items:center;gap:5px}
+  .sw{width:10px;height:10px;border-radius:2px;flex-shrink:0}
   footer{text-align:center;padding:26px 16px 44px;font-size:9.5px;color:var(--tx3);
     font-family:'IBM Plex Mono',monospace;letter-spacing:.4px;line-height:1.8}
 </style>
@@ -177,9 +196,30 @@
   <div class="nv" data-v="pen">Pending</div>
   <div class="nv" data-v="cri">Crime detail</div>
   <div class="nv" data-v="pre">Preventive</div>
+  <div class="nv" data-v="per">Perception</div>
 </nav>
 
 <main>
+<div id="diag" style="display:none;margin:0 0 14px;padding:12px 14px;border-radius:10px;
+  border:1px solid rgba(217,164,65,.45);background:rgba(217,164,65,.09);color:#D9A441;
+  font-size:12.5px;line-height:1.6"></div>
+<script>
+(function(){
+  function show(msg){
+    var d=document.getElementById('diag');
+    if(!d) return;
+    d.style.display='block';
+    d.innerHTML+=msg+'<br>';
+  }
+  window.__diag=show;
+  window.addEventListener('error',function(e){
+    show('<b>Error:</b> '+(e.message||'unknown')+
+         (e.filename?' &nbsp;<span style="color:#8C97B8">'+e.filename.split('/').pop()+
+         ':'+(e.lineno||'?')+'</span>':''));
+  });
+})();
+</script>
+
 
 <!-- ==================== SITUATION ==================== -->
 <section class="view on" id="v-sit">
@@ -440,6 +480,54 @@
   </div>
 </section>
 
+
+<!-- ==================== PERCEPTION ==================== -->
+<section class="view" id="v-per">
+  <div class="hd"><span class="eb">Public survey</span><h2>Perception</h2>
+    <p>Monthly public feedback on two themes. This is survey sentiment, not a case return — read it
+       differently from everything else on this dashboard.</p></div>
+
+  <div class="kpis" id="pKpis"></div>
+
+  <div class="pn" style="margin-top:16px">
+    <div class="pt">Positive % over time <span class="ds warn" id="pDate">—</span></div>
+    <div class="ps">District average in gold. Pick stations to compare against it.</div>
+    <div class="tgl">
+      <button id="bCrime" class="on">Crime against women</button>
+      <button id="bGanja">Ganja</button>
+    </div>
+    <div class="tgl sm">
+      <button id="bTop">Top 5</button><button id="bBot">Bottom 5</button>
+      <button id="bAll">All 31</button><button id="bClr">Clear</button>
+    </div>
+    <details class="stn"><summary>Choose individual stations</summary>
+      <div class="stnlist" id="pList"></div></details>
+    <div class="lgd" id="pLgd"></div>
+    <div class="cw t"><canvas id="cPerc"></canvas></div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">Station averages — both themes</div>
+    <div class="ps">Sorted by crime-against-women score. Gap column shows where the two themes diverge for the same station.</div>
+    <div class="tw"><table id="tPerc"><thead><tr>
+      <th>Station</th><th class="n">Crime vs women</th><th class="n">Ganja</th>
+      <th class="n">Gap</th><th class="n">Latest month</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="note warn">
+    <b>Read this tab with more caution than the others.</b>
+    Sample sizes swing hard month to month — from 1,181 respondents district-wide in Jul-25 to 8,803
+    in Feb-26, then back to about 2,300 by mid-2026. A station's monthly figure can rest on as few as
+    20–30 responses, so single-month movements are mostly noise. Judge on the trend line, not the last point.
+    <br><br>
+    <b>Known defect in the source:</b> in the crime-against-women series, Dec-25 and Jan-26 are identical
+    for all 31 stations — same percentages and the same 7,710 respondent count. That is a duplicated month,
+    not a flat one. The ganja series does not have this problem. Worth having the survey team confirm
+    before either month is quoted.
+  </div>
+</section>
+
 </main>
 
 <footer>
@@ -448,13 +536,32 @@
 </footer>
 
 <script>
-Chart.defaults.font.family="'IBM Plex Sans',sans-serif";
-Chart.defaults.color='#8C97B8';Chart.defaults.borderColor='#242E48';
+
+/* ---- chart library guard: tables and records must work even if the CDN is blocked ---- */
+var CHART_OK = (typeof Chart !== 'undefined' && Chart);
+if(CHART_OK){
+  Chart.defaults.font.family="'IBM Plex Sans',sans-serif";
+  Chart.defaults.color='#8C97B8';
+  Chart.defaults.borderColor='#242E48';
+} else if(window.__diag){
+  window.__diag('<b>Chart library did not load.</b> Every figure, table and station record below is '+
+    'working normally — only the graphs are missing. Usually a blocked CDN or no internet on this device.');
+}
+function safeChart(el, cfg){
+  if(!CHART_OK) return null;
+  try { return new Chart(el, cfg); }
+  catch(err){
+    if(window.__diag) window.__diag('<b>Chart failed:</b> '+(el&&el.id?el.id:'?')+' — '+err.message);
+    return null;
+  }
+}
 const C={blue:'#5B8CFF',gold:'#C9A24A',red:'#E1595A',green:'#4FAE83',amber:'#D9A441',
          purple:'#8B7BD8',dim:'#3A466E',line:'#1A2238'};
 const fm=n=>n==null?'—':n.toLocaleString('en-IN');
 const rup=n=>n==null?'—':(n>=100000?'₹'+(n/100000).toFixed(1)+'L':'₹'+n.toLocaleString('en-IN'));
 const pct=(a,b)=>b?Math.round(a/b*100):null;
+
+const PERC={"crime":{"labels":["Jul-25","Aug-25","Sep-25","Oct-25","Nov-25","Dec-25","Jan-26","Feb-26","Mar-26","Apr-26","May-26","Jun-26"],"district":[61.0,65.3,63.1,64.7,66.3,65.9,65.9,63.7,64.7,64.6,62.2,61.1],"stations":{"Irala PS":[88.0,67.0,61.7,67.3,66.5,76.0,76.0,62.8,67.3,60.6,67.7,63.5],"Yadamari PS":[76.9,63.0,64.8,61.4,64.8,62.3,62.3,61.8,66.2,62.4,62.6,63.2],"S.R.Puram PS":[75.3,61.0,65.7,64.6,67.1,64.4,64.4,63.0,66.6,62.4,59.1,63.0],"Chittoor II Town PS":[72.5,63.1,69.8,71.8,68.7,68.5,68.5,65.2,70.8,69.7,61.3,64.6],"Gangavaram UPS":[72.1,68.6,59.2,66.3,63.4,62.5,62.5,65.4,64.4,63.1,63.7,72.9],"Rama Kuppam PS":[69.6,60.7,62.1,58.3,61.5,56.0,56.0,61.7,53.7,65.4,67.7,54.7],"V.Kota UPS":[67.1,64.3,59.4,63.4,68.3,66.3,66.3,62.5,60.0,58.8,63.9,66.1],"Kallur PS":[65.6,66.3,64.6,65.4,69.0,60.6,60.6,67.8,54.7,56.5,68.1,67.2],"Palamaner UPS":[64.7,60.5,66.6,61.4,69.8,69.7,69.7,61.3,66.4,66.2,60.6,59.8],"Puthalapattu UPS":[64.3,69.5,70.3,64.8,65.7,63.6,63.6,68.1,56.8,70.7,70.5,70.2],"Thavanampalle PS":[64.3,67.7,55.4,66.2,68.4,61.9,61.9,65.1,63.2,66.0,60.2,61.0],"Vijayapuram PS":[63.6,63.2,75.8,72.7,66.2,67.6,67.6,59.9,68.1,57.1,61.6,55.4],"Kuppam Urban PS":[62.5,66.9,64.0,66.1,67.5,65.7,65.7,61.4,64.7,56.7,62.4,62.3],"K.Nagar PS":[62.1,65.0,63.1,66.7,73.7,69.7,69.7,66.4,69.1,73.6,48.5,61.9],"Gudipala PS":[60.7,71.2,68.9,67.7,66.8,64.5,64.5,66.0,66.5,66.5,72.4,65.3],"G.D.Nellore UPS":[59.6,68.5,58.6,65.4,68.1,63.2,63.2,65.2,64.6,66.0,60.8,60.7],"Rompicherla PS":[59.1,61.5,62.1,59.7,60.6,66.3,66.3,60.0,64.3,70.5,47.7,60.7],"Bangarupalem UPS":[58.5,68.0,65.5,61.2,66.1,71.5,71.5,63.1,69.0,63.7,60.7,60.9],"Chittoor I Town PS":[58.3,69.1,70.5,69.6,71.7,68.9,68.9,68.2,73.8,77.3,62.7,65.2],"Vedurukuppam PS":[57.1,56.5,57.5,67.4,66.9,64.4,64.4,58.8,57.9,61.8,61.9,49.0],"Kanipakam PS":[56.7,69.5,67.4,57.6,70.7,66.1,66.1,66.5,74.3,58.3,58.5,65.2],"Nindra PS":[55.9,70.6,67.8,62.6,64.1,68.8,68.8,60.2,71.9,62.5,61.5,53.8],"Panjani PS":[55.0,60.6,64.8,64.9,62.9,64.1,64.1,61.6,66.2,62.1,63.0,54.7],"Baireddypalli PS":[54.5,68.8,52.3,60.8,65.0,69.2,69.2,65.0,72.9,66.1,60.0,55.3],"Nagari UPS":[52.9,67.0,57.8,61.5,62.4,65.6,65.6,59.1,52.8,65.7,62.8,68.1],"Rallabudugur PS":[52.5,65.4,61.4,66.1,64.9,71.0,71.0,65.0,66.7,67.7,55.0,49.5],"N.R.Pet PS":[50.0,60.3,68.6,57.5,60.7,73.1,73.1,59.7,60.8,71.1,66.7,70.3],"Gudupalli PS":[50.0,61.3,56.8,63.6,62.4,58.7,58.7,59.4,56.9,61.2,58.5,57.8],"Chittoor Taluk PS":[49.2,62.5,65.0,63.4,64.1,66.7,66.7,69.2,59.4,71.4,67.4,58.6],"Palasamudram PS":[39.0,65.0,61.7,70.9,63.9,64.9,64.9,62.5,69.1,49.1,64.1,61.9],"Penumur PS":[38.3,62.8,70.9,67.3,65.1,67.0,67.0,66.3,69.4,61.2,59.0,45.9]},"avgs":{"Irala PS":68.7,"Yadamari PS":64.3,"S.R.Puram PS":64.7,"Chittoor II Town PS":67.9,"Gangavaram UPS":65.3,"Rama Kuppam PS":60.6,"V.Kota UPS":63.9,"Kallur PS":63.9,"Palamaner UPS":64.7,"Puthalapattu UPS":66.5,"Thavanampalle PS":63.4,"Vijayapuram PS":64.9,"Kuppam Urban PS":63.8,"K.Nagar PS":65.8,"Gudipala PS":66.8,"G.D.Nellore UPS":63.7,"Rompicherla PS":61.6,"Bangarupalem UPS":65.0,"Chittoor I Town PS":68.7,"Vedurukuppam PS":60.3,"Kanipakam PS":64.7,"Nindra PS":64.0,"Panjani PS":62.0,"Baireddypalli PS":63.3,"Nagari UPS":61.8,"Rallabudugur PS":63.0,"N.R.Pet PS":64.3,"Gudupalli PS":58.8,"Chittoor Taluk PS":63.6,"Palasamudram PS":61.4,"Penumur PS":61.7},"resp":[1181,4665,4612,5572,7431,7710,7710,8803,2575,2253,2329,2560]},"ganja":{"labels":["Jul-25","Aug-25","Sep-25","Oct-25","Nov-25","Dec-25","Jan-26","Feb-26","Mar-26","Apr-26","May-26","Jun-26","Jul-26"],"district":[63.3,67.8,63.1,66.3,72.4,70.5,69.5,71.1,71.2,70.2,69.8,69.2,69.3],"stations":{"Penumur PS":[100.0,68.5,55.2,67.0,71.3,70.9,72.9,76.8,71.6,75.1,68.8,76.0,68.5],"Panjani PS":[84.1,65.9,63.5,70.9,74.6,69.7,71.8,72.4,82.2,63.3,71.2,73.1,69.8],"G.D.Nellore UPS":[82.5,67.3,63.8,63.4,70.8,71.7,74.1,71.7,72.1,66.0,74.1,63.4,65.7],"Gudupalli PS":[82.0,70.0,63.1,62.7,73.2,70.0,66.5,73.4,71.7,72.3,63.6,65.5,69.2],"Yadamari PS":[79.6,67.0,55.5,68.4,74.6,66.0,70.5,70.1,77.0,67.5,62.5,60.8,68.2],"S.R.Puram PS":[78.8,66.9,64.7,59.0,74.9,71.7,80.1,66.5,76.9,71.1,71.4,73.3,73.9],"Chittoor I Town PS":[73.7,67.9,59.4,71.6,71.4,74.6,74.0,68.0,76.0,72.6,71.0,70.6,69.7],"Vedurukuppam PS":[72.2,69.1,68.6,64.4,71.9,68.0,65.8,70.3,68.8,61.3,64.8,73.6,70.8],"Rama Kuppam PS":[69.2,57.7,58.8,61.6,72.2,61.2,66.0,66.8,68.8,59.7,66.8,61.4,64.3],"Kuppam Urban PS":[69.1,64.1,58.0,64.9,70.9,71.5,65.3,68.9,63.5,65.9,72.8,72.2,70.4],"Chittoor II Town PS":[68.9,67.3,64.8,74.7,71.6,73.3,67.2,69.4,73.7,78.8,67.8,74.7,72.4],"Gudipala PS":[68.6,69.7,60.3,73.9,72.6,76.4,67.3,70.8,64.3,67.4,69.0,67.2,68.0],"Nindra PS":[66.7,55.2,66.4,73.4,65.9,60.4,69.2,63.7,49.7,62.3,74.8,64.9,65.0],"Puthalapattu UPS":[63.3,72.8,71.2,65.4,74.8,72.2,72.3,70.4,82.1,70.8,70.3,65.8,72.0],"N.R.Pet PS":[63.3,68.9,55.1,60.8,74.7,59.1,69.3,64.6,70.4,75.8,70.0,80.7,71.7],"Palamaner UPS":[61.2,70.4,64.1,67.4,73.9,67.5,72.6,72.6,73.1,66.5,72.4,66.5,66.2],"Bangarupalem UPS":[60.8,70.6,65.0,70.1,73.8,75.5,75.5,75.4,67.3,80.7,75.7,78.9,75.4],"K.Nagar PS":[59.5,77.2,62.4,67.6,79.7,72.7,62.8,81.0,71.1,79.9,74.5,73.7,77.8],"Baireddypalli PS":[59.3,72.2,61.6,62.0,75.0,73.2,65.9,74.2,79.3,82.3,65.9,67.6,67.0],"Gangavaram UPS":[58.4,69.3,70.1,67.9,70.2,70.8,67.6,71.4,73.5,77.3,65.7,69.5,69.5],"Irala PS":[55.4,83.7,73.9,73.3,70.9,68.0,73.4,75.4,72.2,75.2,71.6,77.5,71.4],"V.Kota UPS":[55.1,70.3,65.6,66.8,68.7,74.6,67.0,72.4,63.7,72.5,74.3,72.7,72.3],"Chittoor Taluk PS":[53.9,71.3,56.3,60.5,77.1,70.6,69.4,67.5,76.5,85.5,62.7,61.9,64.9],"Nagari UPS":[53.1,53.1,57.8,54.2,73.7,63.9,66.6,61.4,60.9,54.4,64.7,55.8,59.4],"Rallabudugur PS":[53.0,72.1,64.8,67.0,73.4,67.3,73.9,70.0,66.7,65.9,62.9,68.1,60.8],"Palasamudram PS":[47.6,79.2,60.2,68.1,64.1,64.4,63.2,65.3,73.3,63.6,69.5,70.8,73.4],"Thavanampalle PS":[47.6,63.0,65.7,63.3,69.4,74.5,67.7,76.1,73.3,83.4,78.5,66.4,68.2],"Kanipakam PS":[46.7,80.2,67.1,80.0,69.0,71.0,76.1,75.5,79.2,74.8,70.7,88.2,79.7],"Rompicherla PS":[45.5,64.6,58.9,67.7,72.4,73.7,62.9,74.1,75.4,75.5,73.0,63.0,74.3],"Vijayapuram PS":[39.3,67.0,64.7,56.8,72.3,75.0,70.7,61.0,60.2,53.0,65.8,68.2,68.7],"Kallur PS":[33.0,66.4,67.6,65.6,75.5,75.1,69.4,74.8,74.2,68.6,71.8,68.0,71.4]},"avgs":{"Penumur PS":72.5,"Panjani PS":71.7,"G.D.Nellore UPS":69.7,"Gudupalli PS":69.5,"Yadamari PS":68.3,"S.R.Puram PS":71.5,"Chittoor I Town PS":70.8,"Vedurukuppam PS":68.4,"Rama Kuppam PS":64.2,"Kuppam Urban PS":67.5,"Chittoor II Town PS":71.1,"Gudipala PS":68.9,"Nindra PS":64.4,"Puthalapattu UPS":71.0,"N.R.Pet PS":68.0,"Palamaner UPS":68.8,"Bangarupalem UPS":72.7,"K.Nagar PS":72.3,"Baireddypalli PS":69.7,"Gangavaram UPS":69.3,"Irala PS":72.5,"V.Kota UPS":68.9,"Chittoor Taluk PS":67.5,"Nagari UPS":59.9,"Rallabudugur PS":66.6,"Palasamudram PS":66.4,"Thavanampalle PS":69.0,"Kanipakam PS":73.7,"Rompicherla PS":67.8,"Vijayapuram PS":63.3,"Kallur PS":67.8},"resp":[754,2796,3311,4082,7788,7460,7481,7470,2448,2076,2272,2538,5208]}};
 
 /* ============================================================
    STATION MASTER
@@ -584,12 +691,12 @@ document.getElementById('kpis').innerHTML=kp.map(k=>
  `<div class="k" style="--ac:${k[3]}"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
 
 /* ---------- situation charts ---------- */
-new Chart(cYoY,{type:'bar',data:{labels:['2025','2026'],datasets:[{data:JJ_TOT,
+safeChart(cYoY,{type:'bar',data:{labels:['2025','2026'],datasets:[{data:JJ_TOT,
  backgroundColor:[C.blue,C.gold],borderRadius:6,barPercentage:.55}]},
  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
  scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
 
-new Chart(cStatus,{type:'doughnut',data:{labels:['Under investigation','Pending trial','Convicted','Acquitted','Undetected'],
+safeChart(cStatus,{type:'doughnut',data:{labels:['Under investigation','Pending trial','Convicted','Acquitted','Undetected'],
  datasets:[{data:[839,503,24,15,22],backgroundColor:[C.amber,C.blue,C.green,C.red,C.dim],
  borderColor:'#111726',borderWidth:3}]},
  options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
@@ -664,6 +771,12 @@ function drawRec(){
    <div class="rw"><div class="lb">Rowdy sheeters<small>${d.rowdy[1]} cases on books</small></div><div class="vl">${d.rowdy[0]}</div></div>
    <div class="rw"><div class="lb">Suspect sheeters<small>${d.susp[1]} cases on books</small></div><div class="vl">${d.susp[0]}</div></div>
 
+   <div class="grp">Public perception · survey to mid-2026</div>
+   <div class="rw"><div class="lb">Crime against women<small>district average 64.1%</small></div>
+    <div class="vl">${PERC.crime.avgs[n]!=null?PERC.crime.avgs[n]+'%':'—'} &nbsp;${PERC.crime.avgs[n]!=null?pill(Math.round(PERC.crime.avgs[n]),66,62):''}</div></div>
+   <div class="rw"><div class="lb">Ganja<small>district average 68.7%</small></div>
+    <div class="vl">${PERC.ganja.avgs[n]!=null?PERC.ganja.avgs[n]+'%':'—'} &nbsp;${PERC.ganja.avgs[n]!=null?pill(Math.round(PERC.ganja.avgs[n]),70,65):''}</div></div>
+
    <div class="grp">Crime registered · 1 Jan – 7 Apr 2026</div>
    <div class="rw"><div class="lb">IPC / BNS cases<small>rank ${NAMES.slice().sort((a,b)=>S[b].reg-S[a].reg).indexOf(n)+1} of ${NAMES.length} by volume</small></div>
     <div class="vl">${d.reg}</div></div>
@@ -678,8 +791,8 @@ function drawRank(){
  const n=NAMES[idx];
  const data=NAMES.map(k=>{const d=S[k];const inv=d.str[4]+d.str[5]+d.str[6];
    return{k,v:inv?+(d.ui[3]/inv).toFixed(1):0}}).sort((a,b)=>b.v-a.v);
- if(rankChart)rankChart.destroy();
- rankChart=new Chart(cRank,{type:'bar',
+ if(rankChart&&rankChart.destroy)rankChart.destroy();
+ rankChart=safeChart(cRank,{type:'bar',
   data:{labels:data.map(d=>d.k.replace(/ (PS|UPS)$/,'')),
    datasets:[{data:data.map(d=>d.v),backgroundColor:data.map(d=>d.k===n?C.gold:'#2E3A58'),borderRadius:3}]},
   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
@@ -693,7 +806,7 @@ document.getElementById('nextSta').onclick=()=>{idx=(idx+1)%NAMES.length;drawRec
 drawRec();
 
 /* ---------- PENDING ---------- */
-new Chart(cGraveWhy,{type:'bar',
+safeChart(cGraveWhy,{type:'bar',
  data:{labels:WHY.map(w=>w[0]),datasets:[{data:WHY.map(w=>w[1]),
   backgroundColor:WHY.map(w=>w[2]==='court'?C.dim:C.red),borderRadius:4}]},
  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
@@ -766,28 +879,28 @@ document.querySelector('#tPD tbody').innerHTML=PD.map(p=>
    <td class="n m">${GRAVE_TOT[2]}</td><td class="n m">${GRAVE_TOT[3]}</td><td class="n m">${GRAVE_TOT[4]}</td>
    <td class="n"><span class="pill bad">${GRAVE_TOT[5]} · 84%</span></td></tr>`;}
 
-new Chart(cWomen,{type:'bar',data:{labels:WOMEN.map(w=>w[0]),datasets:[
+safeChart(cWomen,{type:'bar',data:{labels:WOMEN.map(w=>w[0]),datasets:[
  {label:'2025',data:WOMEN.map(w=>w[1]),backgroundColor:C.dim,borderRadius:3},
  {label:'2026',data:WOMEN.map(w=>w[2]),backgroundColor:C.purple,borderRadius:3}]},
  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
   plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
   scales:{x:{grid:{color:C.line}},y:{grid:{display:false},ticks:{font:{size:9.5}}}}}});
 
-new Chart(cChildSc,{type:'bar',data:{labels:CHILD_SC.map(c=>c[0]),datasets:[
+safeChart(cChildSc,{type:'bar',data:{labels:CHILD_SC.map(c=>c[0]),datasets:[
  {label:'2025',data:CHILD_SC.map(c=>c[1]),backgroundColor:C.dim,borderRadius:4},
  {label:'2026',data:CHILD_SC.map(c=>c[2]),backgroundColor:C.amber,borderRadius:4}]},
  options:{responsive:true,maintainAspectRatio:false,
   plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
   scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
 
-new Chart(cMur,{type:'bar',data:{labels:MON,datasets:[
+safeChart(cMur,{type:'bar',data:{labels:MON,datasets:[
  {label:'2024',data:MUR['2024'],backgroundColor:C.dim,borderRadius:3},
  {label:'2025',data:MUR['2025'],backgroundColor:C.blue,borderRadius:3},
  {label:'2026',data:MUR['2026'],backgroundColor:C.gold,borderRadius:3}]},
  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
  scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
 
-new Chart(cAcc,{type:'line',data:{labels:MON,datasets:[
+safeChart(cAcc,{type:'line',data:{labels:MON,datasets:[
  {label:'2024',data:ACC['2024'],borderColor:C.dim,tension:.3,pointRadius:3},
  {label:'2025',data:ACC['2025'],borderColor:C.blue,tension:.3,pointRadius:3},
  {label:'2026',data:ACC['2026'],borderColor:C.gold,tension:.3,pointRadius:3}]},
@@ -804,7 +917,7 @@ new Chart(cAcc,{type:'line',data:{labels:MON,datasets:[
 /* ---------- PREVENTIVE ---------- */
 {const data=NAMES.map(n=>{const d=S[n];const s=sancTot(d),p=presTot(d);
   return{n,s,p,v:pct(s-p,s)}}).sort((a,b)=>b.v-a.v);
- new Chart(cStrength,{type:'bar',
+ safeChart(cStrength,{type:'bar',
   data:{labels:data.map(d=>d.n.replace(/ (PS|UPS)$/,'')),datasets:[
    {label:'Present',data:data.map(d=>d.p),backgroundColor:C.green,stack:'s',borderRadius:2},
    {label:'Vacant',data:data.map(d=>d.s-d.p),backgroundColor:C.red,stack:'s',borderRadius:2}]},
@@ -832,6 +945,85 @@ document.querySelector('#tEnf tbody').innerHTML=ENF.map(e=>
 document.querySelector('#tBind tbody').innerHTML=BIND.map(b=>
  `<tr><td>${b[0]}</td><td class="n m">${b[1]}</td><td class="n m">${b[2]}</td><td class="n m">${b[3]}</td></tr>`).join('')+
  `<tr class="tot"><td>District</td><td class="n m">2</td><td class="n m">12</td><td class="n m">32</td></tr>`;
+/* ---------- PERCEPTION ---------- */
+const PAL=['#5B8CFF','#E1595A','#4FAE83','#D9A441','#8B7BD8','#E87BA4','#48C4C4','#C98A4A'];
+let pTheme='crime', pSel=[];
+const pNames=()=>Object.keys(PERC[pTheme].stations).sort();
+const pColor=n=>PAL[pNames().indexOf(n)%PAL.length];
+
+function pBuildList(){
+  document.getElementById('pList').innerHTML=pNames().map(n=>
+    `<label><input type="checkbox" data-n="${n}" ${pSel.includes(n)?'checked':''}>
+     <span>${n.replace(/ (PS|UPS)$/,'')} <span style="color:var(--tx3)">${PERC[pTheme].avgs[n]}%</span></span></label>`).join('');
+  document.querySelectorAll('#pList input').forEach(cb=>cb.addEventListener('change',()=>{
+    const n=cb.dataset.n;
+    if(cb.checked){if(!pSel.includes(n))pSel.push(n)}else{pSel=pSel.filter(x=>x!==n)}
+    pRender();
+  }));
+}
+function pTopN(n,asc){const a=PERC[pTheme].avgs;
+  return Object.keys(a).sort((x,y)=>asc?a[x]-a[y]:a[y]-a[x]).slice(0,n)}
+
+let pChart=null;
+function pRender(){
+  const d=PERC[pTheme];
+  const ds=[{label:'District average',data:d.district,borderColor:'#C9A24A',borderWidth:3,
+    pointRadius:3,pointBackgroundColor:'#C9A24A',tension:.25,spanGaps:true,order:0}];
+  pSel.forEach(n=>ds.push({label:n,data:d.stations[n],borderColor:pColor(n),
+    borderWidth:1.5,pointRadius:2,tension:.25,spanGaps:true,order:1}));
+  document.getElementById('pLgd').innerHTML=
+    '<span><span class="sw" style="background:#C9A24A"></span>District average</span>'+
+    pSel.map(n=>`<span><span class="sw" style="background:${pColor(n)}"></span>${n.replace(/ (PS|UPS)$/,'')}</span>`).join('');
+  document.getElementById('pDate').textContent=d.labels[0]+' – '+d.labels[d.labels.length-1];
+  if(pChart&&pChart.destroy)pChart.destroy();
+  pChart=safeChart(cPerc,{type:'line',data:{labels:d.labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y+'%'}}},
+      scales:{y:{min:35,max:100,grid:{color:C.line},ticks:{callback:v=>v+'%'}},
+              x:{grid:{display:false},ticks:{autoSkip:false,maxRotation:45,font:{size:10}}}}}});
+}
+function pKpi(){
+  const c=PERC.crime,g=PERC.ganja;
+  const cd=c.district,gd=g.district;
+  const cLast=cd[cd.length-1],cFirst=cd[0];
+  const gLast=gd[gd.length-1];
+  const cAvgs=Object.entries(c.avgs).sort((a,b)=>a[1]-b[1]);
+  const gAvgs=Object.entries(g.avgs).sort((a,b)=>a[1]-b[1]);
+  const k=[
+   ["Crime vs women",cLast+'%',"district, "+c.labels[c.labels.length-1]+" · avg "+(cd.reduce((a,b)=>a+b,0)/cd.length).toFixed(1)+"%","#8B7BD8"],
+   ["Ganja",gLast+'%',"district, "+g.labels[g.labels.length-1]+" · avg "+(gd.reduce((a,b)=>a+b,0)/gd.length).toFixed(1)+"%","#4FAE83"],
+   ["Lowest — women",cAvgs[0][1]+'%',cAvgs[0][0].replace(/ (PS|UPS)$/,''),"#E1595A"],
+   ["Lowest — ganja",gAvgs[0][1]+'%',gAvgs[0][0].replace(/ (PS|UPS)$/,''),"#E1595A"],
+   ["Highest — women",cAvgs[cAvgs.length-1][1]+'%',cAvgs[cAvgs.length-1][0].replace(/ (PS|UPS)$/,''),"#4FAE83"],
+   ["Spread",(cAvgs[cAvgs.length-1][1]-cAvgs[0][1]).toFixed(1)+' pts',"best to worst station","#5B8CFF"]];
+  document.getElementById('pKpis').innerHTML=k.map(x=>
+   `<div class="k" style="--ac:${x[3]}"><div class="l">${x[0]}</div><div class="v">${x[1]}</div><div class="s">${x[2]}</div></div>`).join('');
+}
+function pTable(){
+  const c=PERC.crime,g=PERC.ganja;
+  const rows=Object.keys(c.avgs).map(n=>{
+    const cv=c.avgs[n],gv=g.avgs[n];
+    const last=c.stations[n][c.stations[n].length-1];
+    return{n,cv,gv,gap:+(gv-cv).toFixed(1),last}}).sort((a,b)=>a.cv-b.cv);
+  document.querySelector('#tPerc tbody').innerHTML=rows.map(r=>
+   `<tr class="${r.cv<62?'hl':''}"><td>${r.n}</td>
+    <td class="n"><span class="pill ${r.cv>=66?'ok':r.cv>=62?'mid':'bad'}">${r.cv}%</span></td>
+    <td class="n"><span class="pill ${r.gv>=70?'ok':r.gv>=65?'mid':'bad'}">${r.gv}%</span></td>
+    <td class="n m" style="color:${Math.abs(r.gap)>=8?'var(--amber)':'var(--tx3)'}">${r.gap>0?'+':''}${r.gap}</td>
+    <td class="n m">${r.last}%</td></tr>`).join('');
+}
+document.getElementById('bCrime').onclick=()=>{pTheme='crime';pSel=[];
+  document.getElementById('bCrime').classList.add('on');document.getElementById('bGanja').classList.remove('on');
+  pBuildList();pRender()};
+document.getElementById('bGanja').onclick=()=>{pTheme='ganja';pSel=[];
+  document.getElementById('bGanja').classList.add('on');document.getElementById('bCrime').classList.remove('on');
+  pBuildList();pRender()};
+document.getElementById('bTop').onclick=()=>{pSel=pTopN(5,false);pBuildList();pRender()};
+document.getElementById('bBot').onclick=()=>{pSel=pTopN(5,true);pBuildList();pRender()};
+document.getElementById('bAll').onclick=()=>{pSel=Object.keys(PERC[pTheme].stations);pBuildList();pRender()};
+document.getElementById('bClr').onclick=()=>{pSel=[];pBuildList();pRender()};
+pKpi();pTable();pBuildList();pRender();
+
 </script>
 </body>
 </html>
