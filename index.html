@@ -175,6 +175,40 @@
   .lgd{display:flex;flex-wrap:wrap;gap:9px;margin:11px 0 4px;font-size:11px;color:var(--tx2)}
   .lgd span{display:flex;align-items:center;gap:5px}
   .sw{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+  .subj{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+  .subj button{font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;font-weight:500;
+    padding:0 14px;height:38px;border-radius:8px;border:1px solid var(--line2);
+    background:var(--raised);color:var(--tx2);cursor:pointer;white-space:nowrap}
+  .subj button:hover{color:var(--tx);border-color:var(--goldD)}
+  .subj button.on{background:var(--gold);color:#0A0E17;border-color:var(--gold);font-weight:600}
+  .brief{max-width:760px}
+  .brief-hd{display:flex;justify-content:space-between;align-items:flex-end;
+    border-bottom:2px solid var(--gold);padding-bottom:10px;margin-bottom:16px}
+  .brief-hd h2{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:20px}
+  .brief-hd .dt{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--tx2)}
+  .bline{display:flex;justify-content:space-between;gap:12px;padding:9px 0;
+    border-bottom:1px solid var(--line);font-size:13px}
+  .bline:last-child{border-bottom:none}
+  .bline .k{color:var(--tx2)}
+  .bline .v{font-family:'IBM Plex Mono',monospace;font-weight:600;text-align:right}
+  .btalk{background:var(--panel2);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;
+    padding:11px 14px;margin:10px 0;font-size:12.5px;line-height:1.65;color:var(--tx2)}
+  .btalk b{color:var(--tx)}
+  .printbar{display:flex;justify-content:flex-end;margin-bottom:10px}
+  .printbar button{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;
+    padding:0 16px;height:38px;border-radius:8px;border:1px solid var(--goldD);
+    background:transparent;color:var(--gold);cursor:pointer}
+  .printbar button:hover{background:rgba(201,162,74,.1)}
+  @media print{
+    .mast,nav,.printbar,footer,#diag{display:none!important}
+    body{background:#fff;color:#111}
+    .pn,.k,.rec,.btalk,.bline{border-color:#ccc!important;background:#fff!important}
+    .brief{max-width:100%}
+    main{padding:0!important}
+    canvas{display:none}
+    .view{display:none!important}
+    .view.on{display:block!important}
+  }
   footer{text-align:center;padding:26px 16px 44px;font-size:9.5px;color:var(--tx3);
     font-family:'IBM Plex Mono',monospace;letter-spacing:.4px;line-height:1.8}
 </style>
@@ -197,6 +231,7 @@
   <div class="nv" data-v="cri">Crime detail</div>
   <div class="nv" data-v="pre">Preventive</div>
   <div class="nv" data-v="per">Perception</div>
+  <div class="nv" data-v="rev">Review</div>
 </nav>
 
 <main>
@@ -226,21 +261,21 @@
   <div class="exc">
     <h3>Needs attention</h3>
     <div class="sub">Outliers in the current returns. Each is a specific question for a named station.</div>
-    <div class="ex"><div class="n">238<small>KUPPAM U</small></div>
-      <div class="t"><b>Kuppam Urban carries 238 UI cases — the district's heaviest.</b>
-      <span>Vedurukuppam follows at 183, V.Kota at 176. These three hold a fifth of district pendency between them.</span></div></div>
-    <div class="ex"><div class="n">46<small>OF 183</small></div>
-      <div class="t"><b>Vedurukuppam has 46 UI cases from 2024 alone, and 72 from 2025.</b>
-      <span>Only 54 are from the current year. That ageing profile is unlike any other station — most carry their weight in 2026 cases.</span></div></div>
-    <div class="ex"><div class="n">670<small>AWAITING</small></div>
-      <div class="t"><b>670 charged cases are waiting on a CC/PRC/STC number from court.</b>
-      <span>The PS registers show 534 — a 136-case gap. V.Kota alone accounts for 80, S.R.Puram 58.</span></div></div>
+    <div class="ex"><div class="n">233<small>KUPPAM U</small></div>
+      <div class="t"><b>Kuppam Urban carries 233 UI cases — the district's heaviest.</b>
+      <span>V.Kota now follows at 189, overtaking Vedurukuppam at 177. These three hold a fifth of district pendency between them.</span></div></div>
+    <div class="ex"><div class="n">104<small>V.KOTA</small></div>
+      <div class="t"><b>V.Kota accounts for 104 of the district's 691 charged-but-uncharged cases — by far the largest single share.</b>
+      <span>S.R.Puram is next at 59. Together they're over a fifth of every case district-wide still waiting on a CC number.</span></div></div>
+    <div class="ex"><div class="n">691<small>AWAITING</small></div>
+      <div class="t"><b>691 charged cases are waiting on a CC/PRC/STC number from court.</b>
+      <span>The PS registers show 585 — a 106-case gap, narrower than a month ago but still substantial.</span></div></div>
     <div class="ex"><div class="n">47<small>OF 82</small></div>
       <div class="t"><b>47 of 82 grave UI cases are stuck for reasons within station control.</b>
       <span>19 for want of clues, 8 awaiting arrest. Only 35 sit with the court registry.</span></div></div>
-    <div class="ex"><div class="n">50<small>EXECUTED</small></div>
-      <div class="t"><b>Warrant execution has picked up sharply — 52 executed in August against 29 the previous month.</b>
-      <span>Panjani cleared 23 and S.R.Puram 10. But 207 criminal and 109 NI Act warrants remain.</span></div></div>
+    <div class="ex"><div class="n">35<small>EXECUTED</small></div>
+      <div class="t"><b>35 warrants executed in the first 18 days of September — slower than August's pace of 52.</b>
+      <span>Rallabudugur leads with 5. 185 criminal and 105 NI Act warrants remain — worth checking whether September closes strong or the August push was a one-off.</span></div></div>
     <div class="ex"><div class="n">0<small>MV ACT</small></div>
       <div class="t"><b>Chittoor II Town, K.Nagar and S.R.Puram booked zero MV Act cases in August.</b>
       <span>Against 269 at Palamaner and 182 at Chittoor I Town. Worth asking whether this is a reporting gap or genuine inactivity.</span></div></div>
@@ -323,7 +358,7 @@
   </div>
 
   <div class="pn">
-    <div class="pt">UI ageing — how old is the backlog <span class="ds live">CCTNS · 28·08·2026</span></div>
+    <div class="pt">UI ageing — how old is the backlog <span class="ds warn">CCTNS · 28·08·2026 (not refreshed this pass)</span></div>
     <div class="ps">Same total, split by the year each case was registered. A station heavy in the left-hand bars is carrying old work; one heavy on the right is simply busy this year. These are different problems.</div>
     <div class="cw xt"><canvas id="cAge"></canvas></div>
     <div class="note">District: <b>339 UI cases predate 2024</b> — 13% of the backlog. Vedurukuppam (46 from 2024)
@@ -331,16 +366,16 @@
   </div>
 
   <div class="pn">
-    <div class="pt">Total UI caseload by station <span class="ds live">CCTNS · 28·08·2026</span></div>
+    <div class="pt">Total UI caseload by station <span class="ds live">CCTNS · 23·09·2026</span></div>
     <div class="ps">CCTNS figure is the source of record. The station's own register is shown alongside — where they differ, CCTNS governs.</div>
     <div class="tw"><table id="tUI"><thead><tr>
       <th>Station</th><th class="n">PS register</th><th class="n">CCTNS</th><th class="n">Charged</th><th class="n">Gap</th>
     </tr></thead><tbody></tbody></table></div>
-    <div class="note">District: <b>2,516 UI per CCTNS</b> against 2,499 per PS registers — a 17-case gap, smaller than the 65-case spread across individual stations because some run positive and some negative. Bangarupalem is the one outlier worth asking about: 105 PS vs 86 CCTNS, a 19-case gap in a single direction.</div>
+    <div class="note">District: <b>2,432 UI per CCTNS</b> against 2,393 per PS registers — a 39-case gap. Bangarupalem remains the largest single-station gap: 72 PS vs 85 CCTNS, 13 cases apart.</div>
   </div>
 
   <div class="pn">
-    <div class="pt">Pending trial <span class="ds">25·08·2026</span></div>
+    <div class="pt">Pending trial <span class="ds live">CCTNS · 23·09·2026</span></div>
     <div class="ps">12,259 cases district-wide. Movement depends on court listing — tracked for awareness, not a station performance measure.</div>
     <div class="tw"><table id="tPT"><thead><tr>
       <th>Station</th><th class="n">PT pending</th><th class="n">Share of district</th>
@@ -348,7 +383,7 @@
   </div>
 
   <div class="pn">
-    <div class="pt">Warrants pending <span class="ds">29·08·2026</span></div>
+    <div class="pt">Warrants pending <span class="ds">18·09·2026</span></div>
     <div class="ps">Criminal (BNS) and NI Act cheque-bounce warrants are separate pools with different execution mechanics — shown separately, never merged.</div>
     <div class="tw"><table id="tNbw"><thead><tr>
       <th>Station</th><th class="n">Criminal</th><th class="n">NI Act</th><th class="n">Total</th>
@@ -415,8 +450,8 @@
       <div class="cw"><canvas id="cMur"></canvas></div>
     </div>
     <div class="pn">
-      <div class="pt">Road accidents by month <span class="ds live">to 28·08·2026</span></div>
-      <div class="ps">Fatal share: 49% in 2024, 47% in 2025, 53% so far in 2026.</div>
+      <div class="pt">Road accidents by month <span class="ds live">to 23·09·2026</span></div>
+      <div class="ps">Fatal share: 49% in 2024, 47% in 2025, 54% so far in 2026 — a real rise, not noise.</div>
       <div class="cw"><canvas id="cAcc"></canvas></div>
     </div>
   </div>
@@ -538,6 +573,29 @@
   </div>
 </section>
 
+
+<!-- ==================== REVIEW ==================== -->
+<section class="view" id="v-rev">
+  <div class="hd"><span class="eb">Meeting-ready</span><h2>Review</h2>
+    <p>One page per subject — pick what's on today's call. Print button gives you a physical page;
+       the district overview also works as a standing monthly summary.</p></div>
+
+  <div class="subj" id="subjBar">
+    <button data-s="dist" class="on">District overview</button>
+    <button data-s="warrants">Warrants</button>
+    <button data-s="ui">Investigation (UI)</button>
+    <button data-s="grave">Grave crime</button>
+    <button data-s="prevent">Sheeters &amp; preventive</button>
+    <button data-s="strength">Strength</button>
+    <button data-s="property">Property crime</button>
+    <button data-s="perception">Perception</button>
+  </div>
+
+  <div class="printbar"><button onclick="window.print()">Print this page</button></div>
+
+  <div class="brief" id="briefOut"></div>
+</section>
+
 </main>
 
 <footer>
@@ -586,46 +644,47 @@ const PERC={"crime":{"labels":["Jul-25","Aug-25","Sep-25","Oct-25","Nov-25","Dec
    prop   : [reported, undetected, lost, recovered]      to 12-08-2026
    ============================================================ */
 const S={
- "Chittoor I Town PS":{sd:"Chittoor",reg:26,str:[2,6,12,49,3,4,13,37,1,1],ui:[140,142,29],pt:443,age:[31,11,40,59],nbw:[12,24],mv:[182,29820],graveUI:5,gYears:"2023–26",rowdy:[18,36],susp:[51,114],prop:[17,11,2370599,1453599]},
- "Chittoor II Town PS":{sd:"Chittoor",reg:19,str:[2,4,8,42,0,4,9,31,1,0],ui:[83,84,13],pt:448,age:[25,13,18,27],nbw:[7,7],mv:[0,0],graveUI:3,gYears:"2023–26",rowdy:[36,70],susp:[120,355],prop:[12,7,1731400,995000]},
- "G.D.Nellore UPS":{sd:"Chittoor",reg:33,str:[0,3,6,18,0,2,8,19,1,1],ui:[101,101,21],pt:545,age:[6,6,26,65],nbw:[4,0],mv:[80,18395],graveUI:1,gYears:"2026",rowdy:[12,28],susp:[45,90],prop:[9,7,678000,40000]},
- "Puthalapattu UPS":{sd:"Chittoor",reg:23,str:[0,3,6,19,0,3,6,19,1,1],ui:[92,92,12],pt:427,age:[18,14,15,45],nbw:[2,1],mv:[100,19800],graveUI:2,gYears:"2023, 2026",rowdy:[9,12],susp:[47,54],prop:[11,8,1601000,202000]},
- "Chittoor Taluk PS":{sd:"Chittoor",reg:20,str:[2,4,7,29,1,3,7,28,0,0],ui:[69,67,4],pt:272,age:[2,8,27,32],nbw:[13,0],mv:[45,6405],graveUI:6,gYears:"2024–26",rowdy:[14,30],susp:[38,59],prop:[4,3,699170,459170]},
- "N.R.Pet PS":{sd:"Chittoor",reg:9,str:[1,2,5,18,1,1,5,15,0,0],ui:[32,32,13],pt:151,age:[3,4,11,14],nbw:[2,0],mv:[30,5550],graveUI:2,gYears:"2025–26",rowdy:[7,16],susp:[11,37],prop:[1,0,6000,6000]},
- "Penumur PS":{sd:"Chittoor",reg:14,str:[1,2,5,19,1,2,5,12,0,0],ui:[28,28,8],pt:420,age:[6,1,3,19],nbw:[4,0],mv:[5,3475],graveUI:1,gYears:"2026",rowdy:[15,51],susp:[36,106],prop:[6,3,236500,30500]},
- "Yadamari PS":{sd:"Chittoor",reg:12,str:[1,2,6,19,1,1,7,17,0,0],ui:[61,61,25],pt:383,age:[9,10,15,26],nbw:[3,0],mv:[10,6100],graveUI:2,gYears:"2025",rowdy:[26,59],susp:[39,52],prop:[4,1,164000,32000]},
- "Gudipala PS":{sd:"Chittoor",reg:16,str:[1,3,6,18,1,3,6,17,0,0],ui:[71,71,25],pt:528,age:[16,14,8,34],nbw:[3,0],mv:[49,9065],graveUI:4,gYears:"2023–26",rowdy:[17,53],susp:[51,147],prop:[4,1,255000,195000]},
- "Thavanampalle PS":{sd:"Chittoor",reg:15,str:[1,2,5,18,1,2,5,8,0,0],ui:[41,41,13],pt:321,age:[4,7,11,19],nbw:[1,2],mv:[134,24790],graveUI:3,gYears:"2025–26",rowdy:[33,54],susp:[28,36],prop:null},
- "Kanipakam PS":{sd:"Chittoor",reg:14,str:[1,3,6,29,1,2,7,24,0,0],ui:[24,27,8],pt:158,age:[4,5,4,13],nbw:[3,0],mv:[67,19545],graveUI:0,gYears:"—",rowdy:[4,12],susp:[11,16],prop:[4,1,295000,55000]},
- "Kallur PS":{sd:"Chittoor",reg:18,str:[1,3,5,19,1,3,6,12,0,0],ui:[44,48,12],pt:317,age:[2,6,10,30],nbw:[1,2],mv:[95,17575],graveUI:1,gYears:"2024",rowdy:[5,9],susp:[15,28],prop:[10,6,4482700,154000]},
- "Irala PS":{sd:"Chittoor",reg:13,str:[1,2,5,18,1,1,6,11,0,0],ui:[49,49,29],pt:252,age:[7,8,14,21],nbw:[0,0],mv:[129,24865],graveUI:0,gYears:"—",rowdy:[9,9],susp:[39,40],prop:[1,0,650000,650000]},
- "Rompicherla PS":{sd:"Chittoor",reg:13,str:[1,2,6,18,1,0,4,7,0,0],ui:[41,41,13],pt:212,age:[4,1,6,30],nbw:[5,1],mv:[65,12025],graveUI:0,gYears:"—",rowdy:[32,36],susp:[43,84],prop:[6,4,210000,63000]},
- "Palamaner UPS":{sd:"Palamaner",reg:48,str:[2,4,8,42,2,3,8,33,1,1],ui:[95,96,22],pt:771,age:[6,10,29,48],nbw:[14,8],mv:[269,66405],graveUI:1,gYears:"2025",rowdy:[34,91],susp:[82,239],prop:[14,6,2113000,905000]},
- "Bangarupalem UPS":{sd:"Palamaner",reg:33,str:[1,3,6,20,1,2,6,12,1,1],ui:[105,86,34],pt:669,age:[10,11,14,54],nbw:[5,1],mv:[47,11995],graveUI:6,gYears:"2021–26",rowdy:[38,53],susp:[74,104],prop:[13,2,1933500,1786000]},
- "Gangavaram UPS":{sd:"Palamaner",reg:35,str:[0,3,6,18,1,4,4,16,1,1],ui:[73,73,28],pt:679,age:[12,7,16,37],nbw:[3,16],mv:[137,26195],graveUI:5,gYears:"2024–26",rowdy:[22,34],susp:[66,95],prop:[9,5,3976000,2746000]},
- "Baireddypalli PS":{sd:"Palamaner",reg:14,str:[1,2,5,18,1,2,6,12,0,0],ui:[58,63,12],pt:425,age:[8,2,12,37],nbw:[9,2],mv:[105,19425],graveUI:0,gYears:"—",rowdy:[20,27],susp:[22,45],prop:[3,2,502500,14000]},
- "Panjani PS":{sd:"Palamaner",reg:23,str:[1,2,6,17,1,2,5,16,0,0],ui:[41,44,11],pt:368,age:[6,4,9,24],nbw:[10,0],mv:[53,11484],graveUI:4,gYears:"2024–26",rowdy:[19,23],susp:[37,94],prop:[7,2,387000,204000]},
- "V.Kota UPS":{sd:"Palamaner",reg:41,str:[1,3,6,20,1,1,5,20,1,1],ui:[177,176,80],pt:650,age:[19,20,35,109],nbw:[14,14],mv:[159,29415],graveUI:9,gYears:"2024–26",rowdy:[18,54],susp:[33,43],prop:[11,7,1709500,600500]},
- "Kuppam Urban PS":{sd:"Kuppam",reg:41,str:[2,4,7,29,2,1,6,23,1,1],ui:[236,238,53],pt:732,age:[34,32,47,126],nbw:[16,11],mv:[49,9065],graveUI:14,gYears:"2020–26",rowdy:[67,124],susp:[72,88],prop:[4,3,663200,0]},
- "Rama Kuppam PS":{sd:"Kuppam",reg:6,str:[1,2,6,18,1,1,3,13,0,0],ui:[43,43,5],pt:446,age:[4,7,5,30],nbw:[0,0],mv:[116,21460],graveUI:1,gYears:"2023",rowdy:[41,77],susp:[35,64],prop:[2,2,94000,0]},
- "Gudupalli PS":{sd:"Kuppam",reg:15,str:[1,2,5,18,1,0,4,17,0,0],ui:[24,24,1],pt:315,age:[3,2,2,17],nbw:[1,1],mv:[67,13245],graveUI:2,gYears:"2023, 2026",rowdy:[16,19],susp:[18,26],prop:[2,2,3990000,0]},
- "Rallabudugur PS":{sd:"Kuppam",reg:14,str:[1,2,5,19,1,2,4,14,0,0],ui:[40,38,4],pt:501,age:[3,6,5,30],nbw:[22,0],mv:[150,27750],graveUI:0,gYears:"—",rowdy:[27,59],susp:[21,45],prop:[5,4,777000,410000]},
- "Nagari UPS":{sd:"Nagari",reg:16,str:[2,4,7,27,2,1,7,17,1,1],ui:[98,99,11],pt:686,age:[26,6,39,27],nbw:[11,7],mv:[155,34515],graveUI:1,gYears:"2025",rowdy:[30,48],susp:[122,242],prop:[11,7,917297,250000]},
- "Vijayapuram PS":{sd:"Nagari",reg:9,str:[1,2,5,18,1,0,3,9,0,0],ui:[98,111,23],pt:149,age:[3,16,56,36],nbw:[9,0],mv:[12,2160],graveUI:0,gYears:"—",rowdy:[14,15],susp:[9,12],prop:[4,3,374000,220000]},
- "Nindra PS":{sd:"Nagari",reg:10,str:[1,2,5,18,1,2,3,10,0,0],ui:[60,64,18],pt:127,age:[3,9,23,29],nbw:[2,3],mv:[21,3650],graveUI:1,gYears:"2024",rowdy:[10,19],susp:[4,4],prop:[4,4,170000,0]},
- "K.Nagar PS":{sd:"Nagari",reg:18,str:[1,3,6,18,1,0,3,11,0,0],ui:[86,86,33],pt:233,age:[1,15,36,32],nbw:[5,1],mv:[0,0],graveUI:1,gYears:"2025",rowdy:[7,7],susp:[21,35],prop:null},
- "Vedurukuppam PS":{sd:"Nagari",reg:25,str:[1,2,5,18,1,0,2,10,0,0],ui:[183,183,31],pt:225,age:[11,46,72,54],nbw:[3,0],mv:[9,2515],graveUI:5,gYears:"2025–26",rowdy:[11,13],susp:[26,35],prop:null},
- "S.R.Puram PS":{sd:"Nagari",reg:23,str:[1,2,5,19,1,3,5,12,0,0],ui:[134,136,58],pt:176,age:[4,24,38,70],nbw:[9,8],mv:[0,0],graveUI:1,gYears:"2025",rowdy:[10,15],susp:[23,26],prop:null},
- "Palasamudram PS":{sd:"Nagari",reg:8,str:[1,2,5,17,1,1,5,10,0,0],ui:[21,21,9],pt:276,age:[1,1,8,11],nbw:[3,0],mv:[3,565],graveUI:1,gYears:"2025",rowdy:[0,0],susp:[26,136],prop:null}
+ "Chittoor I Town PS":{sd:"Chittoor",reg:26,str:[2,6,12,49,3,4,13,37,1,1],ui:[133,135,34],pt:453,age:[31,11,40,59],nbw:[14,24],mv:[182,29820],graveUI:5,gYears:"2023–26",rowdy:[18,36],susp:[51,114],prop:[17,11,2370599,1453599]},
+ "Chittoor II Town PS":{sd:"Chittoor",reg:19,str:[2,4,8,42,0,4,9,31,1,0],ui:[91,92,15],pt:449,age:[25,13,18,27],nbw:[4,7],mv:[0,0],graveUI:3,gYears:"2023–26",rowdy:[36,70],susp:[120,355],prop:[12,7,1731400,995000]},
+ "G.D.Nellore UPS":{sd:"Chittoor",reg:33,str:[0,3,6,18,0,2,8,19,1,1],ui:[106,106,22],pt:550,age:[6,6,26,65],nbw:[2,0],mv:[80,18395],graveUI:1,gYears:"2026",rowdy:[12,28],susp:[45,90],prop:[9,7,678000,40000]},
+ "Puthalapattu UPS":{sd:"Chittoor",reg:23,str:[0,3,6,19,0,3,6,19,1,1],ui:[80,82,9],pt:429,age:[18,14,15,45],nbw:[2,1],mv:[100,19800],graveUI:2,gYears:"2023, 2026",rowdy:[9,12],susp:[47,54],prop:[11,8,1601000,202000]},
+ "Chittoor Taluk PS":{sd:"Chittoor",reg:20,str:[2,4,7,29,1,3,7,28,0,0],ui:[70,69,9],pt:267,age:[2,8,27,32],nbw:[13,0],mv:[45,6405],graveUI:6,gYears:"2024–26",rowdy:[14,30],susp:[38,59],prop:[4,3,699170,459170]},
+ "N.R.Pet PS":{sd:"Chittoor",reg:9,str:[1,2,5,18,1,1,5,15,0,0],ui:[30,32,13],pt:151,age:[3,4,11,14],nbw:[2,0],mv:[30,5550],graveUI:2,gYears:"2025–26",rowdy:[7,16],susp:[11,37],prop:[1,0,6000,6000]},
+ "Penumur PS":{sd:"Chittoor",reg:14,str:[1,2,5,19,1,2,5,12,0,0],ui:[31,31,9],pt:421,age:[6,1,3,19],nbw:[3,0],mv:[5,3475],graveUI:1,gYears:"2026",rowdy:[15,51],susp:[36,106],prop:[6,3,236500,30500]},
+ "Yadamari PS":{sd:"Chittoor",reg:12,str:[1,2,6,19,1,1,7,17,0,0],ui:[60,61,24],pt:377,age:[9,10,15,26],nbw:[1,0],mv:[10,6100],graveUI:2,gYears:"2025",rowdy:[26,59],susp:[39,52],prop:[4,1,164000,32000]},
+ "Gudipala PS":{sd:"Chittoor",reg:16,str:[1,3,6,18,1,3,6,17,0,0],ui:[76,76,25],pt:527,age:[16,14,8,34],nbw:[3,0],mv:[49,9065],graveUI:4,gYears:"2023–26",rowdy:[17,53],susp:[51,147],prop:[4,1,255000,195000]},
+ "Thavanampalle PS":{sd:"Chittoor",reg:15,str:[1,2,5,18,1,2,5,8,0,0],ui:[39,39,10],pt:326,age:[4,7,11,19],nbw:[1,2],mv:[134,24790],graveUI:3,gYears:"2025–26",rowdy:[33,54],susp:[28,36],prop:null},
+ "Kanipakam PS":{sd:"Chittoor",reg:14,str:[1,3,6,29,1,2,7,24,0,0],ui:[23,26,8],pt:160,age:[4,5,4,13],nbw:[3,0],mv:[67,19545],graveUI:0,gYears:"—",rowdy:[4,12],susp:[11,16],prop:[4,1,295000,55000]},
+ "Kallur PS":{sd:"Chittoor",reg:18,str:[1,3,5,19,1,3,6,12,0,0],ui:[40,44,8],pt:324,age:[2,6,10,30],nbw:[0,2],mv:[95,17575],graveUI:1,gYears:"2024",rowdy:[5,9],susp:[15,28],prop:[10,6,4482700,154000]},
+ "Irala PS":{sd:"Chittoor",reg:13,str:[1,2,5,18,1,1,6,11,0,0],ui:[46,50,24],pt:256,age:[7,8,14,21],nbw:[0,0],mv:[129,24865],graveUI:0,gYears:"—",rowdy:[9,9],susp:[39,40],prop:[1,0,650000,650000]},
+ "Rompicherla PS":{sd:"Chittoor",reg:13,str:[1,2,6,18,1,0,4,7,0,0],ui:[38,37,11],pt:208,age:[4,1,6,30],nbw:[3,1],mv:[65,12025],graveUI:0,gYears:"—",rowdy:[32,36],susp:[43,84],prop:[6,4,210000,63000]},
+ "Palamaner UPS":{sd:"Palamaner",reg:48,str:[2,4,8,42,2,3,8,33,1,1],ui:[90,97,24],pt:765,age:[6,10,29,48],nbw:[14,2],mv:[269,66405],graveUI:1,gYears:"2025",rowdy:[35,95],susp:[82,239],prop:[14,6,2113000,905000]},
+ "Bangarupalem UPS":{sd:"Palamaner",reg:33,str:[1,3,6,20,1,2,6,12,1,1],ui:[72,85,26],pt:679,age:[10,11,14,54],nbw:[4,1],mv:[47,11995],graveUI:6,gYears:"2021–26",rowdy:[38,53],susp:[74,104],prop:[13,2,1933500,1786000]},
+ "Gangavaram UPS":{sd:"Palamaner",reg:35,str:[0,3,6,18,1,4,4,16,1,1],ui:[62,63,18],pt:683,age:[12,7,16,37],nbw:[3,14],mv:[137,26195],graveUI:5,gYears:"2024–26",rowdy:[22,34],susp:[66,95],prop:[9,5,3976000,2746000]},
+ "Baireddypalli PS":{sd:"Palamaner",reg:14,str:[1,2,5,18,1,2,6,12,0,0],ui:[54,54,10],pt:409,age:[8,2,12,37],nbw:[9,8],mv:[105,19425],graveUI:0,gYears:"—",rowdy:[20,27],susp:[22,45],prop:[3,2,502500,14000]},
+ "Panjani PS":{sd:"Palamaner",reg:23,str:[1,2,6,17,1,2,5,16,0,0],ui:[40,45,15],pt:360,age:[6,4,9,24],nbw:[8,0],mv:[53,11484],graveUI:4,gYears:"2024–26",rowdy:[20,25],susp:[37,94],prop:[7,2,387000,204000]},
+ "V.Kota UPS":{sd:"Palamaner",reg:41,str:[1,3,6,20,1,1,5,20,1,1],ui:[182,189,104],pt:650,age:[19,20,35,109],nbw:[11,14],mv:[159,29415],graveUI:9,gYears:"2024–26",rowdy:[18,54],susp:[33,43],prop:[11,7,1709500,600500]},
+ "Kuppam Urban PS":{sd:"Kuppam",reg:41,str:[2,4,7,29,2,1,6,23,1,1],ui:[237,233,49],pt:748,age:[34,32,47,126],nbw:[16,11],mv:[49,9065],graveUI:14,gYears:"2020–26",rowdy:[67,124],susp:[72,88],prop:[4,3,663200,0]},
+ "Rama Kuppam PS":{sd:"Kuppam",reg:6,str:[1,2,6,18,1,1,3,13,0,0],ui:[40,40,11],pt:448,age:[4,7,5,30],nbw:[1,0],mv:[116,21460],graveUI:1,gYears:"2023",rowdy:[41,77],susp:[35,64],prop:[2,2,94000,0]},
+ "Gudupalli PS":{sd:"Kuppam",reg:15,str:[1,2,5,18,1,0,4,17,0,0],ui:[18,18,1],pt:314,age:[3,2,2,17],nbw:[1,1],mv:[67,13245],graveUI:2,gYears:"2023, 2026",rowdy:[16,19],susp:[18,26],prop:[2,2,3990000,0]},
+ "Rallabudugur PS":{sd:"Kuppam",reg:14,str:[1,2,5,19,1,2,4,14,0,0],ui:[34,35,3],pt:476,age:[3,6,5,30],nbw:[17,0],mv:[150,27750],graveUI:0,gYears:"—",rowdy:[27,59],susp:[21,45],prop:[5,4,777000,410000]},
+ "Nagari UPS":{sd:"Nagari",reg:16,str:[2,4,7,27,2,1,7,17,1,1],ui:[99,99,18],pt:688,age:[26,6,39,27],nbw:[10,7],mv:[155,34515],graveUI:1,gYears:"2025",rowdy:[30,48],susp:[122,242],prop:[11,7,917297,250000]},
+ "Vijayapuram PS":{sd:"Nagari",reg:9,str:[1,2,5,18,1,0,3,9,0,0],ui:[86,84,20],pt:165,age:[3,16,56,36],nbw:[6,0],mv:[12,2160],graveUI:0,gYears:"—",rowdy:[14,15],susp:[9,12],prop:[4,3,374000,220000]},
+ "Nindra PS":{sd:"Nagari",reg:10,str:[1,2,5,18,1,2,3,10,0,0],ui:[64,57,19],pt:125,age:[3,9,23,29],nbw:[2,1],mv:[21,3650],graveUI:1,gYears:"2024",rowdy:[10,19],susp:[4,4],prop:[4,4,170000,0]},
+ "K.Nagar PS":{sd:"Nagari",reg:18,str:[1,3,6,18,1,0,3,11,0,0],ui:[92,93,32],pt:234,age:[1,15,36,32],nbw:[5,1],mv:[0,0],graveUI:1,gYears:"2025",rowdy:[7,7],susp:[21,35],prop:null},
+ "Vedurukuppam PS":{sd:"Nagari",reg:25,str:[1,2,5,18,1,0,2,10,0,0],ui:[177,177,45],pt:232,age:[11,46,72,54],nbw:[3,0],mv:[9,2515],graveUI:5,gYears:"2025–26",rowdy:[11,13],susp:[26,35],prop:null},
+ "S.R.Puram PS":{sd:"Nagari",reg:23,str:[1,2,5,19,1,3,5,12,0,0],ui:[123,123,59],pt:176,age:[4,24,38,70],nbw:[9,8],mv:[0,0],graveUI:1,gYears:"2025",rowdy:[10,15],susp:[23,26],prop:null},
+ "Palasamudram PS":{sd:"Nagari",reg:8,str:[1,2,5,17,1,1,5,10,0,0],ui:[19,19,9],pt:267,age:[1,1,8,11],nbw:[3,0],mv:[3,565],graveUI:1,gYears:"2025",rowdy:[0,0],susp:[26,136],prop:null}
 };
 const NAMES=Object.keys(S);
 const sancTot=s=>s.str[0]+s.str[1]+s.str[2]+s.str[3]+s.str[8];
 const presTot=s=>s.str[4]+s.str[5]+s.str[6]+s.str[7]+s.str[9];
 
 /* district series */
-const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug*"];
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep*"];
+const MON_MUR=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"];
 const MUR={"2024":[1,2,4,1,1,0,3,3],"2025":[2,1,0,3,1,5,2,3],"2026":[2,2,4,5,0,2,4,2]};
-const ACC={"2024":[47,50,61,61,56,58,51,61],"2025":[50,52,56,67,51,66,60,60],"2026":[55,39,41,44,57,68,61,53]};
+const ACC={"2024":[47,50,61,61,56,58,51,61,61],"2025":[50,52,56,67,51,66,60,60,60],"2026":[55,39,41,44,57,68,61,60,36]};
 
 /* Jan–Jul matched comparison (meeting return) */
 const JJ=[["Murder for gain",1,1],["Dacoity",1,0],["Robbery",3,1],["HB by day",15,16],
@@ -692,9 +751,9 @@ document.querySelectorAll('.nv').forEach(t=>t.addEventListener('click',()=>{
 const T=f=>NAMES.reduce((a,n)=>a+f(S[n]),0);
 const kp=[
  ["Cognizable crime","1,494","Jan–Jul 2026 · 2025: 1,842","#4FAE83"],
- ["UI cases (CCTNS)","2,516","28·08 · was 2,529 on 25·08","#D9A441"],
- ["Charged, awaiting CC no.","670","of which 534 per PS register","#8B7BD8"],
- ["Warrants pending","207","+109 NI Act · 52 executed in Aug","#E1595A"],
+ ["UI cases (CCTNS)","2,432","23·09 · was 2,516 on 28·08","#D9A441"],
+ ["Charged, awaiting CC no.","691","of which 585 per PS register","#8B7BD8"],
+ ["Warrants pending","185","+105 NI Act · as on 18·09","#E1595A"],
  ["Strength present",fm(T(presTot)),"of "+fm(T(sancTot))+" sanctioned","#5B8CFF"],
  ["Grave UI","82","47 station-side · 35 with court","#E1595A"]];
 document.getElementById('kpis').innerHTML=kp.map(k=>
@@ -762,7 +821,7 @@ function drawRec(){
    <div class="rw"><div class="lb">Investigating officers present<small>SI + ASI + HC</small></div>
     <div class="vl">${inv}</div></div>
 
-   <div class="grp">Investigation · CCTNS 28·08·2026</div>
+   <div class="grp">Investigation · CCTNS 23·09·2026</div>
    <div class="rw"><div class="lb">Total UI caseload<small>PS register shows ${psUI}${cUI!==psUI?' — CCTNS governs':''}</small></div>
     <div class="vl">${cUI}</div></div>
    <div class="rw"><div class="lb">UI per investigating officer<small>district median ≈ 8.9</small></div>
@@ -776,7 +835,7 @@ function drawRec(){
    <div class="rw"><div class="lb">Pending trial<small>held by courts — not a station measure</small></div>
     <div class="vl" style="color:var(--tx2)">${fm(d.pt)}</div></div>
 
-   <div class="grp">Warrants · 29·08·2026</div>
+   <div class="grp">Warrants · 18·09·2026</div>
    <div class="rw"><div class="lb">Criminal (BNS)</div><div class="vl">${nbC||'—'}</div></div>
    <div class="rw"><div class="lb">NI Act<small>cheque-bounce — separate pool</small></div>
     <div class="vl" style="color:var(--tx2)">${nbN||'—'}</div></div>
@@ -911,7 +970,7 @@ safeChart(cChildSc,{type:'bar',data:{labels:CHILD_SC.map(c=>c[0]),datasets:[
   plugins:{legend:{labels:{boxWidth:11,font:{size:11}}}},
   scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
 
-safeChart(cMur,{type:'bar',data:{labels:MON,datasets:[
+safeChart(cMur,{type:'bar',data:{labels:MON_MUR,datasets:[
  {label:'2024',data:MUR['2024'],backgroundColor:C.dim,borderRadius:3},
  {label:'2025',data:MUR['2025'],backgroundColor:C.blue,borderRadius:3},
  {label:'2026',data:MUR['2026'],backgroundColor:C.gold,borderRadius:3}]},
@@ -963,6 +1022,151 @@ document.querySelector('#tEnf tbody').innerHTML=ENF.map(e=>
 document.querySelector('#tBind tbody').innerHTML=BIND.map(b=>
  `<tr><td>${b[0]}</td><td class="n m">${b[1]}</td><td class="n m">${b[2]}</td><td class="n m">${b[3]}</td></tr>`).join('')+
  `<tr class="tot"><td>District</td><td class="n m">2</td><td class="n m">12</td><td class="n m">32</td></tr>`;
+
+/* ---------- REVIEW ---------- */
+const today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+
+function top(arr, n, key, dir){ return arr.slice().sort((a,b)=>dir*(b[key]-a[key])).slice(0,n); }
+function short(n){ return n.replace(/ (PS|UPS)$/,''); }
+
+function briefDist(){
+  const sanc=T(sancTot), pres=T(presTot), vac=pct(sanc-pres,sanc);
+  const nbwTot = NAMES.reduce((a,n)=>a+S[n].nbw[0],0)+2+6+3;
+  const exec1 = 'This month\'s crime line is genuinely favourable — 19% down on last year, like-for-like.';
+  return `
+   <div class="brief-hd"><h2>District Overview</h2><div class="dt">Chittoor District · ${today}</div></div>
+   <div class="bline"><div class="k">Cognizable crime, Jan–Jul</div><div class="v">1,494 <span style="color:var(--green);font-size:11px">▼19% on 2025</span></div></div>
+   <div class="bline"><div class="k">UI cases (CCTNS)</div><div class="v">2,516</div></div>
+   <div class="bline"><div class="k">Grave UI — station-attributable</div><div class="v">47 of 82</div></div>
+   <div class="bline"><div class="k">Warrants pending</div><div class="v">${nbwTot} criminal + 109 NI Act</div></div>
+   <div class="bline"><div class="k">Strength present</div><div class="v">${pres} of ${sanc} <span style="color:${vac>=20?'var(--red)':'var(--tx2)'};font-size:11px">(${vac}% vacant)</span></div></div>
+   <div class="bline"><div class="k">Property recovery, 2026</div><div class="v">38%</div></div>
+   <div class="btalk"><b>Line to open with:</b> ${exec1} That said, three stations account for most of what needs
+    a direct question this month — Kuppam Urban (heaviest UI load, zero sheeter convictions), Rompicherla
+    (56% strength vacancy), and the district-wide pattern of warrant non-execution that only broke in August.</div>
+   <div class="btalk"><b>Watch next month:</b> whether August's jump in warrant execution (52, up from 29) holds
+    into September, or reverts once attention moves elsewhere.</div>`;
+}
+
+function briefWarrants(){
+  const rows=NAMES.map(n=>({n,c:S[n].nbw[0]})).filter(r=>r.c>0).sort((a,b)=>b.c-a.c).slice(0,6);
+  const zero=NAMES.filter(n=>S[n].nbw[0]===0).length;
+  return `
+   <div class="brief-hd"><h2>Warrants</h2><div class="dt">As on 18·09·2026</div></div>
+   <div class="bline"><div class="k">Criminal (BNS) pending, district</div><div class="v">207</div></div>
+   <div class="bline"><div class="k">NI Act pending, district</div><div class="v">109 <span style="color:var(--tx3);font-size:11px">(separate pool)</span></div></div>
+   <div class="bline"><div class="k">Executed in August</div><div class="v">52 <span style="color:var(--green);font-size:11px">▲ from 29 in July</span></div></div>
+   <div class="bline"><div class="k">Stations at zero pending</div><div class="v">${zero} of 31</div></div>
+   <div class="grp" style="padding-top:14px">Heaviest pending, by station</div>
+   ${rows.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.c}</div></div>`).join('')}
+   <div class="btalk"><b>Line to open with:</b> Execution broke a months-long stall this August — worth naming
+    which stations moved (Panjani cleared 23, S.R.Puram 10) and asking directly whether the rest can repeat it,
+    rather than treating one good month as fixed.</div>`;
+}
+
+function briefUI(){
+  const rows=NAMES.map(n=>({n,ps:S[n].ui[0],c:S[n].ui[1]})).sort((a,b)=>b.c-a.c).slice(0,6);
+  const gaps=NAMES.map(n=>({n,g:S[n].ui[1]-S[n].ui[0]})).sort((a,b)=>Math.abs(b.g)-Math.abs(a.g)).slice(0,3);
+  return `
+   <div class="brief-hd"><h2>Investigation — UI Pendency</h2><div class="dt">CCTNS as on 23·09·2026</div></div>
+   <div class="bline"><div class="k">Total UI, CCTNS</div><div class="v">2,516</div></div>
+   <div class="bline"><div class="k">Total UI, PS registers</div><div class="v">2,499 <span style="color:var(--tx3);font-size:11px">CCTNS governs</span></div></div>
+   <div class="bline"><div class="k">Charged, awaiting CC number</div><div class="v">670 <span style="color:var(--tx3);font-size:11px">534 per PS</span></div></div>
+   <div class="grp" style="padding-top:14px">Heaviest UI caseload, by station</div>
+   ${rows.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.c}</div></div>`).join('')}
+   <div class="grp" style="padding-top:14px">Largest PS-vs-CCTNS gaps — worth a direct query</div>
+   ${gaps.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.g>0?'+':''}${r.g}</div></div>`).join('')}
+   <div class="btalk"><b>Line to open with:</b> Bangarupalem's 19-case gap between its own register and CCTNS
+    is the largest in the district — ask what's driving the discrepancy before assuming either number is right.</div>`;
+}
+
+function briefGrave(){
+  const rows=NAMES.filter(n=>S[n].graveUI>0).map(n=>({n,g:S[n].graveUI,y:S[n].gYears}))
+    .sort((a,b)=>b.g-a.g).slice(0,6);
+  return `
+   <div class="brief-hd"><h2>Grave Crime — UI Cases</h2><div class="dt">As on 30·06·2026</div></div>
+   <div class="bline"><div class="k">Total grave UI</div><div class="v">82</div></div>
+   <div class="bline"><div class="k">Station-attributable</div><div class="v">47 <span style="color:var(--red);font-size:11px">(57%)</span></div></div>
+   <div class="bline"><div class="k">With court registry</div><div class="v">35</div></div>
+   <div class="grp" style="padding-top:14px">By sub-division</div>
+   ${GRAVE_SD.map(g=>`<div class="bline"><div class="k">${g[0]}</div><div class="v">${g[1]} total, ${g[1]-g[2]} station-side</div></div>`).join('')}
+   <div class="grp" style="padding-top:14px">Heaviest station load</div>
+   ${rows.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.g} <span style="color:var(--tx3);font-size:11px">${r.y}</span></div></div>`).join('')}
+   <div class="btalk"><b>Line to open with:</b> Of the reasons cases sit UI, "no clues" and "arrest pending" are
+    the station's own — that's most of the 47. Ask station-by-station what's actually blocking each one,
+    not the aggregate reason.</div>`;
+}
+
+function briefPrevent(){
+  const rowdyTot=T(s=>s.rowdy[0]), suspTot=T(s=>s.susp[0]);
+  const top6=NAMES.map(n=>({n,r:S[n].rowdy[0],s:S[n].susp[0]})).sort((a,b)=>(b.r+b.s)-(a.r+a.s)).slice(0,6);
+  return `
+   <div class="brief-hd"><h2>Sheeters &amp; Preventive</h2><div class="dt">As on 23·09·2026</div></div>
+   <div class="bline"><div class="k">Rowdy sheeters, district</div><div class="v">${rowdyTot}</div></div>
+   <div class="bline"><div class="k">Suspect sheeters, district</div><div class="v">${suspTot}</div></div>
+   <div class="bline"><div class="k">PD Act proposals, 2025–26</div><div class="v">5</div></div>
+   <div class="grp" style="padding-top:14px">Largest sheeter load, by station</div>
+   ${top6.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.r} rowdy, ${r.s} suspect</div></div>`).join('')}
+   <div class="btalk"><b>Line to open with:</b> Sheeter counts alone don't say who's performing — Kuppam Urban
+    and Rama Kuppam disposed 116 sheeter cases between them with zero convictions. That's a case-quality
+    question, not a workload one, and it's worth asking directly rather than reading off the count.</div>`;
+}
+
+function briefStrength(){
+  const rows=NAMES.map(n=>{const d=S[n];const s=sancTot(d),p=presTot(d);return{n,s,p,v:pct(s-p,s)}})
+    .sort((a,b)=>b.v-a.v).slice(0,6);
+  return `
+   <div class="brief-hd"><h2>Strength</h2><div class="dt">As on 20·08·2026</div></div>
+   <div class="bline"><div class="k">Present, district</div><div class="v">${T(presTot)} of ${T(sancTot)}</div></div>
+   <div class="bline"><div class="k">Armed reserve</div><div class="v">340 of 486</div></div>
+   <div class="grp" style="padding-top:14px">Highest vacancy — by station</div>
+   ${rows.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.p}/${r.s} <span style="color:var(--red);font-size:11px">${r.v}% vacant</span></div></div>`).join('')}
+   <div class="btalk"><b>Line to open with:</b> Rompicherla, Vedurukuppam and Vijayapuram are all running below
+    half strength. That context belongs alongside any weak case-outcome number from these stations before
+    it's read as a performance issue.</div>`;
+}
+
+function briefProperty(){
+  const rows=NAMES.filter(n=>S[n].prop).map(n=>{const[r,u,l,c]=S[n].prop;
+    return{n,r,rec:l?Math.round(c/l*100):0}}).filter(x=>x.r>=4).sort((a,b)=>a.rec-b.rec).slice(0,6);
+  return `
+   <div class="brief-hd"><h2>Property Crime</h2><div class="dt">As on 12·08·2026</div></div>
+   <div class="bline"><div class="k">Recovery rate, 2026</div><div class="v">38% <span style="color:var(--red);font-size:11px">▼ from 77% in 2025</span></div></div>
+   <div class="bline"><div class="k">Recovery rate, 2024</div><div class="v">48%</div></div>
+   <div class="grp" style="padding-top:14px">Weakest recovery — stations with 4+ cases</div>
+   ${rows.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.rec}%</div></div>`).join('')}
+   <div class="btalk"><b>Line to open with:</b> 2025's 77% was likely lifted by a small number of very large
+    recoveries rather than typical performance — don't treat it as the baseline. 2026's 38% is closer to what
+    a normal year looks like, which makes the weakest stations here worth a direct look.</div>`;
+}
+
+function briefPerception(){
+  const c=Object.entries(PERC.crime.avgs).sort((a,b)=>a[1]-b[1]).slice(0,5);
+  const g=Object.entries(PERC.ganja.avgs).sort((a,b)=>a[1]-b[1]).slice(0,5);
+  return `
+   <div class="brief-hd"><h2>Public Perception</h2><div class="dt">Survey to mid-2026</div></div>
+   <div class="bline"><div class="k">Crime vs women, district avg</div><div class="v">64.0%</div></div>
+   <div class="bline"><div class="k">Ganja, district avg</div><div class="v">68.7%</div></div>
+   <div class="grp" style="padding-top:14px">Lowest — crime against women</div>
+   ${c.map(x=>`<div class="bline"><div class="k">${short(x[0])}</div><div class="v">${x[1]}%</div></div>`).join('')}
+   <div class="grp" style="padding-top:14px">Lowest — ganja</div>
+   ${g.map(x=>`<div class="bline"><div class="k">${short(x[0])}</div><div class="v">${x[1]}%</div></div>`).join('')}
+   <div class="btalk"><b>Caution before reading this aloud:</b> sample sizes swing hard month to month
+    (1,181 to 8,803 respondents district-wide). Treat single-station figures as directional, not precise.</div>`;
+}
+
+const BRIEFS = {dist:briefDist, warrants:briefWarrants, ui:briefUI, grave:briefGrave,
+  prevent:briefPrevent, strength:briefStrength, property:briefProperty, perception:briefPerception};
+
+function drawBrief(key){
+  document.getElementById('briefOut').innerHTML = BRIEFS[key]();
+}
+document.querySelectorAll('#subjBar button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#subjBar button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  drawBrief(b.dataset.s);
+}));
+drawBrief('dist');
 /* ---------- PERCEPTION ---------- */
 const PAL=['#5B8CFF','#E1595A','#4FAE83','#D9A441','#8B7BD8','#E87BA4','#48C4C4','#C98A4A'];
 let pTheme='crime', pSel=[];
