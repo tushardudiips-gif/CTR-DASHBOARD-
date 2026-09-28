@@ -73,6 +73,7 @@
   .g2{display:grid;grid-template-columns:1fr;gap:14px}
   @media(min-width:880px){.g2{grid-template-columns:1.25fr 1fr}}
   .g2e{display:grid;grid-template-columns:1fr;gap:14px}
+  .g2>*,.g2e>*{min-width:0}
   @media(min-width:880px){.g2e{grid-template-columns:1fr 1fr}}
   .cw{position:relative;height:250px}.cw.t{height:320px}.cw.xt{height:420px}
 
@@ -232,7 +233,7 @@
     <span class="sub">Superintendent of Police</span>
     <h1>Chittoor District Dashboard</h1>
   </div>
-  <div class="clock">PRIVATE / INTERNAL<br>SOURCE: DCRB RETURNS</div>
+  <div class="clock">PRIVATE / INTERNAL<br>RETURNS TO 27·09·2026</div>
 </header>
 
 <nav id="nav">
@@ -273,24 +274,24 @@
   <div class="exc">
     <h3>Needs attention</h3>
     <div class="sub">Outliers in the current returns. Each is a specific question for a named station.</div>
+    <div class="ex"><div class="n">24<small>MURDERS</small></div>
+      <div class="t"><b>Murders are up to 24 from 19 in the same months last year, while overall crime is down a fifth.</b>
+      <span>Kuppam sub-division has 9 of the 24 — Kuppam Urban 4, Rallabudugur 3 — though it registers only about an eighth of district crime.</span></div></div>
+    <div class="ex"><div class="n">280<small>ROAD DEATHS</small></div>
+      <div class="t"><b>Road deaths have already passed last year: 280 to 27 September against 269 for January–September 2025.</b>
+      <span>Accidents overall are down 10% (469 against 522), so the problem is severity, not volume — fatal accidents 254 against 247.</span></div></div>
+    <div class="ex"><div class="n">6<small>POCSO</small></div>
+      <div class="t"><b>Six POCSO cases are past the two-month investigation limit without a charge-sheet.</b>
+      <span>Nagari 3, Palamaner 2, Kuppam 1 (as on 23·09). Of 45 POCSO cases under investigation, 31 are already charged and waiting to be taken on file.</span></div></div>
     <div class="ex"><div class="n">233<small>KUPPAM U</small></div>
-      <div class="t"><b>Kuppam Urban carries 233 UI cases — the district's heaviest.</b>
-      <span>V.Kota now follows at 189, overtaking Vedurukuppam at 177. These three hold a fifth of district pendency between them.</span></div></div>
-    <div class="ex"><div class="n">104<small>V.KOTA</small></div>
-      <div class="t"><b>V.Kota accounts for 104 of the district's 691 charged-but-uncharged cases — by far the largest single share.</b>
-      <span>S.R.Puram is next at 59. Together they're over a fifth of every case district-wide still waiting on a CC number.</span></div></div>
-    <div class="ex"><div class="n">691<small>AWAITING</small></div>
-      <div class="t"><b>691 charged cases are waiting on a CC/PRC/STC number from court.</b>
-      <span>The PS registers show 585 — a 106-case gap, narrower than a month ago but still substantial.</span></div></div>
-    <div class="ex"><div class="n">47<small>OF 82</small></div>
-      <div class="t"><b>47 of 82 grave UI cases are stuck for reasons within station control.</b>
-      <span>19 for want of clues, 8 awaiting arrest. Only 35 sit with the court registry.</span></div></div>
+      <div class="t"><b>Kuppam Urban carries 233 UI cases — the district's heaviest, and unchanged in a month.</b>
+      <span>V.Kota is down to 178 from 189 and Vedurukuppam to 174. These three still hold a quarter of all station pendency.</span></div></div>
+    <div class="ex"><div class="n">90<small>V.KOTA</small></div>
+      <div class="t"><b>V.Kota has 90 of the district's 662 charged cases still waiting on a CC number — the largest share, though down from 104.</b>
+      <span>S.R.Puram is next at 60. PS registers show 585 against CCTNS 662, a 77-case gap to reconcile.</span></div></div>
     <div class="ex"><div class="n">35<small>EXECUTED</small></div>
       <div class="t"><b>35 warrants executed in the first 18 days of September — slower than August's pace of 52.</b>
-      <span>Rallabudugur leads with 5. 185 criminal and 105 NI Act warrants remain — worth checking whether September closes strong or the August push was a one-off.</span></div></div>
-    <div class="ex"><div class="n">0<small>MV ACT</small></div>
-      <div class="t"><b>Chittoor II Town, K.Nagar and S.R.Puram booked zero MV Act cases in August.</b>
-      <span>Against 269 at Palamaner and 182 at Chittoor I Town. Worth asking whether this is a reporting gap or genuine inactivity.</span></div></div>
+      <span>Rallabudugur leads with 5. 185 criminal and 105 NI Act warrants remain (return as on 18·09).</span></div></div>
   </div>
 
   <div class="hd"><span class="eb">District position</span><h2>Headline figures</h2></div>
@@ -298,30 +299,31 @@
 
   <div class="g2" style="margin-top:16px">
     <div class="pn">
-      <div class="pt">Total cognizable crime <span class="ds">Jan–Jul, like-for-like</span></div>
-      <div class="ps">Matched seven-month window so the years are comparable. 2026 is down 18.9% on 2025.</div>
+      <div class="pt">Total cognizable crime <span class="ds live">Jan–Sep, like-for-like</span></div>
+      <div class="ps">Same nine-month window each year. 2026 runs to 27 September, three days short; even allowing for those days it is about 19% below 2025.</div>
       <div class="cw"><canvas id="cYoY"></canvas></div>
     </div>
     <div class="pn">
-      <div class="pt">Case status, 2026 <span class="ds">to 31·07·2026</span></div>
-      <div class="ps">Where this year's 1,459 true IPC/BNS cases currently stand.</div>
+      <div class="pt">This year's open cases <span class="ds live">CCTNS · 27·09·2026</span></div>
+      <div class="ps">2026 cases not yet disposed: how many are still with the IO and how many are charge-sheeted. Includes special and local law cases.</div>
       <div class="cw"><canvas id="cStatus"></canvas></div>
     </div>
   </div>
 
   <div class="pn">
-    <div class="pt">Movement by crime head <span class="ds">Jan–Jul, 2025 → 2026</span></div>
-    <div class="ps">Sorted by size of change. Rises in red — those are the heads to ask about.</div>
+    <div class="pt">Movement by crime head <span class="ds live">Jan–Sep, 2025 → 2026</span></div>
+    <div class="ps">Sorted by size of change from 2025. 2024 shown for context. Rises in red — those are the heads to ask about.</div>
     <div class="tw"><table id="tMove"><thead><tr>
-      <th>Crime head</th><th class="n">2025</th><th class="n">2026</th><th class="n">Change</th>
+      <th>Crime head</th><th class="n">2024</th><th class="n">2025</th><th class="n">2026</th><th class="n">Change</th>
     </tr></thead><tbody></tbody></table></div>
   </div>
 
   <div class="note warn">
     <b>On dates:</b> panels carry their own as-on date because source returns close on different days.
-    UI/PT from CCTNS to 23·09·2026; warrants as on 18·09·2026; road accidents to 23·09·2026;
-    sheeters to 23·09·2026; grave-case detail to 30·06·2026; strength to 20·08·2026;
-    MV Act enforcement for August 2026; station-wise registration only to 07·04·2026.
+    To 27·09·2026: crime registration, the three-year comparative, road accidents, CCTNS UI/PT, ageing and head-wise pendency, sheeters.
+    POCSO 23·09·2026; warrants 18·09·2026; strength 20·08·2026; MV Act August 2026; missing persons and property 12·08·2026;
+    full disposal statement and grave comparative 31·07·2026; grave UI reasons 30·06·2026 — no newer return has been received for these.
+    The PS-wise return totals 1,906 cases for 2026 and the head-wise comparative 1,901; the two are compiled separately.
     Do not compare figures across different as-on dates.
   </div>
 </section>
@@ -354,44 +356,28 @@
     <p>Investigations, warrants and detention proposals — previously spread across five separate returns.</p></div>
 
   <div class="pn">
-    <div class="pt">Grave UI — why each case is stuck <span class="ds">30·06·2026</span></div>
-    <div class="ps">82 grave cases under investigation. Only "charged, not yet taken on file" sits with the court; every other reason is the station's to answer for.</div>
-    <div class="cw"><canvas id="cGraveWhy"></canvas></div>
-    <div class="tw" style="margin-top:14px"><table id="tGraveSD"><thead><tr>
-      <th>Sub-division</th><th class="n">Grave UI</th><th class="n">Station-side</th><th class="n">With court</th><th class="n">Station share</th>
-    </tr></thead><tbody></tbody></table></div>
-  </div>
-
-  <div class="pn">
-    <div class="pt">Grave UI by station <span class="ds">30·06·2026</span></div>
-    <div class="ps">Oldest pending year shown — a 2020 case still open is a different problem from a 2026 one.</div>
-    <div class="tw"><table id="tGravePS"><thead><tr>
-      <th>Station</th><th class="n">Grave UI</th><th>Years represented</th>
-    </tr></thead><tbody></tbody></table></div>
-  </div>
-
-  <div class="pn">
-    <div class="pt">UI ageing — how old is the backlog <span class="ds warn">CCTNS · 28·08·2026 (not refreshed this pass)</span></div>
-    <div class="ps">Same total, split by the year each case was registered. A station heavy in the left-hand bars is carrying old work; one heavy on the right is simply busy this year. These are different problems.</div>
-    <div class="cw xt"><canvas id="cAge"></canvas></div>
-    <div class="note">District: <b>339 UI cases predate 2024</b> — 13% of the backlog. Vedurukuppam (46 from 2024)
-      and Kuppam Urban (34 pre-2024, 32 from 2024) carry the heaviest legacy load.</div>
-  </div>
-
-  <div class="pn">
-    <div class="pt">Total UI caseload by station <span class="ds live">CCTNS · 23·09·2026</span></div>
+    <div class="pt">Total UI caseload by station <span class="ds live">CCTNS · 27·09·2026</span></div>
     <div class="ps">CCTNS figure is the source of record. The station's own register is shown alongside — where they differ, CCTNS governs.</div>
     <div class="tw"><table id="tUI"><thead><tr>
       <th>Station</th><th class="n">PS register</th><th class="n">CCTNS</th><th class="n">Charged</th><th class="n">Gap</th>
     </tr></thead><tbody></tbody></table></div>
-    <div class="note">District: <b>2,432 UI per CCTNS</b> against 2,393 per PS registers — a 39-case gap. Bangarupalem remains the largest single-station gap: 72 PS vs 85 CCTNS, 13 cases apart.</div>
+    <div class="note">District: <b>2,392 UI per CCTNS</b> against 2,346 per PS registers — a 46-case gap. Bangarupalem is still the largest single-station gap: 72 PS vs 88 CCTNS, 16 apart. V.Kota is next at 12.</div>
   </div>
 
   <div class="pn">
-    <div class="pt">Pending trial <span class="ds live">CCTNS · 23·09·2026</span></div>
-    <div class="ps">12,259 cases district-wide. Movement depends on court listing — tracked for awareness, not a station performance measure.</div>
-    <div class="tw"><table id="tPT"><thead><tr>
-      <th>Station</th><th class="n">PT pending</th><th class="n">Share of district</th>
+    <div class="pt">UI ageing — how old is the backlog <span class="ds live">CCTNS · 27·09·2026</span></div>
+    <div class="ps">Same total, split by the year each case was registered. A station heavy in the left-hand bars is carrying old work; one heavy on the right is simply busy this year. These are different problems.</div>
+    <div class="cw xt"><canvas id="cAge"></canvas></div>
+    <div class="note">District: <b>301 UI cases predate 2024</b> — 13% of the backlog — and 310 more date from 2024.
+      Kuppam Urban (34 pre-2024, 32 from 2024) and Chittoor I Town (31 pre-2024) carry the most legacy work;
+      Vedurukuppam still holds 46 from 2024.</div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">POCSO under investigation <span class="ds">23·09·2026</span></div>
+    <div class="ps">The law allows two months to complete investigation in POCSO cases (BNSS s.193). Cases past that without a charge-sheet are the station's to explain; charged cases waiting to be taken on file sit with the court.</div>
+    <div class="tw"><table id="tPocso"><thead><tr>
+      <th>Sub-division</th><th class="n">POCSO UI</th><th class="n">Investigation pending</th><th class="n">Charged, not on file</th><th class="n">Past 60 days, not charged</th>
     </tr></thead><tbody></tbody></table></div>
   </div>
 
@@ -403,9 +389,34 @@
     </tr></thead><tbody></tbody></table></div>
   </div>
 
+  <div class="pn">
+    <div class="pt">Grave UI — why each case is stuck <span class="ds warn">30·06·2026 · latest received</span></div>
+    <div class="ps">82 grave cases under investigation. Only "charged, not yet taken on file" sits with the court; every other reason is the station's to answer for.</div>
+    <div class="cw"><canvas id="cGraveWhy"></canvas></div>
+    <div class="tw" style="margin-top:14px"><table id="tGraveSD"><thead><tr>
+      <th>Sub-division</th><th class="n">Grave UI</th><th class="n">Station-side</th><th class="n">With court</th><th class="n">Station share</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">Grave UI by station <span class="ds warn">30·06·2026 · latest received</span></div>
+    <div class="ps">Oldest pending year shown — a 2020 case still open is a different problem from a 2026 one.</div>
+    <div class="tw"><table id="tGravePS"><thead><tr>
+      <th>Station</th><th class="n">Grave UI</th><th>Years represented</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">Pending trial <span class="ds live">CCTNS · 27·09·2026</span></div>
+    <div class="ps">12,588 cases district-wide. Movement depends on court listing — tracked for awareness, not a station performance measure.</div>
+    <div class="tw"><table id="tPT"><thead><tr>
+      <th>Station</th><th class="n">PT pending</th><th class="n">Share of district</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+
   <div class="g2e">
     <div class="pn">
-      <div class="pt">Missing persons — untraced <span class="ds">12·08·2026</span></div>
+      <div class="pt">Missing persons — untraced <span class="ds warn">12·08·2026</span></div>
       <div class="ps">127 UI cases, 106 untraced. Case narratives held in the source return only.</div>
       <div class="tw"><table id="tMiss"><thead><tr>
         <th>Sub-division</th><th class="n">UI</th><th class="n">Untraced</th>
@@ -426,8 +437,31 @@
   <div class="hd"><span class="eb">By offence type</span><h2>Crime detail</h2></div>
 
   <div class="pn">
-    <div class="pt">All heads — reported, charged, disposed <span class="ds">to 31·07·2026</span></div>
-    <div class="ps">Detection is (true − undetected) ÷ true. UI% is the share of true cases still under investigation.</div>
+    <div class="pt">Registration by month, 2026 <span class="ds live">to 27·09·2026</span></div>
+    <div class="ps">IPC / BNS cases registered each month, district including CCS, Mahila and Traffic. September runs to the 27th.</div>
+    <div class="cw"><canvas id="cRegMon"></canvas></div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">Registration by station, 2026 <span class="ds live">to 27·09·2026</span></div>
+    <div class="ps">Quarter by quarter, so a station whose intake is climbing stands out. A rise is a question, not a verdict — it can mean better registration as easily as more crime. Jul–Sep is three days short; changes on a base under 10 are not rated.</div>
+    <div class="tw"><table id="tRegSta"><thead><tr>
+      <th>Station</th><th class="n">Jan–Mar</th><th class="n">Apr–Jun</th><th class="n">Jul–Sep</th><th class="n">Change</th>
+      <th class="n">Total</th><th class="n">Murder</th><th class="n">Property</th><th class="n">Fatal acc.</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">Pending by crime head <span class="ds live">CCTNS · 27·09·2026</span></div>
+    <div class="ps">All registration years. UI is the station's to move; PT is with the courts.</div>
+    <div class="tw"><table id="tHwPend"><thead><tr>
+      <th>Crime head</th><th class="n">UI</th><th class="n">Share of UI</th><th class="n">PT</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="pn">
+    <div class="pt">All heads — reported, charged, disposed <span class="ds warn">to 31·07·2026 · latest received</span></div>
+    <div class="ps">Latest full disposal statement received. Detection is (true − undetected) ÷ true. UI% is the share of true cases still under investigation.</div>
     <div class="tw"><table id="tAll"><thead><tr>
       <th>Crime head</th><th class="n">Rep</th><th class="n">True</th><th class="n">Charged</th>
       <th class="n">Conv</th><th class="n">Acq</th><th class="n">PT</th><th class="n">UI</th><th class="n">UI%</th>
@@ -435,7 +469,7 @@
   </div>
 
   <div class="pn">
-    <div class="pt">Grave crime — three-year position <span class="ds">to 31·07·2026</span></div>
+    <div class="pt">Grave crime — three-year position <span class="ds warn">to 31·07·2026</span></div>
     <div class="ps">Grave heads only. The UI column is the concern: 2026's grave caseload has barely moved to charge.</div>
     <div class="tw"><table id="tGraveCmp"><thead><tr>
       <th>Head</th><th class="n">2024 rep</th><th class="n">2024 UI</th><th class="n">2025 rep</th>
@@ -445,12 +479,12 @@
 
   <div class="g2e">
     <div class="pn">
-      <div class="pt">Crime against women <span class="ds">Jan–Jul</span></div>
+      <div class="pt">Crime against women <span class="ds warn">Jan–Jul</span></div>
       <div class="ps">Total down 27% — 401 to 291. Dowry death and POCSO are the two heads that rose.</div>
       <div class="cw t"><canvas id="cWomen"></canvas></div>
     </div>
     <div class="pn">
-      <div class="pt">Children &amp; SC/ST <span class="ds">Jan–Jun</span></div>
+      <div class="pt">Children &amp; SC/ST <span class="ds warn">Jan–Jun</span></div>
       <div class="ps">Both down year on year. Small absolute numbers — read the count, not the percentage.</div>
       <div class="cw t"><canvas id="cChildSc"></canvas></div>
     </div>
@@ -458,19 +492,19 @@
 
   <div class="g2e">
     <div class="pn">
-      <div class="pt">Murders by month <span class="ds">to 12·08·2026</span></div>
-      <div class="ps">2024: 22 · 2025: 22 · 2026 to date: 21 — running slightly ahead of both prior years.</div>
+      <div class="pt">Murders by month <span class="ds live">to 27·09·2026</span></div>
+      <div class="ps">Same window, January–September: 14 in 2024, 19 in 2025, 24 in 2026. Bars for 2024–25 come from the murder register, which has no September figure yet and counts slightly differently.</div>
       <div class="cw"><canvas id="cMur"></canvas></div>
     </div>
     <div class="pn">
-      <div class="pt">Road accidents by month <span class="ds live">to 23·09·2026</span></div>
-      <div class="ps">Fatal share: 49% in 2024, 47% in 2025, 54% so far in 2026 — a real rise, not noise.</div>
+      <div class="pt">Road accidents by month <span class="ds live">to 27·09·2026</span></div>
+      <div class="ps">Fewer accidents than last year (469 against 522 for Jan–Sep) but more of them fatal: 54% this year against 47% in 2025. Deaths are already 280 against 269.</div>
       <div class="cw"><canvas id="cAcc"></canvas></div>
     </div>
   </div>
 
   <div class="pn">
-    <div class="pt">Property crime by station <span class="ds">to 12·08·2026</span></div>
+    <div class="pt">Property crime by station <span class="ds warn">to 12·08·2026</span></div>
     <div class="ps">Stations with fewer than 4 cases are shown but not rated — the base is too small to read as a rate.</div>
     <div class="tw"><table id="tProp"><thead><tr>
       <th>Station</th><th class="n">Reported</th><th class="n">Detected</th><th class="n">Lost</th>
@@ -503,8 +537,8 @@
   </div>
 
   <div class="pn">
-    <div class="pt">Sheeters by station <span class="ds">26·08·2026</span></div>
-    <div class="ps">Rowdy and suspect sheeters on the books.</div>
+    <div class="pt">Sheeters by station <span class="ds live">27·09·2026</span></div>
+    <div class="ps">Rowdy and suspect sheeters on the books. No new sheet of either kind was opened anywhere in the district between 1 and 27 September.</div>
     <div class="tw"><table id="tSheet"><thead><tr>
       <th>Station</th><th class="n">Rowdy</th><th class="n">Suspect</th><th class="n">Rowdy cases</th>
     </tr></thead><tbody></tbody></table></div>
@@ -523,7 +557,7 @@
       </tr></thead><tbody></tbody></table></div>
     </div>
     <div class="pn">
-      <div class="pt">Weekly bindovers <span class="ds">06·08 – 12·08·2026</span></div>
+      <div class="pt">Weekly bindovers <span class="ds warn">06·08 – 12·08·2026</span></div>
       <div class="ps">Sub-division abstract. Individual records contain personal identifiers and stay in the source return.</div>
       <div class="tw"><table id="tBind"><thead><tr>
         <th>Sub-division</th><th class="n">Cases</th><th class="n">Proc.</th><th class="n">Persons</th>
@@ -900,37 +934,37 @@ const PERC={"crime":{"labels":["Jul-25","Aug-25","Sep-25","Oct-25","Nov-25","Dec
    prop   : [reported, undetected, lost, recovered]      to 12-08-2026
    ============================================================ */
 const S={
- "Chittoor I Town PS":{sd:"Chittoor",reg:26,str:[2,6,12,49,3,4,13,37,1,1],ui:[133,135,34],pt:453,age:[31,11,40,59],nbw:[14,24],mv:[182,29820],graveUI:5,gYears:"2023–26",rowdy:[18,36],susp:[51,114],prop:[17,11,2370599,1453599]},
- "Chittoor II Town PS":{sd:"Chittoor",reg:19,str:[2,4,8,42,0,4,9,31,1,0],ui:[91,92,15],pt:449,age:[25,13,18,27],nbw:[4,7],mv:[0,0],graveUI:3,gYears:"2023–26",rowdy:[36,70],susp:[120,355],prop:[12,7,1731400,995000]},
- "G.D.Nellore UPS":{sd:"Chittoor",reg:33,str:[0,3,6,18,0,2,8,19,1,1],ui:[106,106,22],pt:550,age:[6,6,26,65],nbw:[2,0],mv:[80,18395],graveUI:1,gYears:"2026",rowdy:[12,28],susp:[45,90],prop:[9,7,678000,40000]},
- "Puthalapattu UPS":{sd:"Chittoor",reg:23,str:[0,3,6,19,0,3,6,19,1,1],ui:[80,82,9],pt:429,age:[18,14,15,45],nbw:[2,1],mv:[100,19800],graveUI:2,gYears:"2023, 2026",rowdy:[9,12],susp:[47,54],prop:[11,8,1601000,202000]},
- "Chittoor Taluk PS":{sd:"Chittoor",reg:20,str:[2,4,7,29,1,3,7,28,0,0],ui:[70,69,9],pt:267,age:[2,8,27,32],nbw:[13,0],mv:[45,6405],graveUI:6,gYears:"2024–26",rowdy:[14,30],susp:[38,59],prop:[4,3,699170,459170]},
- "N.R.Pet PS":{sd:"Chittoor",reg:9,str:[1,2,5,18,1,1,5,15,0,0],ui:[30,32,13],pt:151,age:[3,4,11,14],nbw:[2,0],mv:[30,5550],graveUI:2,gYears:"2025–26",rowdy:[7,16],susp:[11,37],prop:[1,0,6000,6000]},
- "Penumur PS":{sd:"Chittoor",reg:14,str:[1,2,5,19,1,2,5,12,0,0],ui:[31,31,9],pt:421,age:[6,1,3,19],nbw:[3,0],mv:[5,3475],graveUI:1,gYears:"2026",rowdy:[15,51],susp:[36,106],prop:[6,3,236500,30500]},
- "Yadamari PS":{sd:"Chittoor",reg:12,str:[1,2,6,19,1,1,7,17,0,0],ui:[60,61,24],pt:377,age:[9,10,15,26],nbw:[1,0],mv:[10,6100],graveUI:2,gYears:"2025",rowdy:[26,59],susp:[39,52],prop:[4,1,164000,32000]},
- "Gudipala PS":{sd:"Chittoor",reg:16,str:[1,3,6,18,1,3,6,17,0,0],ui:[76,76,25],pt:527,age:[16,14,8,34],nbw:[3,0],mv:[49,9065],graveUI:4,gYears:"2023–26",rowdy:[17,53],susp:[51,147],prop:[4,1,255000,195000]},
- "Thavanampalle PS":{sd:"Chittoor",reg:15,str:[1,2,5,18,1,2,5,8,0,0],ui:[39,39,10],pt:326,age:[4,7,11,19],nbw:[1,2],mv:[134,24790],graveUI:3,gYears:"2025–26",rowdy:[33,54],susp:[28,36],prop:null},
- "Kanipakam PS":{sd:"Chittoor",reg:14,str:[1,3,6,29,1,2,7,24,0,0],ui:[23,26,8],pt:160,age:[4,5,4,13],nbw:[3,0],mv:[67,19545],graveUI:0,gYears:"—",rowdy:[4,12],susp:[11,16],prop:[4,1,295000,55000]},
- "Kallur PS":{sd:"Chittoor",reg:18,str:[1,3,5,19,1,3,6,12,0,0],ui:[40,44,8],pt:324,age:[2,6,10,30],nbw:[0,2],mv:[95,17575],graveUI:1,gYears:"2024",rowdy:[5,9],susp:[15,28],prop:[10,6,4482700,154000]},
- "Irala PS":{sd:"Chittoor",reg:13,str:[1,2,5,18,1,1,6,11,0,0],ui:[46,50,24],pt:256,age:[7,8,14,21],nbw:[0,0],mv:[129,24865],graveUI:0,gYears:"—",rowdy:[9,9],susp:[39,40],prop:[1,0,650000,650000]},
- "Rompicherla PS":{sd:"Chittoor",reg:13,str:[1,2,6,18,1,0,4,7,0,0],ui:[38,37,11],pt:208,age:[4,1,6,30],nbw:[3,1],mv:[65,12025],graveUI:0,gYears:"—",rowdy:[32,36],susp:[43,84],prop:[6,4,210000,63000]},
- "Palamaner UPS":{sd:"Palamaner",reg:48,str:[2,4,8,42,2,3,8,33,1,1],ui:[90,97,24],pt:765,age:[6,10,29,48],nbw:[14,2],mv:[269,66405],graveUI:1,gYears:"2025",rowdy:[35,95],susp:[82,239],prop:[14,6,2113000,905000]},
- "Bangarupalem UPS":{sd:"Palamaner",reg:33,str:[1,3,6,20,1,2,6,12,1,1],ui:[72,85,26],pt:679,age:[10,11,14,54],nbw:[4,1],mv:[47,11995],graveUI:6,gYears:"2021–26",rowdy:[38,53],susp:[74,104],prop:[13,2,1933500,1786000]},
- "Gangavaram UPS":{sd:"Palamaner",reg:35,str:[0,3,6,18,1,4,4,16,1,1],ui:[62,63,18],pt:683,age:[12,7,16,37],nbw:[3,14],mv:[137,26195],graveUI:5,gYears:"2024–26",rowdy:[22,34],susp:[66,95],prop:[9,5,3976000,2746000]},
- "Baireddypalli PS":{sd:"Palamaner",reg:14,str:[1,2,5,18,1,2,6,12,0,0],ui:[54,54,10],pt:409,age:[8,2,12,37],nbw:[9,8],mv:[105,19425],graveUI:0,gYears:"—",rowdy:[20,27],susp:[22,45],prop:[3,2,502500,14000]},
- "Panjani PS":{sd:"Palamaner",reg:23,str:[1,2,6,17,1,2,5,16,0,0],ui:[40,45,15],pt:360,age:[6,4,9,24],nbw:[8,0],mv:[53,11484],graveUI:4,gYears:"2024–26",rowdy:[20,25],susp:[37,94],prop:[7,2,387000,204000]},
- "V.Kota UPS":{sd:"Palamaner",reg:41,str:[1,3,6,20,1,1,5,20,1,1],ui:[182,189,104],pt:650,age:[19,20,35,109],nbw:[11,14],mv:[159,29415],graveUI:9,gYears:"2024–26",rowdy:[18,54],susp:[33,43],prop:[11,7,1709500,600500]},
- "Kuppam Urban PS":{sd:"Kuppam",reg:41,str:[2,4,7,29,2,1,6,23,1,1],ui:[237,233,49],pt:748,age:[34,32,47,126],nbw:[16,11],mv:[49,9065],graveUI:14,gYears:"2020–26",rowdy:[67,124],susp:[72,88],prop:[4,3,663200,0]},
- "Rama Kuppam PS":{sd:"Kuppam",reg:6,str:[1,2,6,18,1,1,3,13,0,0],ui:[40,40,11],pt:448,age:[4,7,5,30],nbw:[1,0],mv:[116,21460],graveUI:1,gYears:"2023",rowdy:[41,77],susp:[35,64],prop:[2,2,94000,0]},
- "Gudupalli PS":{sd:"Kuppam",reg:15,str:[1,2,5,18,1,0,4,17,0,0],ui:[18,18,1],pt:314,age:[3,2,2,17],nbw:[1,1],mv:[67,13245],graveUI:2,gYears:"2023, 2026",rowdy:[16,19],susp:[18,26],prop:[2,2,3990000,0]},
- "Rallabudugur PS":{sd:"Kuppam",reg:14,str:[1,2,5,19,1,2,4,14,0,0],ui:[34,35,3],pt:476,age:[3,6,5,30],nbw:[17,0],mv:[150,27750],graveUI:0,gYears:"—",rowdy:[27,59],susp:[21,45],prop:[5,4,777000,410000]},
- "Nagari UPS":{sd:"Nagari",reg:16,str:[2,4,7,27,2,1,7,17,1,1],ui:[99,99,18],pt:688,age:[26,6,39,27],nbw:[10,7],mv:[155,34515],graveUI:1,gYears:"2025",rowdy:[30,48],susp:[122,242],prop:[11,7,917297,250000]},
- "Vijayapuram PS":{sd:"Nagari",reg:9,str:[1,2,5,18,1,0,3,9,0,0],ui:[86,84,20],pt:165,age:[3,16,56,36],nbw:[6,0],mv:[12,2160],graveUI:0,gYears:"—",rowdy:[14,15],susp:[9,12],prop:[4,3,374000,220000]},
- "Nindra PS":{sd:"Nagari",reg:10,str:[1,2,5,18,1,2,3,10,0,0],ui:[64,57,19],pt:125,age:[3,9,23,29],nbw:[2,1],mv:[21,3650],graveUI:1,gYears:"2024",rowdy:[10,19],susp:[4,4],prop:[4,4,170000,0]},
- "K.Nagar PS":{sd:"Nagari",reg:18,str:[1,3,6,18,1,0,3,11,0,0],ui:[92,93,32],pt:234,age:[1,15,36,32],nbw:[5,1],mv:[0,0],graveUI:1,gYears:"2025",rowdy:[7,7],susp:[21,35],prop:null},
- "Vedurukuppam PS":{sd:"Nagari",reg:25,str:[1,2,5,18,1,0,2,10,0,0],ui:[177,177,45],pt:232,age:[11,46,72,54],nbw:[3,0],mv:[9,2515],graveUI:5,gYears:"2025–26",rowdy:[11,13],susp:[26,35],prop:null},
- "S.R.Puram PS":{sd:"Nagari",reg:23,str:[1,2,5,19,1,3,5,12,0,0],ui:[123,123,59],pt:176,age:[4,24,38,70],nbw:[9,8],mv:[0,0],graveUI:1,gYears:"2025",rowdy:[10,15],susp:[23,26],prop:null},
- "Palasamudram PS":{sd:"Nagari",reg:8,str:[1,2,5,17,1,1,5,10,0,0],ui:[19,19,9],pt:267,age:[1,1,8,11],nbw:[3,0],mv:[3,565],graveUI:1,gYears:"2025",rowdy:[0,0],susp:[26,136],prop:null}
+ "Chittoor I Town PS":{sd:"Chittoor",reg:72,rm:[6,9,9,10,6,7,10,9,6],rh:[0,23,0],str:[2,6,12,49,3,4,13,37,1,1],ui:[131,134,33],pt:455,age:[31,11,35,57],nbw:[14,24],mv:[182,29820],graveUI:5,gYears:"2023–26",rowdy:[18,36],susp:[51,114],prop:[17,11,2370599,1453599]},
+ "Chittoor II Town PS":{sd:"Chittoor",reg:63,rm:[6,6,6,8,10,8,4,4,11],rh:[1,15,0],str:[2,4,8,42,0,4,9,31,1,0],ui:[91,91,14],pt:451,age:[25,13,18,35],nbw:[4,7],mv:[0,0],graveUI:3,gYears:"2023–26",rowdy:[36,70],susp:[120,355],prop:[12,7,1731400,995000]},
+ "G.D.Nellore UPS":{sd:"Chittoor",reg:88,rm:[7,10,12,9,13,10,12,8,7],rh:[0,11,10],str:[0,3,6,18,0,2,8,19,1,1],ui:[100,101,21],pt:541,age:[6,6,24,65],nbw:[2,0],mv:[80,18395],graveUI:1,gYears:"2026",rowdy:[12,28],susp:[45,90],prop:[9,7,678000,40000]},
+ "Puthalapattu UPS":{sd:"Chittoor",reg:79,rm:[10,5,7,5,7,16,14,11,4],rh:[0,13,18],str:[0,3,6,19,0,3,6,19,1,1],ui:[81,81,7],pt:428,age:[18,14,14,35],nbw:[2,1],mv:[100,19800],graveUI:2,gYears:"2023, 2026",rowdy:[9,12],susp:[47,54],prop:[11,8,1601000,202000]},
+ "Chittoor Taluk PS":{sd:"Chittoor",reg:55,rm:[5,12,3,4,5,6,8,5,7],rh:[1,5,7],str:[2,4,7,29,1,3,7,28,0,0],ui:[71,69,8],pt:269,age:[2,7,24,36],nbw:[13,0],mv:[45,6405],graveUI:6,gYears:"2024–26",rowdy:[14,30],susp:[38,59],prop:[4,3,699170,459170]},
+ "N.R.Pet PS":{sd:"Chittoor",reg:17,rm:[7,1,1,0,0,2,2,2,2],rh:[2,2,3],str:[1,2,5,18,1,1,5,15,0,0],ui:[32,31,13],pt:151,age:[3,4,10,14],nbw:[2,0],mv:[30,5550],graveUI:2,gYears:"2025–26",rowdy:[7,16],susp:[11,37],prop:[1,0,6000,6000]},
+ "Penumur PS":{sd:"Chittoor",reg:40,rm:[6,1,6,3,4,2,5,9,4],rh:[1,6,7],str:[1,2,5,19,1,2,5,12,0,0],ui:[30,30,7],pt:416,age:[6,1,3,20],nbw:[3,0],mv:[5,3475],graveUI:1,gYears:"2026",rowdy:[15,51],susp:[36,106],prop:[6,3,236500,30500]},
+ "Yadamari PS":{sd:"Chittoor",reg:53,rm:[4,4,3,8,2,7,13,4,8],rh:[0,6,9],str:[1,2,6,19,1,1,7,17,0,0],ui:[60,61,23],pt:379,age:[9,8,14,30],nbw:[1,0],mv:[10,6100],graveUI:2,gYears:"2025",rowdy:[26,59],susp:[39,52],prop:[4,1,164000,32000]},
+ "Gudipala PS":{sd:"Chittoor",reg:60,rm:[7,5,3,5,8,9,9,5,9],rh:[0,6,7],str:[1,3,6,18,1,3,6,17,0,0],ui:[75,76,25],pt:527,age:[16,14,7,39],nbw:[3,0],mv:[49,9065],graveUI:4,gYears:"2023–26",rowdy:[17,53],susp:[51,147],prop:[4,1,255000,195000]},
+ "Thavanampalle PS":{sd:"Chittoor",reg:36,rm:[6,1,7,5,6,3,4,1,3],rh:[1,2,8],str:[1,2,5,18,1,2,5,8,0,0],ui:[40,40,10],pt:323,age:[3,7,10,20],nbw:[1,2],mv:[134,24790],graveUI:3,gYears:"2025–26",rowdy:[33,54],susp:[28,36],prop:null},
+ "Kanipakam PS":{sd:"Chittoor",reg:35,rm:[5,5,3,3,8,3,2,3,3],rh:[0,4,7],str:[1,3,6,29,1,2,7,24,0,0],ui:[20,23,7],pt:161,age:[4,5,4,10],nbw:[3,0],mv:[67,19545],graveUI:0,gYears:"—",rowdy:[4,12],susp:[11,16],prop:[4,1,295000,55000]},
+ "Kallur PS":{sd:"Chittoor",reg:57,rm:[7,3,7,10,5,12,7,4,2],rh:[0,10,8],str:[1,3,5,19,1,3,6,12,0,0],ui:[39,45,8],pt:324,age:[2,6,10,27],nbw:[0,2],mv:[95,17575],graveUI:1,gYears:"2024",rowdy:[5,9],susp:[15,28],prop:[10,6,4482700,154000]},
+ "Irala PS":{sd:"Chittoor",reg:45,rm:[4,4,5,3,3,4,11,3,8],rh:[0,3,5],str:[1,2,5,18,1,1,6,11,0,0],ui:[47,49,22],pt:258,age:[4,8,12,25],nbw:[0,0],mv:[129,24865],graveUI:0,gYears:"—",rowdy:[9,9],susp:[39,40],prop:[1,0,650000,650000]},
+ "Rompicherla PS":{sd:"Chittoor",reg:36,rm:[2,6,4,3,3,3,8,1,6],rh:[0,6,7],str:[1,2,6,18,1,0,4,7,0,0],ui:[38,37,11],pt:209,age:[4,1,5,27],nbw:[3,1],mv:[65,12025],graveUI:0,gYears:"—",rowdy:[32,36],susp:[43,84],prop:[6,4,210000,63000]},
+ "Palamaner UPS":{sd:"Palamaner",reg:117,rm:[11,18,13,16,18,13,10,12,6],rh:[1,15,13],str:[2,4,8,42,2,3,8,33,1,1],ui:[90,93,22],pt:763,age:[6,10,25,52],nbw:[14,2],mv:[269,66405],graveUI:1,gYears:"2025",rowdy:[35,95],susp:[82,239],prop:[14,6,2113000,905000]},
+ "Bangarupalem UPS":{sd:"Palamaner",reg:106,rm:[15,6,9,9,11,14,15,17,10],rh:[1,15,19],str:[1,3,6,20,1,2,6,12,1,1],ui:[72,88,30],pt:675,age:[10,11,12,55],nbw:[4,1],mv:[47,11995],graveUI:6,gYears:"2021–26",rowdy:[38,53],susp:[74,104],prop:[13,2,1933500,1786000]},
+ "Gangavaram UPS":{sd:"Palamaner",reg:90,rm:[20,5,8,9,13,8,8,11,8],rh:[1,10,15],str:[0,3,6,18,1,4,4,16,1,1],ui:[57,57,15],pt:688,age:[12,7,14,24],nbw:[3,14],mv:[137,26195],graveUI:5,gYears:"2024–26",rowdy:[22,34],susp:[66,95],prop:[9,5,3976000,2746000]},
+ "Baireddypalli PS":{sd:"Palamaner",reg:50,rm:[10,2,2,8,6,2,11,3,6],rh:[0,5,7],str:[1,2,5,18,1,2,6,12,0,0],ui:[56,57,12],pt:409,age:[8,1,11,37],nbw:[9,8],mv:[105,19425],graveUI:0,gYears:"—",rowdy:[20,27],susp:[22,45],prop:[3,2,502500,14000]},
+ "Panjani PS":{sd:"Palamaner",reg:45,rm:[6,8,7,6,5,3,1,4,5],rh:[2,9,7],str:[1,2,6,17,1,2,5,16,0,0],ui:[40,48,15],pt:360,age:[6,4,8,30],nbw:[8,0],mv:[53,11484],graveUI:4,gYears:"2024–26",rowdy:[20,25],susp:[37,94],prop:[7,2,387000,204000]},
+ "V.Kota UPS":{sd:"Palamaner",reg:138,rm:[12,17,11,14,13,21,16,21,13],rh:[1,17,18],str:[1,3,6,20,1,1,5,20,1,1],ui:[166,178,90],pt:665,age:[18,20,31,109],nbw:[11,14],mv:[159,29415],graveUI:9,gYears:"2024–26",rowdy:[18,54],susp:[33,43],prop:[11,7,1709500,600500]},
+ "Kuppam Urban PS":{sd:"Kuppam",reg:118,rm:[7,12,15,15,8,16,14,16,15],rh:[4,5,9],str:[2,4,7,29,2,1,6,23,1,1],ui:[241,233,49],pt:752,age:[34,32,44,123],nbw:[16,11],mv:[49,9065],graveUI:14,gYears:"2020–26",rowdy:[67,124],susp:[72,88],prop:[4,3,663200,0]},
+ "Rama Kuppam PS":{sd:"Kuppam",reg:27,rm:[2,0,3,2,1,2,11,3,3],rh:[1,2,2],str:[1,2,6,18,1,1,3,13,0,0],ui:[33,33,7],pt:439,age:[4,4,4,21],nbw:[1,0],mv:[116,21460],graveUI:1,gYears:"2023",rowdy:[41,77],susp:[35,64],prop:[2,2,94000,0]},
+ "Gudupalli PS":{sd:"Kuppam",reg:37,rm:[3,5,5,4,6,1,6,5,2],rh:[1,2,5],str:[1,2,5,18,1,0,4,17,0,0],ui:[14,16,2],pt:314,age:[3,2,1,10],nbw:[1,1],mv:[67,13245],graveUI:2,gYears:"2023, 2026",rowdy:[16,19],susp:[18,26],prop:[2,2,3990000,0]},
+ "Rallabudugur PS":{sd:"Kuppam",reg:44,rm:[3,4,5,5,7,5,6,3,6],rh:[3,5,8],str:[1,2,5,19,1,2,4,14,0,0],ui:[34,35,7],pt:476,age:[1,6,3,25],nbw:[17,0],mv:[150,27750],graveUI:0,gYears:"—",rowdy:[27,59],susp:[21,45],prop:[5,4,777000,410000]},
+ "Nagari UPS":{sd:"Nagari",reg:53,rm:[6,6,3,5,6,8,6,9,4],rh:[0,11,4],str:[2,4,7,27,2,1,7,17,1,1],ui:[99,97,17],pt:690,age:[26,6,33,32],nbw:[10,7],mv:[155,34515],graveUI:1,gYears:"2025",rowdy:[30,48],susp:[122,242],prop:[11,7,917297,250000]},
+ "Vijayapuram PS":{sd:"Nagari",reg:34,rm:[3,3,2,2,8,3,6,5,2],rh:[1,6,3],str:[1,2,5,18,1,0,3,9,0,0],ui:[85,84,20],pt:165,age:[3,8,42,31],nbw:[6,0],mv:[12,2160],graveUI:0,gYears:"—",rowdy:[14,15],susp:[9,12],prop:[4,3,374000,220000]},
+ "Nindra PS":{sd:"Nagari",reg:36,rm:[2,3,3,6,2,6,8,3,3],rh:[0,5,2],str:[1,2,5,18,1,2,3,10,0,0],ui:[52,53,15],pt:128,age:[3,9,19,22],nbw:[2,1],mv:[21,3650],graveUI:1,gYears:"2024",rowdy:[10,19],susp:[4,4],prop:[4,4,170000,0]},
+ "K.Nagar PS":{sd:"Nagari",reg:47,rm:[2,8,3,9,5,4,1,8,7],rh:[0,4,6],str:[1,3,6,18,1,0,3,11,0,0],ui:[93,93,32],pt:234,age:[1,15,34,43],nbw:[5,1],mv:[0,0],graveUI:1,gYears:"2025",rowdy:[7,7],susp:[21,35],prop:null},
+ "Vedurukuppam PS":{sd:"Nagari",reg:58,rm:[6,11,6,5,5,11,5,4,5],rh:[1,5,2],str:[1,2,5,18,1,0,2,10,0,0],ui:[174,174,46],pt:235,age:[11,46,68,49],nbw:[3,0],mv:[9,2515],graveUI:5,gYears:"2025–26",rowdy:[11,13],susp:[26,35],prop:null},
+ "S.R.Puram PS":{sd:"Nagari",reg:73,rm:[5,8,6,13,8,9,8,12,4],rh:[1,9,7],str:[1,2,5,19,1,3,5,12,0,0],ui:[126,126,60],pt:176,age:[4,22,35,65],nbw:[9,8],mv:[0,0],graveUI:1,gYears:"2025",rowdy:[10,15],susp:[23,26],prop:null},
+ "Palasamudram PS":{sd:"Nagari",reg:19,rm:[3,0,3,3,0,3,2,3,2],rh:[0,3,1],str:[1,2,5,17,1,1,5,10,0,0],ui:[18,18,9],pt:268,age:[1,1,7,9],nbw:[3,0],mv:[3,565],graveUI:1,gYears:"2025",rowdy:[0,0],susp:[26,136],prop:null}
 };
 const NAMES=Object.keys(S);
 const sancTot=s=>s.str[0]+s.str[1]+s.str[2]+s.str[3]+s.str[8];
@@ -938,18 +972,22 @@ const presTot=s=>s.str[4]+s.str[5]+s.str[6]+s.str[7]+s.str[9];
 
 /* district series */
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep*"];
-const MON_MUR=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"];
-const MUR={"2024":[1,2,4,1,1,0,3,3],"2025":[2,1,0,3,1,5,2,3],"2026":[2,2,4,5,0,2,4,2]};
-const ACC={"2024":[47,50,61,61,56,58,51,61,61],"2025":[50,52,56,67,51,66,60,60,60],"2026":[55,39,41,44,57,68,61,60,36]};
+const MON_MUR=MON;
+/* 2024–25 from the murder register (to Aug); 2026 from monthly PS-wise head-wise returns to 27·09 */
+const MUR={"2024":[1,2,4,1,1,0,3,3,null],"2025":[2,1,0,3,1,5,2,3,null],"2026":[2,2,4,5,0,2,4,3,2]};
+const ACC={"2024":[47,50,61,61,56,58,51,61,61],"2025":[50,52,56,67,51,66,60,60,60],"2026":[55,39,41,44,57,68,61,60,44]};
 
-/* Jan–Jul matched comparison (meeting return) */
-const JJ=[["Murder for gain",1,1],["Dacoity",1,0],["Robbery",3,1],["HB by day",15,16],
-["HB by night",50,61],["Theft",183,117],["Murder",14,19],["Culpable homicide",4,5],
-["Rioting",4,2],["Kidnapping",13,9],["Rape",25,24],["Grievous hurt",52,36],
-["Simple hurt",357,274],["Cheating",77,62],["Criminal breach of trust",14,19],
-["Counterfeiting",2,0],["Attempt to murder",41,22],["Fatal accidents",188,203],
-["Non-fatal accidents",221,167],["Other IPC",577,456]];
-const JJ_TOT=[1842,1494];
+/* three-year comparative, Jan–Sep (DCRB head-wise comparative in the 28·09·2026 return; 2026 runs to 27·09) */
+const YOY=[["Murder for gain", 0, 1, 1], ["Dacoity", 4, 2, 0], ["Robbery", 3, 4, 1], ["HB by day", 29, 23, 17], ["HB by night", 62, 69, 73], ["Theft", 219, 220, 150], ["Murder", 14, 19, 24], ["Culpable homicide", 6, 4, 7], ["Rioting", 14, 4, 2], ["Kidnapping", 13, 13, 11], ["Rape", 23, 29, 26], ["Grievous hurt", 44, 53, 42], ["Simple hurt", 412, 475, 359], ["Cheating", 102, 96, 74], ["Criminal breach of trust", 18, 18, 23], ["Counterfeit currency", 0, 1, 0], ["Attempt to murder", 42, 50, 26], ["Fatal accidents", 237, 246, 255], ["Non-fatal accidents", 268, 275, 216], ["Other IPC / BNS", 869, 766, 594]];
+const YOY_TOT=[2379,2368,1901];
+/* 2026 registration by month, district (PS-wise head-wise monthly sheets; Sep to 27·09) */
+const REG_MON=[203,197,190,214,212,227,257,219,187];
+/* CCTNS 27·09·2026 : pending by head, all years [head, UI, PT] */
+const HW_PEND=[["Theft", 241, 897], ["Cheating", 232, 539], ["Simple hurt", 231, 1535], ["Fatal accidents", 162, 1165], ["HB by night", 122, 246], ["Non-fatal accidents", 112, 760], ["Criminal breach of trust", 51, 112], ["Attempt to murder", 51, 362], ["Rape", 42, 113], ["HB by day", 34, 85], ["Grievous hurt", 29, 239], ["Murder", 27, 154], ["Kidnapping", 15, 58], ["Rioting", 12, 82], ["Culpable homicide", 7, 39], ["Robbery", 2, 29], ["Counterfeiting", 2, 3], ["Murder for gain", 1, 13], ["Dacoity", 0, 23], ["Other IPC / BNS", 444, 3510], ["Special & local laws", 575, 2624]];
+const UI_TOT=2392, UI_PS=2346, CHG_TOT=662, CHG_PS=585, PT_TOT=12588;
+const AGE_D=[301,310,585,1196];   /* district UI by year registered, CCTNS 27·09 */
+/* POCSO UI, 23·09·2026 : [sub-division, investigation pending, charged not taken on file, total UI, past 60 days not charged] */
+const POCSO=[["Chittoor",1,7,8,0],["Palamaner",6,14,20,2],["Kuppam",4,3,7,1],["Nagari",3,7,10,3]];
 
 /* full-detail comparative statement, 2026 to 31-07 : [head, REP, TRU, CHA, CON, ACQ, PT, UN, UI] */
 const ALL26=[["Murder for gain",1,1,0,0,0,0,0,1],["Dacoity",0,0,0,0,0,0,0,0],
@@ -989,8 +1027,8 @@ const CHILD_SC=[["POCSO (children)",16,13],["SC/ST Act",39,21]];
 
 const MISS=[["Chittoor",56,44],["Palamaner",22,21],["Kuppam",24,20],["Nagari",25,21]];
 const PD=[["2025","Palamaner UPS",7,"Released"],["2025","Kuppam Urban PS",12,"Released"],
-["2025","Panjani PS",3,"Proposed"],["2026","V.Kota Urban PS",9,"Proposed"],
-["2026","V.Kota Urban PS",6,"Proposed"]];
+["2025","Panjani PS",3,"Released"],["2026","V.Kota Urban PS",9,"Proposed"],
+["2026","V.Kota Urban PS",6,"Proposed"],["2026","Chittoor II Town PS",6,"Proposed"]];
 const ENF=[["Chittoor",1615,335440],["Palamaner",1502,856720],["Kuppam",1383,429455],
 ["Nagari",761,230485],["Traffic PS",595,181090]];
 const BIND=[["Chittoor",1,5,14],["Palamaner",0,3,8],["Kuppam",1,2,6],["Nagari",0,2,4]];
@@ -1006,35 +1044,36 @@ document.querySelectorAll('.nv').forEach(t=>t.addEventListener('click',()=>{
 /* ---------- KPIs ---------- */
 const T=f=>NAMES.reduce((a,n)=>a+f(S[n]),0);
 const kp=[
- ["Cognizable crime","1,494","Jan–Jul 2026 · 2025: 1,842","#4FAE83"],
- ["UI cases (CCTNS)","2,432","23·09 · was 2,516 on 28·08","#D9A441"],
- ["Charged, awaiting CC no.","691","of which 585 per PS register","#8B7BD8"],
+ ["Cognizable crime","1,901","Jan to 27 Sep · 2025 same window: 2,368","#4FAE83"],
+ ["UI cases (CCTNS)","2,392","27·09 · was 2,432 on 23·09","#D9A441"],
+ ["Charged, awaiting CC no.","662","585 per PS register","#8B7BD8"],
  ["Warrants pending","185","+105 NI Act · as on 18·09","#E1595A"],
  ["Strength present",fm(T(presTot)),"of "+fm(T(sancTot))+" sanctioned","#5B8CFF"],
- ["Grave UI","82","47 station-side · 35 with court","#E1595A"]];
+ ["Grave UI","82","47 station-side · as on 30·06","#E1595A"]];
 document.getElementById('kpis').innerHTML=kp.map(k=>
  `<div class="k" style="--ac:${k[3]}"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
 
 /* ---------- situation charts ---------- */
-safeChart(cYoY,{type:'bar',data:{labels:['2025','2026'],datasets:[{data:JJ_TOT,
- backgroundColor:[C.blue,C.gold],borderRadius:6,barPercentage:.55}]},
+safeChart(cYoY,{type:'bar',data:{labels:['2024','2025','2026'],datasets:[{data:YOY_TOT,
+ backgroundColor:[C.dim,C.blue,C.gold],borderRadius:6,barPercentage:.55}]},
  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
  scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
 
-safeChart(cStatus,{type:'doughnut',data:{labels:['Under investigation','Pending trial','Convicted','Acquitted','Undetected'],
- datasets:[{data:[839,503,24,15,22],backgroundColor:[C.amber,C.blue,C.green,C.red,C.dim],
+safeChart(cStatus,{type:'doughnut',data:{labels:['Still under investigation','Charge-sheeted, in court'],
+ datasets:[{data:[AGE_D[3],826],backgroundColor:[C.amber,C.blue],
  borderColor:'#111726',borderWidth:3}]},
  options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
  plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5},padding:11}}}}});
 
-{const rows=JJ.map(r=>({h:r[0],a:r[1],b:r[2],d:r[2]-r[1]})).sort((x,y)=>Math.abs(y.d)-Math.abs(x.d));
+{const rows=YOY.map(r=>({h:r[0],z:r[1],a:r[2],b:r[3],d:r[3]-r[2]})).sort((x,y)=>Math.abs(y.d)-Math.abs(x.d));
+ const dT=YOY_TOT[2]-YOY_TOT[1];
  document.querySelector('#tMove tbody').innerHTML=rows.map(r=>{
   const p=r.a?((r.d/r.a)*100).toFixed(0)+'%':'—';
   const c=r.d>0?'bad':(r.d<0?'ok':'nu');
-  return `<tr><td>${r.h}</td><td class="n m">${fm(r.a)}</td><td class="n m">${fm(r.b)}</td>
+  return `<tr><td>${r.h}</td><td class="n m" style="color:var(--tx3)">${fm(r.z)}</td><td class="n m">${fm(r.a)}</td><td class="n m">${fm(r.b)}</td>
    <td class="n"><span class="pill ${c}">${r.d>0?'+':''}${r.d} (${p})</span></td></tr>`}).join('')+
-  `<tr class="tot"><td>Total</td><td class="n m">${fm(JJ_TOT[0])}</td><td class="n m">${fm(JJ_TOT[1])}</td>
-   <td class="n"><span class="pill ok">−348 (−19%)</span></td></tr>`;}
+  `<tr class="tot"><td>Total</td><td class="n m">${fm(YOY_TOT[0])}</td><td class="n m">${fm(YOY_TOT[1])}</td><td class="n m">${fm(YOY_TOT[2])}</td>
+   <td class="n"><span class="pill ok">${dT} (${(dT/YOY_TOT[1]*100).toFixed(0)}%)</span></td></tr>`;}
 
 /* ---------- STATION RECORD ---------- */
 const sel=document.getElementById('selSta');
@@ -1046,6 +1085,12 @@ function pill(v,good,ok){if(v==null)return '<span class="pill nu">n/a</span>';
 function pillLow(v,good,ok){if(v==null)return '<span class="pill nu">n/a</span>';
  return `<span class="pill ${v<=good?'ok':v<=ok?'mid':'bad'}">${v}%</span>`}
 
+const MED_UIO=(()=>{const v=NAMES.map(k=>{const d=S[k],i=d.str[4]+d.str[5]+d.str[6];return i?d.ui[1]/i:null})
+  .filter(x=>x!=null).sort((a,b)=>a-b);const m=v.length>>1;return (v.length%2?v[m]:(v[m-1]+v[m])/2).toFixed(1)})();
+function spark(a){const mx=Math.max(1,...a),w=8,g=3,h=26;
+ return `<svg width="${a.length*(w+g)-g}" height="${h+2}" style="vertical-align:middle" role="img" aria-label="${a.join(', ')}">`+
+  a.map((v,i)=>{const bh=Math.max(1,Math.round(v/mx*h));
+   return `<rect x="${i*(w+g)}" y="${h-bh+1}" width="${w}" height="${bh}" rx="1.5" fill="${i===a.length-1?'#8C97B8':'#C9A24A'}"><title>${MON[i]}: ${v}</title></rect>`}).join('')+'</svg>';}
 function drawRec(){
  const n=NAMES[idx],d=S[n];
  const sanc=sancTot(d),pres=presTot(d),vac=sanc-pres,vacPct=pct(vac,sanc);
@@ -1077,10 +1122,10 @@ function drawRec(){
    <div class="rw"><div class="lb">Investigating officers present<small>SI + ASI + HC</small></div>
     <div class="vl">${inv}</div></div>
 
-   <div class="grp">Investigation · CCTNS 23·09·2026</div>
+   <div class="grp">Investigation · CCTNS 27·09·2026</div>
    <div class="rw"><div class="lb">Total UI caseload<small>PS register shows ${psUI}${cUI!==psUI?' — CCTNS governs':''}</small></div>
     <div class="vl">${cUI}</div></div>
-   <div class="rw"><div class="lb">UI per investigating officer<small>district median ≈ 8.9</small></div>
+   <div class="rw"><div class="lb">UI per investigating officer<small>district median ${MED_UIO}</small></div>
     <div class="vl">${perInv}</div></div>
    <div class="rw"><div class="lb">Of which — year registered<small>pre-2024 cases are the hard core</small></div>
     <div class="vl" style="font-size:13px">${d.age[0]}<span style="color:var(--tx3)"> old</span> · ${d.age[1]}<span style="color:var(--tx3)"> '24</span> · ${d.age[2]}<span style="color:var(--tx3)"> '25</span> · ${d.age[3]}<span style="color:var(--tx3)"> '26</span></div></div>
@@ -1096,7 +1141,7 @@ function drawRec(){
    <div class="rw"><div class="lb">NI Act<small>cheque-bounce — separate pool</small></div>
     <div class="vl" style="color:var(--tx2)">${nbN||'—'}</div></div>
 
-   <div class="grp">Preventive · 12·08·2026</div>
+   <div class="grp">Sheeters · 27·09·2026</div>
    <div class="rw"><div class="lb">Rowdy sheeters<small>${d.rowdy[1]} cases on books</small></div><div class="vl">${d.rowdy[0]}</div></div>
    <div class="rw"><div class="lb">Suspect sheeters<small>${d.susp[1]} cases on books</small></div><div class="vl">${d.susp[0]}</div></div>
 
@@ -1110,9 +1155,13 @@ function drawRec(){
    <div class="rw"><div class="lb">MV Act cases<small>₹${fm(d.mv[1])} collected</small></div>
     <div class="vl">${d.mv[0]||'—'}</div></div>
 
-   <div class="grp">Crime registered · 1 Jan – 7 Apr 2026</div>
+   <div class="grp">Crime registered · 1 Jan – 27 Sep 2026</div>
    <div class="rw"><div class="lb">IPC / BNS cases<small>rank ${NAMES.slice().sort((a,b)=>S[b].reg-S[a].reg).indexOf(n)+1} of ${NAMES.length} by volume</small></div>
     <div class="vl">${d.reg}</div></div>
+   <div class="rw"><div class="lb">By month<small>January to September · Sep to the 27th</small></div>
+    <div class="vl">${spark(d.rm)}</div></div>
+   <div class="rw"><div class="lb">Of which<small>property = house-breaking, theft, robbery, dacoity</small></div>
+    <div class="vl" style="font-size:13px">${d.rh[0]}<span style="color:var(--tx3)"> murder</span> · ${d.rh[1]}<span style="color:var(--tx3)"> property</span> · ${d.rh[2]}<span style="color:var(--tx3)"> fatal acc.</span></div></div>
 
    ${propRows}
   </div></div>`;
@@ -1169,15 +1218,15 @@ document.querySelector('#tGraveSD tbody').innerHTML=GRAVE_SD.map(g=>{
 
 {const rows=NAMES.map(n=>({n,p:S[n].pt})).sort((a,b)=>b.p-a.p);
  document.querySelector('#tPT tbody').innerHTML=rows.map(r=>
-  `<tr><td>${r.n}</td><td class="n m">${fm(r.p)}</td><td class="n m">${(r.p/12259*100).toFixed(1)}%</td></tr>`).join('');}
+  `<tr><td>${r.n}</td><td class="n m">${fm(r.p)}</td><td class="n m">${(r.p/PT_TOT*100).toFixed(1)}%</td></tr>`).join('');}
 
 {const rows=NAMES.map(n=>({n,c:S[n].nbw[0],i:S[n].nbw[1]})).filter(r=>r.c+r.i>0)
   .sort((a,b)=>(b.c+b.i)-(a.c+a.i));
  document.querySelector('#tNbw tbody').innerHTML=rows.map(r=>
   `<tr class="${r.c+r.i>=20?'hl':''}"><td>${r.n}</td><td class="n m">${r.c||'—'}</td>
    <td class="n m">${r.i||'—'}</td><td class="n m" style="color:var(--tx)">${r.c+r.i}</td></tr>`).join('')+
-  `<tr class="tot"><td>District (incl. CCS, Mahila, Traffic)</td><td class="n m">205</td>
-   <td class="n m">109</td><td class="n m">314</td></tr>`;}
+  `<tr class="tot"><td>District (incl. CCS, Mahila, Traffic)</td><td class="n m">185</td>
+   <td class="n m">105</td><td class="n m">290</td></tr>`;}
 
 document.querySelector('#tMiss tbody').innerHTML=MISS.map(m=>
  `<tr><td>${m[0]}</td><td class="n m">${m[1]}</td><td class="n m">${m[2]}</td></tr>`).join('')+
@@ -1187,7 +1236,38 @@ document.querySelector('#tPD tbody').innerHTML=PD.map(p=>
  `<tr><td class="m">${p[0]}</td><td>${p[1]}</td><td class="n m">${p[2]}</td>
   <td><span class="pill ${p[3]==='Released'?'mid':'nu'}">${p[3]}</span></td></tr>`).join('');
 
+{const t=[1,2,3,4].map(i=>POCSO.reduce((a,p)=>a+p[i],0));
+ document.querySelector('#tPocso tbody').innerHTML=POCSO.map(p=>
+  `<tr class="${p[4]?'hl':''}"><td>${p[0]}</td><td class="n m" style="color:var(--tx)">${p[3]}</td><td class="n m">${p[1]}</td>
+   <td class="n m" style="color:var(--tx2)">${p[2]}</td>
+   <td class="n">${p[4]?`<span class="pill bad">${p[4]}</span>`:'<span class="pill ok">0</span>'}</td></tr>`).join('')+
+  `<tr class="tot"><td>District</td><td class="n m">${t[2]}</td><td class="n m">${t[0]}</td><td class="n m">${t[1]}</td>
+   <td class="n"><span class="pill bad">${t[3]}</span></td></tr>`;}
+
 /* ---------- CRIME DETAIL ---------- */
+safeChart(cRegMon,{type:'bar',data:{labels:MON,datasets:[{label:'2026',data:REG_MON,backgroundColor:C.gold,borderRadius:4}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+ scales:{x:{grid:{display:false}},y:{grid:{color:C.line},beginAtZero:true}}}});
+
+{const rows=NAMES.map(n=>{const m=S[n].rm;return{n,q:[m[0]+m[1]+m[2],m[3]+m[4]+m[5],m[6]+m[7]+m[8]],t:S[n].reg,h:S[n].rh}})
+  .sort((a,b)=>b.t-a.t);
+ const dq=[0,3,6].map(i=>REG_MON[i]+REG_MON[i+1]+REG_MON[i+2]);
+ document.querySelector('#tRegSta tbody').innerHTML=rows.map(r=>{
+  const d=r.q[2]-r.q[1],p=r.q[1]?Math.round(d/r.q[1]*100):null;
+  const pl=r.q[1]<10?'<span class="pill nu">low base</span>':`<span class="pill ${p>=25?'mid':'nu'}">${d>0?'+':''}${p}%</span>`;
+  return `<tr class="${r.q[1]>=10&&p>=40?'hl':''}"><td>${r.n}</td><td class="n m">${r.q[0]}</td><td class="n m">${r.q[1]}</td>
+   <td class="n m">${r.q[2]}</td><td class="n">${pl}</td><td class="n m" style="color:var(--tx)">${r.t}</td>
+   <td class="n m">${r.h[0]||'—'}</td><td class="n m">${r.h[1]}</td><td class="n m">${r.h[2]}</td></tr>`}).join('')+
+  `<tr class="tot"><td>District (incl. CCS, Mahila, Traffic)</td><td class="n m">${dq[0]}</td><td class="n m">${dq[1]}</td>
+   <td class="n m">${dq[2]}</td><td class="n"></td><td class="n m">${fm(REG_MON.reduce((a,b)=>a+b,0))}</td>
+   <td class="n m">24</td><td class="n m">${NAMES.reduce((a,n)=>a+S[n].rh[1],0)}</td><td class="n m">236</td></tr>`;}
+
+{const tu=HW_PEND.reduce((a,r)=>a+r[1],0),tp=HW_PEND.reduce((a,r)=>a+r[2],0);
+ document.querySelector('#tHwPend tbody').innerHTML=HW_PEND.map(r=>
+  `<tr><td>${r[0]}</td><td class="n m" style="color:var(--tx)">${fm(r[1])}</td><td class="n m">${(r[1]/tu*100).toFixed(1)}%</td>
+   <td class="n m" style="color:var(--tx2)">${fm(r[2])}</td></tr>`).join('')+
+  `<tr class="tot"><td>Total</td><td class="n m">${fm(tu)}</td><td class="n m">100%</td><td class="n m">${fm(tp)}</td></tr>`;}
+
 {const tb=document.querySelector('#tAll tbody');
  tb.innerHTML=ALL26.map(r=>{const[h,rep,tru,cha,con,acq,pt,un,ui]=r;
   const uip=pct(ui,tru);
@@ -1287,21 +1367,22 @@ function short(n){ return n.replace(/ (PS|UPS)$/,''); }
 
 function briefDist(){
   const sanc=T(sancTot), pres=T(presTot), vac=pct(sanc-pres,sanc);
-  const nbwTot = NAMES.reduce((a,n)=>a+S[n].nbw[0],0)+2+6+3;
-  const exec1 = 'This month\'s crime line is genuinely favourable — 19% down on last year, like-for-like.';
+  const nbwTot = NAMES.reduce((a,n)=>a+S[n].nbw[0],0)+2+6+4;   /* + CCS, Woman PS, Traffic */
+  const exec1 = 'Overall crime is genuinely down — about a fifth below last year for January to September, like-for-like.';
   return `
    <div class="brief-hd"><h2>District Overview</h2><div class="dt">Chittoor District · ${today}</div></div>
-   <div class="bline"><div class="k">Cognizable crime, Jan–Jul</div><div class="v">1,494 <span style="color:var(--green);font-size:11px">▼19% on 2025</span></div></div>
-   <div class="bline"><div class="k">UI cases (CCTNS)</div><div class="v">2,516</div></div>
-   <div class="bline"><div class="k">Grave UI — station-attributable</div><div class="v">47 of 82</div></div>
-   <div class="bline"><div class="k">Warrants pending</div><div class="v">${nbwTot} criminal + 109 NI Act</div></div>
+   <div class="bline"><div class="k">Cognizable crime, Jan–Sep</div><div class="v">${fm(YOY_TOT[2])} <span style="color:var(--green);font-size:11px">▼${Math.round((YOY_TOT[1]-YOY_TOT[2])/YOY_TOT[1]*100)}% on 2025</span></div></div>
+   <div class="bline"><div class="k">Murders, Jan–Sep</div><div class="v">24 <span style="color:var(--red);font-size:11px">▲ from 19</span></div></div>
+   <div class="bline"><div class="k">Road deaths, Jan–Sep</div><div class="v">280 <span style="color:var(--red);font-size:11px">▲ from 269</span></div></div>
+   <div class="bline"><div class="k">UI cases (CCTNS, 27·09)</div><div class="v">${fm(UI_TOT)}</div></div>
+   <div class="bline"><div class="k">Grave UI — station-attributable (30·06)</div><div class="v">47 of 82</div></div>
+   <div class="bline"><div class="k">Warrants pending (18·09)</div><div class="v">${nbwTot} criminal + 105 NI Act</div></div>
    <div class="bline"><div class="k">Strength present</div><div class="v">${pres} of ${sanc} <span style="color:${vac>=20?'var(--red)':'var(--tx2)'};font-size:11px">(${vac}% vacant)</span></div></div>
-   <div class="bline"><div class="k">Property recovery, 2026</div><div class="v">38%</div></div>
-   <div class="btalk"><b>Line to open with:</b> ${exec1} That said, three stations account for most of what needs
-    a direct question this month — Kuppam Urban (heaviest UI load, zero sheeter convictions), Rompicherla
-    (56% strength vacancy), and the district-wide pattern of warrant non-execution that only broke in August.</div>
-   <div class="btalk"><b>Watch next month:</b> whether August's jump in warrant execution (52, up from 29) holds
-    into September, or reverts once attention moves elsewhere.</div>`;
+   <div class="btalk"><b>Line to open with:</b> ${exec1} Two things run against that trend and deserve a direct question:
+    murders (24 against 19, nine of them in Kuppam sub-division) and road deaths (280 against 269, even though accidents fell 10%).
+    On pendency, Kuppam Urban still carries the heaviest UI load at 233, and six POCSO cases are past the two-month limit.</div>
+   <div class="btalk"><b>Watch next month:</b> whether September's warrant execution matches August's 52 — 35 had been
+    executed by the 18th.</div>`;
 }
 
 function briefWarrants(){
@@ -1309,9 +1390,10 @@ function briefWarrants(){
   const zero=NAMES.filter(n=>S[n].nbw[0]===0).length;
   return `
    <div class="brief-hd"><h2>Warrants</h2><div class="dt">As on 18·09·2026</div></div>
-   <div class="bline"><div class="k">Criminal (BNS) pending, district</div><div class="v">207</div></div>
-   <div class="bline"><div class="k">NI Act pending, district</div><div class="v">109 <span style="color:var(--tx3);font-size:11px">(separate pool)</span></div></div>
+   <div class="bline"><div class="k">Criminal (BNS) pending, district</div><div class="v">185</div></div>
+   <div class="bline"><div class="k">NI Act pending, district</div><div class="v">105 <span style="color:var(--tx3);font-size:11px">(separate pool)</span></div></div>
    <div class="bline"><div class="k">Executed in August</div><div class="v">52 <span style="color:var(--green);font-size:11px">▲ from 29 in July</span></div></div>
+   <div class="bline"><div class="k">Executed 1–18 September</div><div class="v">35</div></div>
    <div class="bline"><div class="k">Stations at zero pending</div><div class="v">${zero} of 31</div></div>
    <div class="grp" style="padding-top:14px">Heaviest pending, by station</div>
    ${rows.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.c}</div></div>`).join('')}
@@ -1322,18 +1404,20 @@ function briefWarrants(){
 
 function briefUI(){
   const rows=NAMES.map(n=>({n,ps:S[n].ui[0],c:S[n].ui[1]})).sort((a,b)=>b.c-a.c).slice(0,6);
-  const gaps=NAMES.map(n=>({n,g:S[n].ui[1]-S[n].ui[0]})).sort((a,b)=>Math.abs(b.g)-Math.abs(a.g)).slice(0,3);
+  const gaps=NAMES.map(n=>({n,g:S[n].ui[1]-S[n].ui[0],ps:S[n].ui[0],c:S[n].ui[1]})).sort((a,b)=>Math.abs(b.g)-Math.abs(a.g)).slice(0,3);
   return `
-   <div class="brief-hd"><h2>Investigation — UI Pendency</h2><div class="dt">CCTNS as on 23·09·2026</div></div>
-   <div class="bline"><div class="k">Total UI, CCTNS</div><div class="v">2,516</div></div>
-   <div class="bline"><div class="k">Total UI, PS registers</div><div class="v">2,499 <span style="color:var(--tx3);font-size:11px">CCTNS governs</span></div></div>
-   <div class="bline"><div class="k">Charged, awaiting CC number</div><div class="v">670 <span style="color:var(--tx3);font-size:11px">534 per PS</span></div></div>
+   <div class="brief-hd"><h2>Investigation — UI Pendency</h2><div class="dt">CCTNS as on 27·09·2026</div></div>
+   <div class="bline"><div class="k">Total UI, CCTNS</div><div class="v">${fm(UI_TOT)}</div></div>
+   <div class="bline"><div class="k">Total UI, PS registers</div><div class="v">${fm(UI_PS)} <span style="color:var(--tx3);font-size:11px">CCTNS governs</span></div></div>
+   <div class="bline"><div class="k">Charged, awaiting CC number</div><div class="v">${CHG_TOT} <span style="color:var(--tx3);font-size:11px">${CHG_PS} per PS</span></div></div>
+   <div class="bline"><div class="k">Registered before 2024, still UI</div><div class="v">${AGE_D[0]}</div></div>
+   <div class="bline"><div class="k">POCSO past 60 days, not charged (23·09)</div><div class="v">${POCSO.reduce((a,p)=>a+p[4],0)}</div></div>
    <div class="grp" style="padding-top:14px">Heaviest UI caseload, by station</div>
    ${rows.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.c}</div></div>`).join('')}
    <div class="grp" style="padding-top:14px">Largest PS-vs-CCTNS gaps — worth a direct query</div>
    ${gaps.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.g>0?'+':''}${r.g}</div></div>`).join('')}
-   <div class="btalk"><b>Line to open with:</b> Bangarupalem's 19-case gap between its own register and CCTNS
-    is the largest in the district — ask what's driving the discrepancy before assuming either number is right.</div>`;
+   <div class="btalk"><b>Line to open with:</b> ${gaps[0].n.replace(/ (PS|UPS)$/,'')}'s ${Math.abs(gaps[0].g)}-case gap between its own register
+    (${gaps[0].ps}) and CCTNS (${gaps[0].c}) is the largest in the district — ask what's driving it before assuming either number is right.</div>`;
 }
 
 function briefGrave(){
@@ -1357,10 +1441,10 @@ function briefPrevent(){
   const rowdyTot=T(s=>s.rowdy[0]), suspTot=T(s=>s.susp[0]);
   const top6=NAMES.map(n=>({n,r:S[n].rowdy[0],s:S[n].susp[0]})).sort((a,b)=>(b.r+b.s)-(a.r+a.s)).slice(0,6);
   return `
-   <div class="brief-hd"><h2>Sheeters &amp; Preventive</h2><div class="dt">As on 23·09·2026</div></div>
+   <div class="brief-hd"><h2>Sheeters &amp; Preventive</h2><div class="dt">As on 27·09·2026</div></div>
    <div class="bline"><div class="k">Rowdy sheeters, district</div><div class="v">${rowdyTot}</div></div>
    <div class="bline"><div class="k">Suspect sheeters, district</div><div class="v">${suspTot}</div></div>
-   <div class="bline"><div class="k">PD Act proposals, 2025–26</div><div class="v">5</div></div>
+   <div class="bline"><div class="k">PD Act proposals, 2025–26</div><div class="v">${PD.length}</div></div>
    <div class="grp" style="padding-top:14px">Largest sheeter load, by station</div>
    ${top6.map(r=>`<div class="bline"><div class="k">${r.n}</div><div class="v">${r.r} rowdy, ${r.s} suspect</div></div>`).join('')}
    <div class="btalk"><b>Line to open with:</b> Sheeter counts alone don't say who's performing — Kuppam Urban
