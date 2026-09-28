@@ -8,7 +8,6 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230A0E17' stroke='%23C9A24A' stroke-width='4'/%3E%3Ctext x='50' y='62' font-family='Arial' font-weight='bold' font-size='28' fill='%23C9A24A' text-anchor='middle'%3ECTR%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
   :root{
     --bg:#0A0E17;--panel:#111726;--panel2:#161D30;--raised:#1B2338;
@@ -209,6 +208,18 @@
     .view{display:none!important}
     .view.on{display:block!important}
   }
+  .mc{position:absolute;inset:0}
+  .mc-svg{display:block;touch-action:pan-y}
+  .mc-lg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:var(--tx2);padding:0 0 8px}
+  .mc-lg span{display:flex;align-items:center;gap:5px}
+  .mc-lg i{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
+  .mc-lg b{color:var(--tx);font-family:'IBM Plex Mono',monospace;font-weight:600}
+  .mc-tt{font-size:11px;color:var(--tx3);text-align:center;padding-bottom:6px}
+  .mc-tip{position:absolute;display:none;pointer-events:none;background:#0A0E17;border:1px solid var(--line2);
+    border-radius:7px;padding:7px 10px;font-size:11.5px;color:var(--tx);white-space:nowrap;z-index:5;
+    box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  .mc-tip div{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;color:var(--tx2);margin-top:3px}
+  .mc-tip i{width:8px;height:8px;border-radius:2px;display:inline-block}
   footer{text-align:center;padding:26px 16px 44px;font-size:9.5px;color:var(--tx3);
     font-family:'IBM Plex Mono',monospace;letter-spacing:.4px;line-height:1.8}
 </style>
@@ -248,6 +259,7 @@
   }
   window.__diag=show;
   window.addEventListener('error',function(e){
+    if(e && e.message && /ResizeObserver/.test(e.message)) return;
     show('<b>Error:</b> '+(e.message||'unknown')+
          (e.filename?' &nbsp;<span style="color:#8C97B8">'+e.filename.split('/').pop()+
          ':'+(e.lineno||'?')+'</span>':''));
@@ -307,8 +319,9 @@
 
   <div class="note warn">
     <b>On dates:</b> panels carry their own as-on date because source returns close on different days.
-    Warrants are as on 19·08·2026; UI/PT from the CCTNS weekly to 16·08·2026; grave-case detail to
-    30·06·2026; strength to 20·08·2026; station-wise registration only to 07·04·2026.
+    UI/PT from CCTNS to 23·09·2026; warrants as on 18·09·2026; road accidents to 23·09·2026;
+    sheeters to 23·09·2026; grave-case detail to 30·06·2026; strength to 20·08·2026;
+    MV Act enforcement for August 2026; station-wise registration only to 07·04·2026.
     Do not compare figures across different as-on dates.
   </div>
 </section>
@@ -605,21 +618,264 @@
 
 <script>
 
-/* ---- chart library guard: tables and records must work even if the CDN is blocked ---- */
-var CHART_OK = (typeof Chart !== 'undefined' && Chart);
-if(CHART_OK){
-  Chart.defaults.font.family="'IBM Plex Sans',sans-serif";
-  Chart.defaults.color='#8C97B8';
-  Chart.defaults.borderColor='#242E48';
-} else if(window.__diag){
-  window.__diag('<b>Chart library did not load.</b> Every figure, table and station record below is '+
-    'working normally — only the graphs are missing. Usually a blocked CDN or no internet on this device.');
+/* ================================================================
+   MiniChart — self-contained SVG renderer. No external library,
+   no network. Reads the same config objects the dashboard already
+   builds (bar / horizontal bar / stacked / line / doughnut).
+   ================================================================ */
+function mcGet(o, path){
+  var p = path.split('.');
+  for (var i = 0; i < p.length; i++){ if (o == null) return undefined; o = o[p[i]]; }
+  return o;
 }
+function mcStep(raw){
+  if (!raw || raw <= 0) return 1;
+  var e = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / e;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * e;
+}
+function mcNiceMax(v){
+  if (!v || v <= 0) return 1;
+  var s = mcStep(v / 4);
+  return Math.ceil(v / s - 1e-9) * s;
+}
+function mcTicks(min, max){
+  var step = mcStep((max - min) / 4 || 1);
+  var out = [], v = Math.ceil(min / step - 1e-9) * step;
+  for (; v <= max + step * 1e-6; v += step) out.push(Math.round(v * 1e6) / 1e6 + 0);
+  return out;
+}
+function mcFmt(v){
+  if (v == null || isNaN(v)) return '';
+  var r = Math.round(v * 10) / 10;
+  return r.toLocaleString('en-IN');
+}
+function mcEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function mcCol(ds, i, fallback){
+  var c = ds.backgroundColor;
+  if (Array.isArray(c)) return c[i % c.length];
+  return c || ds.borderColor || fallback || '#5B8CFF';
+}
+var MC_TX = '#8C97B8', MC_GRID = '#1F2842', MC_FONT = "'IBM Plex Sans',-apple-system,'Segoe UI',Arial,sans-serif";
+
+function MiniChart(canvas, cfg){
+  var host = canvas.parentNode;
+  var type = cfg.type, data = cfg.data || {}, opt = cfg.options || {};
+  var labels = data.labels || [], sets = data.datasets || [];
+  var horiz = opt.indexAxis === 'y';
+  var stacked = !!(mcGet(opt,'scales.x.stacked') || mcGet(opt,'scales.y.stacked'));
+  var legendOn = mcGet(opt,'plugins.legend.display') !== false && (sets.length > 1 || type === 'doughnut');
+  var titleTxt = mcGet(opt,'plugins.title.display') ? mcGet(opt,'plugins.title.text') : '';
+  var valAxis = horiz ? 'x' : 'y';
+  var tickCb = mcGet(opt,'scales.'+valAxis+'.ticks.callback');
+  var fixMin = mcGet(opt,'scales.'+valAxis+'.min'), fixMax = mcGet(opt,'scales.'+valAxis+'.max');
+
+  canvas.style.display = 'none';
+  // horizontal bars with many rows: grow the container so every row is legible
+  if (horiz && labels.length > 12){
+    var need = labels.length * 19 + 70 + (legendOn ? 26 : 0) + (titleTxt ? 18 : 0);
+    if (need > host.clientHeight) host.style.height = need + 'px';
+  }
+  var box = document.createElement('div');
+  box.className = 'mc';
+  host.appendChild(box);
+
+  var geom = null;   // stored for the tooltip
+  var lastW = 0;
+
+  function legendHTML(){
+    if (!legendOn) return '';
+    var items;
+    if (type === 'doughnut'){
+      var d = sets[0].data;
+      items = labels.map(function(l, i){
+        return '<span><i style="background:'+mcCol(sets[0], i)+'"></i>'+mcEsc(l)+' <b>'+mcFmt(d[i])+'</b></span>';
+      });
+    } else {
+      items = sets.map(function(s, i){
+        return '<span><i style="background:'+(s.borderColor && type==='line' ? s.borderColor : mcCol(s, 0))+'"></i>'+mcEsc(s.label || ('Series '+(i+1)))+'</span>';
+      });
+    }
+    return '<div class="mc-lg">'+items.join('')+'</div>';
+  }
+
+  function valueMax(){
+    var m = 0;
+    if (stacked){
+      for (var i = 0; i < labels.length; i++){
+        var s = 0; sets.forEach(function(ds){ s += +ds.data[i] || 0; }); m = Math.max(m, s);
+      }
+    } else {
+      sets.forEach(function(ds){ ds.data.forEach(function(v){ if (v != null) m = Math.max(m, +v); }); });
+    }
+    return m;
+  }
+
+  function draw(W){
+    box.innerHTML = (titleTxt ? '<div class="mc-tt">'+mcEsc(titleTxt)+'</div>' : '') + legendHTML();
+    var used = 0; for (var ci = 0; ci < box.children.length; ci++) used += box.children[ci].offsetHeight;
+    var H = Math.max(140, host.clientHeight - used - 4);
+    var svg = [];
+    geom = null;
+
+    if (type === 'doughnut'){
+      var vals = sets[0].data.map(function(v){ return +v || 0; });
+      var tot = vals.reduce(function(a, b){ return a + b; }, 0) || 1;
+      var cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - 6, r = R * (parseFloat(mcGet(opt,'cutout')) / 100 || 0.6);
+      var a0 = -Math.PI / 2;
+      vals.forEach(function(v, i){
+        if (!v) return;
+        var a1 = a0 + v / tot * Math.PI * 2, large = (a1 - a0) > Math.PI ? 1 : 0;
+        var p = function(rad, a){ return (cx + rad * Math.cos(a)).toFixed(2)+' '+(cy + rad * Math.sin(a)).toFixed(2); };
+        if (v === tot){
+          svg.push('<circle cx="'+cx+'" cy="'+cy+'" r="'+((R + r) / 2)+'" fill="none" stroke="'+mcCol(sets[0], i)+'" stroke-width="'+(R - r)+'"/>');
+        } else {
+          svg.push('<path d="M'+p(R, a0)+' A'+R+' '+R+' 0 '+large+' 1 '+p(R, a1)+' L'+p(r, a1)+' A'+r+' '+r+' 0 '+large+' 0 '+p(r, a0)+' Z" fill="'+mcCol(sets[0], i)+'" stroke="#111726" stroke-width="2"><title>'+mcEsc(labels[i])+': '+mcFmt(v)+'</title></path>');
+        }
+        a0 = a1;
+      });
+    }
+    else if (horiz){
+      var maxChars = labels.reduce(function(m, l){ return Math.max(m, String(l).length); }, 0);
+      var pl = Math.min(170, Math.max(60, Math.min(maxChars, 26) * 6.1 + 10)), pr = 34, pt = 4, pb = 22;
+      var pw = Math.max(40, W - pl - pr), ph = H - pt - pb;
+      var vmax = fixMax != null ? fixMax : mcNiceMax(valueMax()), vmin = fixMin != null ? fixMin : 0;
+      var band = ph / Math.max(1, labels.length);
+      var X = function(v){ return pl + (v - vmin) / (vmax - vmin) * pw; };
+      mcTicks(vmin, vmax).forEach(function(tv){
+        var tx = X(tv);
+        svg.push('<line x1="'+tx+'" y1="'+pt+'" x2="'+tx+'" y2="'+(pt + ph)+'" stroke="'+MC_GRID+'"/>');
+        svg.push('<text x="'+tx+'" y="'+(H - 6)+'" text-anchor="middle" fill="'+MC_TX+'" font-size="10">'+(tickCb ? tickCb(tv) : mcFmt(tv))+'</text>');
+      });
+      var groups = stacked ? 1 : sets.length;
+      var bh = Math.max(3, band * 0.72 / groups);
+      labels.forEach(function(l, i){
+        var yc = pt + band * i + band / 2;
+        var lab = String(l); if (lab.length > 26) lab = lab.slice(0, 25) + '…';
+        svg.push('<text x="'+(pl - 6)+'" y="'+(yc + 3.5)+'" text-anchor="end" fill="'+MC_TX+'" font-size="'+(band < 14 ? 9 : 10.5)+'">'+mcEsc(lab)+'</text>');
+        var acc = 0, total = 0, far = 0;
+        sets.forEach(function(ds, k){
+          var v = +ds.data[i] || 0; total += v;
+          var x0 = stacked ? X(acc) : X(0), x1 = stacked ? X(acc + v) : X(v);
+          var y = stacked ? yc - bh / 2 : yc - (bh * groups) / 2 + bh * k;
+          if (x1 - x0 > 0.3) svg.push('<rect x="'+x0.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(x1 - x0).toFixed(1)+'" height="'+(bh - (stacked ? 0 : 1)).toFixed(1)+'" rx="2" fill="'+mcCol(ds, i)+'"/>');
+          if (stacked){ acc += v; far = Math.max(far, acc); }
+          else if (band >= 11 && groups === 1) svg.push('<text x="'+(x1 + 4)+'" y="'+(yc + 3.5)+'" fill="#EAEFFB" font-size="9.5" font-family="IBM Plex Mono,monospace">'+mcFmt(v)+'</text>');
+        });
+        if (stacked && band >= 11) svg.push('<text x="'+(X(far) + 4)+'" y="'+(yc + 3.5)+'" fill="#EAEFFB" font-size="9.5" font-family="IBM Plex Mono,monospace">'+mcFmt(total)+'</text>');
+      });
+      geom = {horiz: true, pl: pl, pt: pt, band: band, pw: pw, ph: ph};
+    }
+    else {
+      // vertical bars and lines share a category x-axis
+      var vmax2 = fixMax != null ? fixMax : mcNiceMax(valueMax()), vmin2 = fixMin != null ? fixMin : 0;
+      var vticks = mcTicks(vmin2, vmax2);
+      var tickW = vticks.reduce(function(m, tv){ return Math.max(m, String(tickCb ? tickCb(tv) : mcFmt(tv)).length); }, 1) * 6.4 + 14;
+      var pl2 = Math.max(30, tickW), pr2 = 10, pt2 = 14;
+      var bandW = (W - pl2 - pr2) / Math.max(1, labels.length);
+      var maxLab = labels.reduce(function(m, l){ return Math.max(m, String(l).length); }, 0);
+      var rotate = maxLab * 6 > bandW - 4;
+      var pb2 = rotate ? Math.min(90, maxLab * 4.6 + 14) : 22;
+      var pw2 = W - pl2 - pr2, ph2 = H - pt2 - pb2;
+      var Y = function(v){ return pt2 + ph2 - (v - vmin2) / (vmax2 - vmin2) * ph2; };
+      vticks.forEach(function(tv2){
+        var ty = Y(tv2);
+        svg.push('<line x1="'+pl2+'" y1="'+ty+'" x2="'+(W - pr2)+'" y2="'+ty+'" stroke="'+MC_GRID+'"/>');
+        svg.push('<text x="'+(pl2 - 6)+'" y="'+(ty + 3.5)+'" text-anchor="end" fill="'+MC_TX+'" font-size="10">'+(tickCb ? tickCb(tv2) : mcFmt(tv2))+'</text>');
+      });
+      labels.forEach(function(l, i){
+        var xc = pl2 + bandW * i + bandW / 2, ly = pt2 + ph2 + 14;
+        var lab = String(l); if (lab.length > 22) lab = lab.slice(0, 21) + '…';
+        if (rotate) svg.push('<text transform="translate('+xc+','+(pt2 + ph2 + 8)+') rotate(-40)" text-anchor="end" fill="'+MC_TX+'" font-size="9.5">'+mcEsc(lab)+'</text>');
+        else svg.push('<text x="'+xc+'" y="'+ly+'" text-anchor="middle" fill="'+MC_TX+'" font-size="10.5">'+mcEsc(lab)+'</text>');
+      });
+      if (type === 'bar'){
+        var groups2 = stacked ? 1 : sets.length;
+        var bw = Math.max(3, Math.min(56, bandW * 0.7 / groups2));
+        var showVals = labels.length * groups2 <= 30 && bw >= 9;
+        labels.forEach(function(l, i){
+          var xs = pl2 + bandW * i + (bandW - bw * groups2) / 2, acc2 = 0;
+          sets.forEach(function(ds, k){
+            var v = +ds.data[i] || 0;
+            var yTop = stacked ? Y(acc2 + v) : Y(v), yBot = stacked ? Y(acc2) : Y(vmin2);
+            var x = stacked ? xs : xs + bw * k;
+            if (yBot - yTop > 0.3) svg.push('<rect x="'+x.toFixed(1)+'" y="'+yTop.toFixed(1)+'" width="'+(bw - (groups2 > 1 ? 1.5 : 0)).toFixed(1)+'" height="'+(yBot - yTop).toFixed(1)+'" rx="2" fill="'+mcCol(ds, i)+'"/>');
+            if (showVals && !stacked && v) svg.push('<text x="'+(x + bw / 2)+'" y="'+(yTop - 4)+'" text-anchor="middle" fill="#EAEFFB" font-size="9.5" font-family="IBM Plex Mono,monospace">'+mcFmt(v)+'</text>');
+            if (stacked) acc2 += v;
+          });
+        });
+      } else { // line
+        sets.forEach(function(ds, k){
+          var col = ds.borderColor || mcCol(ds, 0), wdt = ds.borderWidth || 2, span = ds.spanGaps !== false;
+          var pts = ds.data.map(function(v, i){ return v == null ? null : [pl2 + bandW * i + bandW / 2, Y(+v)]; });
+          var segs = [], cur = [];
+          pts.forEach(function(p){ if (p) cur.push(p); else if (!span && cur.length){ segs.push(cur); cur = []; } });
+          if (cur.length) segs.push(cur);
+          segs.forEach(function(sg){
+            var d = sg.map(function(p, j){ return (j ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+            if (ds.fill && ds.backgroundColor && !Array.isArray(ds.backgroundColor))
+              svg.push('<path d="'+d+' L'+sg[sg.length - 1][0].toFixed(1)+' '+(pt2 + ph2)+' L'+sg[0][0].toFixed(1)+' '+(pt2 + ph2)+' Z" fill="'+ds.backgroundColor+'"/>');
+            svg.push('<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="'+wdt+'" stroke-linejoin="round" stroke-linecap="round"/>');
+          });
+          var pr = ds.pointRadius != null ? ds.pointRadius : 3;
+          if (pr) pts.forEach(function(p){ if (p) svg.push('<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+pr+'" fill="'+col+'" stroke="#0A0E17" stroke-width="1.5"/>'); });
+        });
+      }
+      geom = {horiz: false, pl: pl2, pt: pt2, band: bandW, pw: pw2, ph: ph2};
+    }
+
+    box.insertAdjacentHTML('beforeend',
+      '<svg class="mc-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" font-family="'+MC_FONT+'" role="img">'+svg.join('')+'</svg>'+
+      '<div class="mc-tip"></div>');
+    wireTip();
+  }
+
+  function wireTip(){
+    if (!geom || type === 'doughnut') return;
+    var svgEl = box.querySelector('.mc-svg'), tip = box.querySelector('.mc-tip');
+    function show(ev){
+      var rc = svgEl.getBoundingClientRect();
+      var px = ev.clientX - rc.left, py = ev.clientY - rc.top;
+      var idx = Math.floor(geom.horiz ? (py - geom.pt) / geom.band : (px - geom.pl) / geom.band);
+      if (idx < 0 || idx >= labels.length){ tip.style.display = 'none'; return; }
+      var html = '<b>'+mcEsc(labels[idx])+'</b>';
+      sets.forEach(function(ds){
+        var v = ds.data[idx]; if (v == null) return;
+        var c = type === 'line' ? (ds.borderColor || mcCol(ds, 0)) : mcCol(ds, idx);
+        html += '<div><i style="background:'+c+'"></i>'+(sets.length > 1 ? mcEsc(ds.label || '')+': ' : '')+(tickCb ? tickCb(+v) : mcFmt(+v))+'</div>';
+      });
+      tip.innerHTML = html; tip.style.display = 'block';
+      var tw = tip.offsetWidth, x = px + 14; if (x + tw > rc.width) x = px - tw - 14;
+      tip.style.left = Math.max(0, x) + 'px'; tip.style.top = Math.max(0, py - 10) + 'px';
+    }
+    svgEl.addEventListener('pointermove', show);
+    svgEl.addEventListener('click', show);
+    svgEl.addEventListener('pointerleave', function(){ tip.style.display = 'none'; });
+  }
+
+  function tryDraw(){
+    var w = host.clientWidth;
+    if (!w || w === lastW) return;   // hidden tab (width 0) or unchanged — wait
+    lastW = w; draw(w);
+  }
+  var ro = null, onWin = null;
+  if (window.ResizeObserver){ ro = new ResizeObserver(function(){ tryDraw(); }); ro.observe(host); }
+  else { onWin = function(){ tryDraw(); }; window.addEventListener('resize', onWin); }
+  tryDraw();
+
+  return {
+    destroy: function(){
+      if (ro) ro.disconnect(); if (onWin) window.removeEventListener('resize', onWin);
+      if (box.parentNode) box.parentNode.removeChild(box);
+      canvas.style.display = '';
+    }
+  };
+}
+
 function safeChart(el, cfg){
-  if(!CHART_OK) return null;
-  try { return new Chart(el, cfg); }
+  if(!el) return null;
+  try { return MiniChart(el, cfg); }
   catch(err){
-    if(window.__diag) window.__diag('<b>Chart failed:</b> '+(el&&el.id?el.id:'?')+' — '+err.message);
+    if(window.__diag) window.__diag('<b>Chart failed:</b> '+(el.id||'?')+' — '+err.message);
     return null;
   }
 }
@@ -1026,7 +1282,7 @@ document.querySelector('#tBind tbody').innerHTML=BIND.map(b=>
 /* ---------- REVIEW ---------- */
 const today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
 
-function top(arr, n, key, dir){ return arr.slice().sort((a,b)=>dir*(b[key]-a[key])).slice(0,n); }
+function topRanked(arr, n, key, dir){ return arr.slice().sort((a,b)=>dir*(b[key]-a[key])).slice(0,n); }
 function short(n){ return n.replace(/ (PS|UPS)$/,''); }
 
 function briefDist(){
@@ -1168,7 +1424,7 @@ document.querySelectorAll('#subjBar button').forEach(b=>b.addEventListener('clic
 }));
 drawBrief('dist');
 /* ---------- PERCEPTION ---------- */
-const PAL=['#5B8CFF','#E1595A','#4FAE83','#D9A441','#8B7BD8','#E87BA4','#48C4C4','#C98A4A'];
+const PAL=['#5B8CFF','#E1595A','#4FAE83','#EAEFFB','#8B7BD8','#E87BA4','#48C4C4','#9ACD32'];
 let pTheme='crime', pSel=[];
 const pNames=()=>Object.keys(PERC[pTheme].stations).sort();
 const pColor=n=>PAL[pNames().indexOf(n)%PAL.length];
